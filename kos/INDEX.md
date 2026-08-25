@@ -33,8 +33,12 @@ Last updated: 2026-08-25
 
 ## UX
 
-- [color-scheme](decisions/ux/color-scheme.md) — Terminal Signal: triadic green/violet/orange, green=primary/available, violet=premium class badge, orange=CTA
-- [typography-recommendations](decisions/ux/typography-recommendations.md) — 3 candidate type pairings (Wayfinding Grotesk / Ticket Stub / First Trip), not yet decided
+- [color-scheme](decisions/ux/color-scheme.md) — Terminal Signal: triadic green/violet/orange, green=primary/available, violet=premium class badge, orange=CTA; dark mode = same hues, inverted lightness
+- [typography](decisions/ux/typography.md) — Wayfinding Grotesk: Barlow Condensed (display) + Barlow (body) + IBM Plex Mono (data)
+- [iconography](decisions/ux/iconography.md) — three-tier icon system: Lucide (default), Phosphor (seat-map state via weight), Tabler (operator/admin overflow)
+- [shape-and-surface](decisions/ux/shape-and-surface.md) — sharp corners, flat elevation (border not shadow), filled buttons by default
+- [motion](decisions/ux/motion.md) — minimal interactions only for MVP: short functional transitions, no orchestrated animation
+- [platform-mark](decisions/ux/platform-mark.md) — "TS" monogram placeholder wordmark, Barlow Condensed Bold
 
 ## Reference
 
