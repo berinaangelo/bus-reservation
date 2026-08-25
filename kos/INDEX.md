@@ -31,6 +31,11 @@ Last updated: 2026-08-25
 - [rails-callback-objects-for-cache-busting](decisions/rails-callback-objects-for-cache-busting.md) — callback object for cache invalidation, Interactor step for everything else
 - [rails-activejob-solid-queue-for-background-work](decisions/rails-activejob-solid-queue-for-background-work.md) — Solid Queue, seat-hold expiry sweep as the direct fit
 
+## UX
+
+- [color-scheme](decisions/ux/color-scheme.md) — Terminal Signal: triadic green/violet/orange, green=primary/available, violet=premium class badge, orange=CTA
+- [typography-recommendations](decisions/ux/typography-recommendations.md) — 3 candidate type pairings (Wayfinding Grotesk / Ticket Stub / First Trip), not yet decided
+
 ## Reference
 
 (none yet)
