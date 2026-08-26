@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trip Search</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Trip Search</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        Three layout options were considered for the origin/destination/date entry point.
+        <span class="text-text font-medium">Route Line</span> was chosen, refined against a
+        laws-of-ux pass, then extended with its loading and zero-results states.
+      </p>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- OPTIONS CONSIDERED                                            -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ---- Option A ---- -->
+    <section class="mb-14">
+      <div class="mb-4">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Departure Board Strip</h3>
+        <p class="text-sm text-muted mt-1 max-w-2xl">
+          One continuous horizontal strip, like a physical departure board. Leans hardest into the literal
+          "Terminal Signal" signage read. Stacks vertically below <span class="font-mono text-xs">sm</span>.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background p-4 sm:p-8">
+        <div class="flex items-center gap-2 mb-6">
+          <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+          <span class="text-xs text-muted">Terminal Signal &mdash; book bus tickets across the Philippines</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row border border-border bg-surface">
+          <div class="flex-1 p-4 border-b sm:border-b-0 sm:border-r border-border">
+            <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">From</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="text-base font-medium truncate">Cubao, Quezon City</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-center border-b sm:border-b-0 sm:border-r border-border px-2 py-2 sm:py-0">
+            <span class="w-9 h-9 flex items-center justify-center border border-border bg-background text-muted">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            </span>
+          </div>
+          <div class="flex-1 p-4 border-b sm:border-b-0 sm:border-r border-border">
+            <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">To</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="text-base font-medium truncate">Baguio City</span>
+            </div>
+          </div>
+          <div class="flex-1 p-4 border-b sm:border-b-0 sm:border-r border-border">
+            <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Departure date</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              <span class="text-base font-mono tabular-nums">Aug 28, 2026</span>
+            </div>
+          </div>
+          <span class="flex items-center justify-center gap-2 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold px-6 py-4 sm:py-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Search trips
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Option B ---- -->
+    <section class="mb-14">
+      <div class="mb-4">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Swap Card</h3>
+        <p class="text-sm text-muted mt-1 max-w-2xl">
+          A stacked card with an overlapping swap button between From/To — the familiar flight-search
+          reversal pattern (Jakob's Law: lowest learning cost). Already vertical, so it's the best mobile-first fit.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background p-4 sm:p-8 flex justify-center">
+        <div class="w-full max-w-sm">
+          <div class="flex items-center gap-2 mb-6">
+            <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+            <span class="text-xs text-muted">Terminal Signal</span>
+          </div>
+
+          <div class="border border-border bg-surface p-5">
+            <div class="relative border border-border bg-background">
+              <div class="p-3.5 border-b border-border">
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">From</label>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span class="text-base font-medium">Cubao, Quezon City</span>
+                </div>
+              </div>
+              <div class="p-3.5">
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">To</label>
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span class="text-base font-medium">Baguio City</span>
+                </div>
+              </div>
+              <span class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center border border-border bg-background text-muted">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
+              </span>
+            </div>
+
+            <div class="border border-border bg-background p-3.5 mt-3">
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Departure date</label>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="text-base font-mono tabular-nums">Aug 28, 2026</span>
+              </div>
+            </div>
+
+            <span class="w-full mt-3 flex items-center justify-center gap-2 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold py-3">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Search trips
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Option C — chosen ---- -->
+    <section class="mb-4">
+      <div class="mb-4 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Route Line</h3>
+          <p class="text-sm text-muted mt-1 max-w-2xl">
+            A visual journey metaphor: origin and destination pins connected by a dashed route line, with
+            date and search below. Most editorial of the three — reads as a trip, not a generic form.
+            Refined below against a laws-of-ux pass (touch targets, mobile stacking, consistent field styling).
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background p-4 sm:p-8">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+          <span class="text-xs text-muted">Terminal Signal &mdash; book bus tickets across the Philippines</span>
+        </div>
+
+        <div class="border border-border bg-surface p-5 sm:p-6">
+          <div class="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-8 mb-6">
+            <div class="hidden sm:block absolute left-[16%] right-[16%] top-[7px] border-t-2 border-dashed border-border" aria-hidden="true"></div>
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label for="trip-from" class="font-display uppercase tracking-wider text-[11px] text-muted">From</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2 focus-within:ring-2 focus-within:ring-primary">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input id="trip-from" type="text" value="Cubao, Quezon City"
+                  class="w-full min-w-0 bg-transparent text-base font-medium text-text placeholder:text-muted focus:outline-none" />
+              </div>
+            </div>
+
+            <button type="button" aria-label="Swap origin and destination"
+              class="relative z-10 self-center sm:self-end w-11 h-11 shrink-0 flex items-center justify-center border border-border bg-background text-muted hover:text-primary hover:border-primary transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary">
+              <svg class="w-5 h-5 rotate-90 sm:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            </button>
+
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label for="trip-to" class="font-display uppercase tracking-wider text-[11px] text-muted">To</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2 focus-within:ring-2 focus-within:ring-primary">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <input id="trip-to" type="text" value="Baguio City"
+                  class="w-full min-w-0 bg-transparent text-base font-medium text-text sm:text-right placeholder:text-muted focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1 border border-border bg-background p-3 focus-within:ring-2 focus-within:ring-primary">
+              <label for="trip-date" class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Departure date</label>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <input id="trip-date" type="text" value="Aug 28, 2026"
+                  class="w-full bg-transparent text-base font-mono tabular-nums text-text focus:outline-none" />
+              </div>
+            </div>
+            <button type="submit"
+              class="sm:w-56 flex items-center justify-center gap-2 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold px-6 py-3 hover:bg-[#d97722] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Search trips
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STATES (chosen design only)                                   -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-6 pb-2 border-b border-border">
+      States &mdash; Route Line
+    </h2>
+
+    <!-- ---- Loading ---- -->
+    <section class="mb-14">
+      <h3 class="font-display font-bold text-lg uppercase tracking-wide mb-1">Searching (loading)</h3>
+      <p class="text-sm text-muted mb-4 max-w-xl">
+        Right after submit. The whole form locks (disabled, dimmed) so a second tap can't fire a
+        duplicate search while the button shows a spinner and swaps its label — immediate feedback
+        per the Doherty Threshold, and it doubles as a guard against double-submission.
+      </p>
+
+      <div class="border border-border bg-background p-4 sm:p-8">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+          <span class="text-xs text-muted">Terminal Signal</span>
+        </div>
+
+        <div class="border border-border bg-surface p-5 sm:p-6 opacity-60 pointer-events-none" aria-busy="true">
+          <div class="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-8 mb-6">
+            <div class="hidden sm:block absolute left-[16%] right-[16%] top-[7px] border-t-2 border-dashed border-border" aria-hidden="true"></div>
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label class="font-display uppercase tracking-wider text-[11px] text-muted">From</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="text-base font-medium truncate">Cubao, Quezon City</span>
+              </div>
+            </div>
+            <div class="relative z-10 self-center sm:self-end w-11 h-11 shrink-0 flex items-center justify-center border border-border bg-background text-muted">
+              <svg class="w-5 h-5 rotate-90 sm:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            </div>
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label class="font-display uppercase tracking-wider text-[11px] text-muted">To</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="text-base font-medium sm:text-right w-full truncate">Baguio City</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1 border border-border bg-background p-3">
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Departure date</label>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="text-base font-mono tabular-nums">Aug 28, 2026</span>
+              </div>
+            </div>
+            <button type="button" disabled
+              class="sm:w-56 flex items-center justify-center gap-2 bg-accent/70 text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold px-6 py-3 cursor-not-allowed">
+              <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Searching&hellip;
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---- Zero results ---- -->
+    <section class="mb-4">
+      <h3 class="font-display font-bold text-lg uppercase tracking-wide mb-1">No trips found</h3>
+      <p class="text-sm text-muted mb-4 max-w-xl">
+        Search completed, nothing matched. The form stays populated and editable (no re-typing to
+        retry) and the empty state restates the exact search so the rider isn't left guessing what
+        just happened — the first real frustration moment in the flow deserves this much care
+        (Peak-End Rule).
+      </p>
+
+      <div class="border border-border bg-background p-4 sm:p-8">
+        <div class="flex items-center gap-2 mb-8">
+          <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+          <span class="text-xs text-muted">Terminal Signal</span>
+        </div>
+
+        <div class="border border-border bg-surface p-5 sm:p-6 mb-4">
+          <div class="relative flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-8 mb-6">
+            <div class="hidden sm:block absolute left-[16%] right-[16%] top-[7px] border-t-2 border-dashed border-border" aria-hidden="true"></div>
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label class="font-display uppercase tracking-wider text-[11px] text-muted">From</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="text-base font-medium truncate">Cubao, Quezon City</span>
+              </div>
+            </div>
+            <div class="relative z-10 self-center sm:self-end w-11 h-11 shrink-0 flex items-center justify-center border border-border bg-background text-muted">
+              <svg class="w-5 h-5 rotate-90 sm:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+            </div>
+            <div class="relative z-10 flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-3 h-3 rounded-full bg-primary shrink-0" aria-hidden="true"></span>
+                <label class="font-display uppercase tracking-wider text-[11px] text-muted">To</label>
+              </div>
+              <div class="border border-border bg-background p-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="text-base font-medium sm:text-right w-full truncate">Baguio City</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1 border border-border bg-background p-3">
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Departure date</label>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="text-base font-mono tabular-nums">Aug 28, 2026</span>
+              </div>
+            </div>
+            <button type="button"
+              class="sm:w-56 flex items-center justify-center gap-2 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold px-6 py-3 hover:bg-[#d97722] transition-colors duration-150">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Search trips
+            </button>
+          </div>
+        </div>
+
+        <div class="border border-border bg-surface p-8 flex flex-col items-center text-center gap-3">
+          <svg class="w-10 h-10 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+            <path d="m8 8 6 6"/>
+            <path d="m14 8-6 6"/>
+          </svg>
+          <h4 class="font-display font-bold text-xl">No trips found</h4>
+          <p class="text-sm text-muted max-w-sm">
+            Cubao, Quezon City &rarr; Baguio City &middot; <span class="font-mono tabular-nums">Aug 28, 2026</span> has no available trips.
+            Try a different date or route.
+          </p>
+          <button type="button"
+            class="mt-2 border border-border px-5 py-2 font-display uppercase tracking-wide text-sm text-text hover:border-primary hover:text-primary transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary">
+            Clear search
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

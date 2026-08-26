@@ -20,7 +20,7 @@ Last updated: 2026-08-25
 - [rails-form-objects-for-multi-model-forms](decisions/rails-form-objects-for-multi-model-forms.md) — Form Object for checkout (Booking+Passengers+seats)
 - [rails-metaprogramming-for-repetitive-methods](decisions/rails-metaprogramming-for-repetitive-methods.md) — define_method loops for repetitive method sets only
 - [rails-orm-performance-n-plus-one-and-indexes](decisions/rails-orm-performance-n-plus-one-and-indexes.md) — eager loading, FK indexes, bulk ops
-- [rails-pagination-and-batch-export-processing](decisions/rails-pagination-and-batch-export-processing.md) — Pagy for JSON pagination metadata, streaming vs job-based exports
+- [rails-pagination-and-batch-export-processing](decisions/rails-pagination-and-batch-export-processing.md) — Pagy for JSON pagination metadata (page-based by default; cursor/keyset carve-out for trip search results), streaming vs job-based exports
 - [rails-presenters-decorators-for-json-formatting](decisions/rails-presenters-decorators-for-json-formatting.md) — Presenter for currency/timezone formatting before JSON output
 - [rails-pundit-for-authorization](decisions/rails-pundit-for-authorization.md) — Pundit policies for the operator data boundary
 - [rails-query-objects-for-reused-queries](decisions/rails-query-objects-for-reused-queries.md) — Query Object for trip search and other reused conditions

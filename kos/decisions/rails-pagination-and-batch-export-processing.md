@@ -29,6 +29,35 @@ A sitewide default page size is set once in `config/initializers/pagy.rb`
 needs a different count. Prev/Next UI, "Showing X–Y of Z" text, etc. are Vue's concern on the
 frontend — Rails only returns the numeric metadata.
 
+**Trip search results is a carve-out: cursor (keyset) pagination, not page-based.** Use Pagy's
+`pagy_keyset` extra instead of plain `pagy()` for the `TripsController#index` endpoint the
+[[../decisions/ux/mockups/trip-search-results.html|Trip Search Results]] mockups render. Reasons:
+
+- Trip search is a live, volatile list — trips can be added/cancelled and seat availability
+  shifts between page loads (especially near the [[seat-hold-ttl|seat-hold TTL]] boundary).
+  Offset pagination risks skipped or duplicated rows if the underlying result set changes mid-
+  browse; keyset pagination doesn't have this problem since each page is fetched relative to the
+  last row seen, not a row-count offset.
+- The rider's actual pattern is "show me more/later trips," never "jump to page 7" — no product
+  need for random page access or an exact total count, which is exactly cursor pagination's
+  trade-off (no cheap total count, but no `OFFSET` scan cost either as the table grows).
+
+Keyset ordering is `(departure_at, id)` ascending (id as tie-breaker for same-minute departures).
+Response shape differs from the page-based one above — no `page`/`pages`, just a cursor token and
+a boolean:
+
+```ruby
+def index
+  trips = TripSearch.new(search_params).call
+  @pagy, @trips = pagy_keyset(trips)
+  render json: { trips: TripSerializer.new(@trips), meta: { next_cursor: @pagy.next, has_more: !@pagy.next.nil? } }
+end
+```
+
+Frontend renders this as a "Load more trips" button appending to the existing list, not numbered
+pages. Plain page-based `pagy()` stays the default everywhere else (operator trip/booking admin
+lists, manifest) where jump-to-page and an exact count are actually useful.
+
 **Batch processing / exports — streaming vs job-based batching, depending on size.** Never load
 a full table with `Model.all.each` — always `find_each`/`find_in_batches`/`in_batches`
 (batch_size 1000 default) for anything touching a potentially-large table.
