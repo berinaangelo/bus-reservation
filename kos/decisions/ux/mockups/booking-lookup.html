@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Booking Lookup</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Booking Lookup</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        God moment #5: fixing a mistake without a password — <span class="font-mono text-xs">reference_code</span>
+        + contact number gets a guest back into their booking. This <em>is</em> the account system for v1
+        (no rider login). <span class="text-text font-medium">Option C — Split Panel is now the chosen
+        design</span> — full build-out, states and result variants below, same working pattern as the four
+        mockups before it.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16 items-start">
+
+      <!-- Option A — Single-Column Stacked -->
+      <div>
+        <div class="mb-4">
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Single-Column Stacked</h3>
+          <p class="text-sm text-muted mt-1">
+            Centered card, form on top, result renders below in the same flow once submitted — the
+            classic "track my order" shape. <span class="text-text font-medium">Jakob's Law</span> —
+            riders already know this from courier/telco tracking pages. Simplest to build, most
+            conservative; a second lookup means scrolling back up and clearing the form.
+          </p>
+        </div>
+
+        <div class="border border-border bg-background p-4 sm:p-5">
+          <div class="flex items-center gap-2 mb-5">
+            <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+            <span class="text-xs text-muted">Terminal Signal</span>
+          </div>
+
+          <h4 class="font-display font-bold text-sm uppercase tracking-wide mb-3">Find your booking</h4>
+
+          <div class="border border-border bg-surface p-3 mb-2 focus-within:ring-2 focus-within:ring-primary">
+            <label class="block font-display uppercase tracking-wider text-[10px] text-muted mb-1">Reference code</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4V7a2 2 0 0 0-2-2Z"/></svg>
+              <input type="text" placeholder="4XK-7QM-9" class="w-full bg-transparent text-sm font-mono tracking-wide text-text placeholder:text-muted focus:outline-none" />
+            </div>
+          </div>
+          <div class="border border-border bg-surface p-3 mb-3 focus-within:ring-2 focus-within:ring-primary">
+            <label class="block font-display uppercase tracking-wider text-[10px] text-muted mb-1">Contact number</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+              <input type="tel" placeholder="09XX XXX XXXX" class="w-full bg-transparent text-sm font-mono text-text placeholder:text-muted placeholder:font-sans focus:outline-none" />
+            </div>
+          </div>
+          <button type="button" class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 mb-5">Find Booking</button>
+
+          <div class="flex items-center gap-2 mb-4 text-muted">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            <span class="text-[11px] uppercase font-display tracking-wider">Result appears below</span>
+          </div>
+
+          <div class="border-t border-border pt-4">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <p class="font-medium text-sm">Victory Liner &middot; Cubao &rarr; Baguio</p>
+              <span class="inline-flex items-center border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[10px] font-semibold">Deluxe</span>
+            </div>
+            <p class="text-[11px] text-muted mb-2">Aug 28, 2026 &middot; 6:00 AM &middot; Seat 2A</p>
+            <p class="font-mono tabular-nums text-xs text-muted">4XK-7QM-9</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option B — Card Replace / Reveal-in-Place -->
+      <div>
+        <div class="mb-4">
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Card Replace / Reveal-in-Place</h3>
+          <p class="text-sm text-muted mt-1">
+            The form card transforms into the result card in the same bounded box — it doesn't
+            scroll away, it's swapped. <span class="text-text font-medium">Doherty Threshold</span> /
+            <span class="text-text font-medium">Peak-End</span> — feels instant, eyes never leave
+            where they already are. Echoes the inline-reveal mechanic already chosen for Seat
+            Selection's Option B.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <p class="text-[10px] uppercase font-display tracking-wider text-muted mb-2 text-center">Before submit</p>
+            <div class="border border-border bg-background p-3">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="font-display font-bold text-base text-primary leading-none">TS</span>
+              </div>
+              <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+              <div class="border border-border bg-surface p-2 mb-1.5">
+                <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+                <p class="font-mono text-xs text-muted">4XK-7QM-9</p>
+              </div>
+              <div class="border border-border bg-surface p-2 mb-2">
+                <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+                <p class="font-mono text-xs text-muted">09XX XXX XXXX</p>
+              </div>
+              <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Find Booking</div>
+            </div>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase font-display tracking-wider text-primary mb-2 text-center">Same card, after</p>
+            <div class="border-2 border-primary bg-background p-3">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="w-4 h-4 rounded-full bg-success flex items-center justify-center shrink-0">
+                  <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <p class="text-xs font-medium">Found</p>
+              </div>
+              <p class="font-medium text-xs mb-1">Victory Liner &middot; Cubao &rarr; Baguio</p>
+              <p class="text-[10px] text-muted mb-2">Aug 28 &middot; 6:00 AM &middot; Seat 2A</p>
+              <p class="font-mono tabular-nums text-[10px] text-muted mb-2">4XK-7QM-9</p>
+              <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-1.5">Cancel Booking</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-[11px] text-muted mt-2 text-center">Same position, size and border box — only the contents swap.</p>
+      </div>
+
+      <!-- Option C — Split Panel — Chosen -->
+      <div>
+        <div class="mb-4">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Split Panel: Lookup Left, Result Right</h3>
+            <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              Chosen
+            </span>
+          </div>
+          <p class="text-sm text-muted mt-1">
+            Persistent form on the left, result panel on the right once found.
+            <span class="text-text font-medium">Fitts's Law</span> — the form stays a fixed,
+            reachable target, so looking up a second booking (a family with separate bookings)
+            never requires re-navigating. Same split-panel precedent as the chosen Seat Selection
+            layout.
+          </p>
+        </div>
+
+        <div class="border-2 border-primary bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[45%] p-3 sm:border-r border-border">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-border bg-surface p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs text-muted">4XK-7QM-9</p>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs text-muted">09XX XXX XXXX</p>
+            </div>
+            <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Find Booking</div>
+          </div>
+          <div class="sm:w-[55%] p-3 bg-surface">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-4 h-4 rounded-full bg-success flex items-center justify-center shrink-0">
+                <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <p class="text-xs font-medium">Found</p>
+            </div>
+            <p class="font-medium text-xs mb-1">Victory Liner &middot; Cubao &rarr; Baguio</p>
+            <p class="text-[10px] text-muted mb-2">Aug 28 &middot; 6:00 AM &middot; Seat 2A</p>
+            <p class="font-mono tabular-nums text-[10px] text-muted mb-2">4XK-7QM-9</p>
+            <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-1.5">Cancel Booking</div>
+          </div>
+        </div>
+        <p class="text-[11px] text-muted mt-2">Right panel is empty (placeholder copy: "Enter your details to find a booking") until a lookup succeeds.</p>
+      </div>
+
+    </div>
+
+    <!-- ==== CHOSEN — FULL BUILD-OUT ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Chosen — Option C, full build-out</h2>
+    <p class="text-sm text-muted mb-6 max-w-2xl">
+      Real inputs and copy in place of the comparison stubs above. The left panel never changes
+      shape across any state below — only its enabled/disabled look and the right panel's contents
+      change, which is the whole point of picking Split Panel (Fitts's Law: one fixed target for
+      the rider's next lookup, whether it's a correction or a second family booking).
+    </p>
+
+    <div class="border-2 border-primary bg-background p-4 sm:p-8 mb-16">
+      <div class="flex items-center gap-2 mb-8">
+        <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+        <span class="text-xs text-muted">Terminal Signal</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row border border-border">
+        <div class="sm:w-[42%] p-5 sm:border-r border-border">
+          <h3 class="font-display font-bold text-base uppercase tracking-wide mb-4">Find your booking</h3>
+
+          <div class="border border-border bg-surface p-3 mb-3 focus-within:ring-2 focus-within:ring-primary">
+            <label for="lookup-code" class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Reference code</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4V7a2 2 0 0 0-2-2Z"/></svg>
+              <input id="lookup-code" type="text" value="4XK-7QM-9"
+                class="w-full bg-transparent text-base font-mono tracking-wide text-text placeholder:text-muted focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="border border-border bg-surface p-3 mb-2 focus-within:ring-2 focus-within:ring-primary">
+            <label for="lookup-contact" class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Contact number</label>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+              <input id="lookup-contact" type="tel" value="0917 123 4567"
+                class="w-full bg-transparent text-base font-mono text-text placeholder:text-muted focus:outline-none" />
+            </div>
+          </div>
+          <p class="text-[11px] text-muted mb-5">Same number given at checkout — used to confirm it's your booking, not just anyone with the code.</p>
+
+          <button type="submit"
+            class="w-full flex items-center justify-center gap-2 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-sm font-semibold px-5 py-3 hover:bg-[#d97722] transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Find Booking
+          </button>
+
+          <p class="text-[11px] text-muted mt-4">Left panel stays put across every state on the right — nothing to re-fill for a second lookup.</p>
+        </div>
+
+        <div class="sm:w-[58%] p-5 bg-surface">
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-3">Result</p>
+
+          <div class="flex items-center gap-2 mb-4">
+            <span class="w-6 h-6 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="text-sm font-medium">Booking Found</p>
+          </div>
+
+          <div class="border border-border bg-background p-4">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <p class="font-medium text-sm">Victory Liner</p>
+              <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Deluxe</span>
+            </div>
+            <p class="text-sm mb-1">Cubao &rarr; Baguio</p>
+            <p class="text-xs text-muted mb-3">Aug 28, 2026 &middot; Departs 6:00 AM</p>
+
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Passenger</p>
+            <div class="flex items-center justify-between text-sm mb-3">
+              <span>Maria Santos</span>
+              <span class="font-mono tabular-nums text-xs text-muted">Seat 2A</span>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-border pt-3">
+              <div>
+                <p class="font-display uppercase tracking-wider text-[10px] text-muted mb-0.5">Reference code</p>
+                <p class="font-mono tabular-nums text-sm font-semibold">4XK-7QM-9</p>
+              </div>
+            </div>
+          </div>
+
+          <button type="button"
+            class="w-full mt-3 flex items-center justify-center gap-2 border border-danger text-danger font-display uppercase tracking-wide text-xs font-semibold px-4 py-3 hover:bg-danger/10 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-danger">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            Cancel Booking
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==== STATES ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">States — Option C</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+
+      <!-- Submitting -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Submitting (loading)</h3>
+        <p class="text-sm text-muted mb-3">
+          Right panel keeps its idle prompt — nothing to show yet. Left panel locks (dimmed,
+          disabled) and the button swaps to a spinner, guarding against a double-tap submitting
+          twice. Short, functional transition per <span class="font-mono text-xs">motion.md</span>
+          — no orchestrated animation, just the Doherty Threshold.
+        </p>
+        <div class="border border-border bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[42%] p-4 sm:border-r border-border opacity-60 pointer-events-none" aria-busy="true">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-border bg-surface p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs">4XK-7QM-9</p>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs">0917 123 4567</p>
+            </div>
+            <button type="button" disabled
+              class="w-full flex items-center justify-center gap-1.5 bg-accent/70 text-[#1E2925] font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2 cursor-not-allowed">
+              <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Searching&hellip;
+            </button>
+          </div>
+          <div class="sm:w-[58%] p-4 bg-surface flex items-center justify-center">
+            <p class="text-xs text-muted text-center italic">Enter your details to find a booking</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancel confirmation -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Cancel confirmation</h3>
+        <p class="text-sm text-muted mb-3">
+          Void + release seat is irreversible for MVP (no refund automation), so the button doesn't
+          fire on first tap — it reveals an inline confirm bar in the same spot instead of a modal,
+          staying consistent with the flat/no-overlay shape language.
+        </p>
+        <div class="border border-border bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[42%] p-4 sm:border-r border-border">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-border bg-surface p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs">4XK-7QM-9</p>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs">0917 123 4567</p>
+            </div>
+            <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Find Booking</div>
+          </div>
+          <div class="sm:w-[58%] p-4 bg-surface">
+            <p class="font-medium text-xs mb-1">Victory Liner &middot; Cubao &rarr; Baguio</p>
+            <p class="text-[10px] text-muted mb-2">Aug 28 &middot; 6:00 AM &middot; Seat 2A</p>
+            <div class="border border-danger bg-danger/10 p-3">
+              <p class="text-xs font-medium mb-2">Cancel this booking? This can't be undone.</p>
+              <div class="flex gap-2">
+                <button type="button" class="flex-1 border border-border bg-background text-text font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2.5">Keep Booking</button>
+                <button type="button" class="flex-1 bg-danger text-white font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2.5">Yes, Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancelled (end state) -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Cancelled (end state)</h3>
+        <p class="text-sm text-muted mb-3">
+          The actual end of this flow, not just the confirm step — <span class="text-text font-medium">Peak-End
+          Rule</span> says this is what the rider remembers, so it gets an explicit state rather than
+          silently reverting to the empty form. States the outcome plainly (seat released) and is honest
+          about what didn't happen (no automatic refund), instead of leaving that ambiguous.
+        </p>
+        <div class="border border-border bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[42%] p-4 sm:border-r border-border">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-border bg-surface p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs">4XK-7QM-9</p>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs">0917 123 4567</p>
+            </div>
+            <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Find Booking</div>
+          </div>
+          <div class="sm:w-[58%] p-4 bg-surface">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </span>
+              <p class="text-xs font-medium">Booking Cancelled</p>
+            </div>
+            <p class="text-[11px] text-text leading-snug mb-2">Seat 2A on Victory Liner &middot; Cubao &rarr; Baguio has been released.</p>
+            <p class="text-[10px] text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if you paid online.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Local typo warning -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Local — checksum fails (likely typo)</h3>
+        <p class="text-sm text-muted mb-3">
+          The Luhn mod N checksum in <span class="font-mono text-xs">reference_code</span> catches a
+          mistyped character before anything reaches the server — a different failure than a
+          correctly-typed code with no match, so it gets its own message and never even submits.
+        </p>
+        <div class="border border-border bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[42%] p-4 sm:border-r border-border">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-warning bg-warning/10 p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs">4XK-7QM-8</p>
+              <div class="flex items-start gap-1.5 mt-1.5">
+                <svg class="w-3 h-3 text-warning shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <p class="text-[10px] text-text leading-snug">Doesn't look quite right — check for a mistyped character.</p>
+              </div>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs">0917 123 4567</p>
+            </div>
+            <div class="w-full bg-accent/60 text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2 cursor-not-allowed">Find Booking</div>
+          </div>
+          <div class="sm:w-[58%] p-4 bg-surface flex items-center justify-center">
+            <p class="text-xs text-muted text-center italic">Enter your details to find a booking</p>
+          </div>
+        </div>
+        <p class="text-[11px] text-muted mt-2">Caught instantly, no request sent — checksum fails on the client, so the button stays disabled.</p>
+      </div>
+
+      <!-- Server not-found -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Server — valid code, no match</h3>
+        <p class="text-sm text-muted mb-3">
+          Checksum passed and the request went out, but no <span class="font-mono text-xs">Booking</span>
+          matches that code + contact number pair. Different copy from the typo case on purpose —
+          this tells the rider to double-check what they entered, not that they mistyped it.
+        </p>
+        <div class="border border-border bg-background flex flex-col sm:flex-row">
+          <div class="sm:w-[42%] p-4 sm:border-r border-border">
+            <h4 class="font-display font-bold text-xs uppercase tracking-wide mb-2">Find your booking</h4>
+            <div class="border border-border bg-surface p-2 mb-1.5">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Reference code</label>
+              <p class="font-mono text-xs">4XK-7QM-9</p>
+            </div>
+            <div class="border border-border bg-surface p-2 mb-2">
+              <label class="block font-display uppercase tracking-wider text-[9px] text-muted mb-0.5">Contact number</label>
+              <p class="font-mono text-xs">0917 999 0000</p>
+            </div>
+            <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Find Booking</div>
+          </div>
+          <div class="sm:w-[58%] p-4 bg-surface">
+            <div class="border border-danger bg-danger/10 p-3">
+              <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 text-danger shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="m14 8-6 6"/><path d="m8 8 6 6"/></svg>
+                <p class="text-xs text-text leading-snug">No booking matches that code and contact number. Check both are entered exactly as given at booking.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==== VARIANTS ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Variants</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+
+      <!-- Ordinary class -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Ordinary-class booking — no seat number</h3>
+        <p class="text-sm text-muted mb-4">
+          Same as <span class="font-mono text-xs">e-ticket-confirmation.html</span>'s ordinary-class
+          variant: no <span class="font-mono text-xs">TripSeat</span> row, so the result drops the
+          seat column entirely rather than showing an empty one.
+        </p>
+        <div class="border border-border bg-background p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <p class="font-medium text-sm">Genesis Transport</p>
+            <span class="inline-flex items-center border border-border text-muted px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Aircon</span>
+          </div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Passenger</p>
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span>Ana Reyes</span>
+            <span class="text-xs text-muted italic">Open seating</span>
+          </div>
+          <p class="text-[11px] text-muted">Contact: 0917 123 4567</p>
+        </div>
+      </div>
+
+      <!-- Multi-passenger / family -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Multi-passenger — family booking</h3>
+        <p class="text-sm text-muted mb-4">
+          One lookup pulls the whole party (god moment #2 carries through to this screen) — one
+          <span class="font-mono text-xs">Cancel Booking</span> voids every seat on the booking at
+          once, not per passenger, matching the "simple cancel" scope in
+          <span class="font-mono text-xs">mvp-scope.md</span>.
+        </p>
+        <div class="border border-border bg-background p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <p class="font-medium text-sm">Victory Liner</p>
+            <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Deluxe</span>
+          </div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Passengers</p>
+          <div class="space-y-1.5 mb-2">
+            <div class="flex items-center justify-between text-sm"><span>Maria Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 2A</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Jose Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 2B</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Ana Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 3A</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Miguel Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 3B</span></div>
+          </div>
+          <p class="text-[11px] text-muted">Contact: 0917 123 4567 &middot; one number, one cancel, whole party</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==== IMPLEMENTATION NOTES ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">
+      Implementation notes
+    </h2>
+    <section class="mb-4">
+      <div class="border border-border bg-surface p-5 sm:p-6">
+        <ul class="text-sm text-muted leading-relaxed list-disc pl-5 space-y-2">
+          <li>
+            <span class="text-text font-medium">Option C (Split Panel) is chosen</span> on Fitts's
+            Law grounds — the form is a fixed target, so a second lookup (or a mistake in the first
+            one) never requires re-navigating. Options A and B stay in this file for reference, not
+            deleted, same convention as the prior screens.
+          </li>
+          <li>
+            <span class="text-text font-medium">Guest lookup is the account system for v1</span> — see
+            <a href="../../mvp-scope.md" class="text-primary underline decoration-primary/40">mvp-scope.md</a>.
+            No password, no session; every lookup re-authenticates with the code + number pair.
+          </li>
+          <li>
+            <span class="text-text font-medium">Checksum-vs-not-found distinction</span> comes straight
+            from <a href="../../reference-code-format.md" class="text-primary underline decoration-primary/40">reference-code-format.md</a>'s
+            Luhn mod N design — "an invalid checksum means a typo, not a missing booking, so surface
+            that distinction to the counter staff instead of a generic 'not found.'" This mockup extends
+            that same rule to the rider-facing lookup screen, not just counter staff.
+          </li>
+          <li>
+            <span class="text-text font-medium">Cancel Booking uses the danger color role</span> —
+            already reserved for taken seats/cancel/errors in
+            <a href="../color-scheme.md" class="text-primary underline decoration-primary/40">color-scheme.md</a>,
+            not a new token.
+          </li>
+          <li>
+            <span class="text-text font-medium">Cancel confirmation is now built</span> (inline bar,
+            not a modal — stays consistent with the flat, no-overlay shape language). It's still void
+            + release seat only — <a href="../../mvp-scope.md" class="text-primary underline decoration-primary/40">mvp-scope.md</a>
+            keeps refund automation out of scope for v1.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

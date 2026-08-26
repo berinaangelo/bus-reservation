@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operator Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+  .tnum { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Operator Dashboard</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        The main console <span class="font-mono text-xs">OperatorStaff</span> land in after
+        <a href="operator-login.html" class="text-primary underline underline-offset-2">login</a> — CRUD for their
+        own <span class="font-mono text-xs">Route</span>, <span class="font-mono text-xs">Trip</span>,
+        <span class="font-mono text-xs">BusUnit</span> and <span class="font-mono text-xs">FareRule</span>, scoped to
+        one operator only (no operator picker, same decision as login — this console never shows another
+        operator's fleet). All three options below use <span class="text-text font-medium">Routes</span> as the
+        worked example table, since the other three resources (Trips, Bus Units, Fare Rules) follow the same list/
+        add/edit/delete shape — only the navigation shell differs between options. <span class="text-text
+        font-medium">Icons follow the operator-side tier</span> — Tabler, not Lucide, per
+        <a href="../iconography.md" class="text-primary underline underline-offset-2">iconography.md</a>'s rule for
+        fleet/route-editing screens. <span class="text-text font-medium">Option A — Sidebar + Table</span> is
+        chosen; B and C stay in the file for reference. CRUD forms (Add/Edit) and states (empty list, delete
+        confirm) for Option A aren't built yet.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — SIDEBAR + TABLE                                    -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Sidebar + Table</h3>
+          <p class="text-sm text-muted mt-1">
+            Persistent left nav across all four resources plus Manifest, full-width table on the right.
+            <span class="text-text font-medium">Jakob's Law</span> — this is the shape of nearly every admin
+            panel (Rails admin, Django admin, Stripe dashboard) an operator has plausibly used before; the
+            whole resource list is always one click away and current location never ambiguous.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background">
+        <!-- shared top brand bar -->
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <!-- sidebar -->
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+          </nav>
+
+          <!-- main content -->
+          <div class="p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+              <div class="flex items-center gap-2">
+                <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted w-48">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  Search routes…
+                </div>
+                <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5 flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Add Route
+                </button>
+              </div>
+            </div>
+
+            <div class="border border-border">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                    <th class="px-3 py-2 font-semibold">Route</th>
+                    <th class="px-3 py-2 font-semibold">Distance</th>
+                    <th class="px-3 py-2 font-semibold">Est. Duration</th>
+                    <th class="px-3 py-2 font-semibold">Status</th>
+                    <th class="px-3 py-2 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Baguio</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">246 km</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">6h 30m</td>
+                    <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="inline-flex gap-2 text-muted">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">→</span> Baguio</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">250 km</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">7h 00m</td>
+                    <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="inline-flex gap-2 text-muted">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Dagupan</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">210 km</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">5h 45m</td>
+                    <td class="px-3 py-2.5"><span class="border border-border text-muted bg-surface px-2 py-0.5 text-[11px] font-medium">Inactive</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="inline-flex gap-2 text-muted">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Vigan</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">400 km</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">8h 15m</td>
+                    <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="inline-flex gap-2 text-muted">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — TABBED WORKSPACE                                   -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Tabbed Workspace</h3>
+        <p class="text-sm text-muted mt-1">
+          Flat top tab bar across the four resources, no persistent sidebar column.
+          <span class="text-text font-medium">Hick's Law</span> — with exactly four resources (plus Manifest)
+          there's no real hierarchy to justify a sidebar's extra chrome; a single row of five choices is
+          scanned faster than a vertical list, and the table gets the full page width back.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <!-- tab bar -->
+        <div class="flex border-b border-border bg-surface overflow-x-auto">
+          <div class="px-4 py-2.5 border-b-2 border-primary text-primary text-sm font-medium flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+            Routes
+          </div>
+          <div class="px-4 py-2.5 border-b-2 border-transparent text-muted text-sm flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+            Trips
+          </div>
+          <div class="px-4 py-2.5 border-b-2 border-transparent text-muted text-sm flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+            Bus Units
+          </div>
+          <div class="px-4 py-2.5 border-b-2 border-transparent text-muted text-sm flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+            Fare Rules
+          </div>
+          <div class="px-4 py-2.5 border-b-2 border-transparent text-muted text-sm flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+            Manifest
+          </div>
+        </div>
+
+        <div class="p-5">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+            <div class="flex items-center gap-2">
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted w-48">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                Search routes…
+              </div>
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Route
+              </button>
+            </div>
+          </div>
+
+          <div class="border border-border">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                  <th class="px-3 py-2 font-semibold">Route</th>
+                  <th class="px-3 py-2 font-semibold">Distance</th>
+                  <th class="px-3 py-2 font-semibold">Est. Duration</th>
+                  <th class="px-3 py-2 font-semibold">Status</th>
+                  <th class="px-3 py-2 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Baguio</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">246 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">6h 30m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">→</span> Baguio</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">250 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">7h 00m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Dagupan</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">210 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">5h 45m</td>
+                  <td class="px-3 py-2.5"><span class="border border-border text-muted bg-surface px-2 py-0.5 text-[11px] font-medium">Inactive</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Vigan</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">400 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">8h 15m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — OVERVIEW LAUNCHER                                  -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Overview Launcher</h3>
+        <p class="text-sm text-muted mt-1">
+          Landing view leads with four at-a-glance stat cards (route count, trips today, fleet size, active fare
+          rules) before any table — clicking a card drills into that resource's list, shown below already expanded
+          for Routes. <span class="text-text font-medium">Peak-End Rule</span> — the first thing an operator sees
+          each day is "what's actually running today," not a bare CRUD table; the operational picture is the
+          opening beat, CRUD is one click deeper.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="p-5">
+          <!-- stat cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div class="border-2 border-primary bg-primary/5 p-4">
+              <div class="flex items-center gap-1.5 text-primary mb-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Routes</span>
+              </div>
+              <p class="font-mono text-2xl font-medium tnum">5</p>
+              <p class="text-xs text-muted mt-0.5">4 active</p>
+            </div>
+            <div class="border border-border bg-surface p-4">
+              <div class="flex items-center gap-1.5 text-muted mb-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Trips</span>
+              </div>
+              <p class="font-mono text-2xl font-medium tnum">18</p>
+              <p class="text-xs text-muted mt-0.5">scheduled today</p>
+            </div>
+            <div class="border border-border bg-surface p-4">
+              <div class="flex items-center gap-1.5 text-muted mb-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Bus Units</span>
+              </div>
+              <p class="font-mono text-2xl font-medium tnum">12</p>
+              <p class="text-xs text-muted mt-0.5">in fleet</p>
+            </div>
+            <div class="border border-border bg-surface p-4">
+              <div class="flex items-center gap-1.5 text-muted mb-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Fare Rules</span>
+              </div>
+              <p class="font-mono text-2xl font-medium tnum">8</p>
+              <p class="text-xs text-muted mt-0.5">active</p>
+            </div>
+          </div>
+
+          <!-- drill-in state: Routes expanded -->
+          <div class="flex items-center gap-1.5 text-xs text-muted mb-3">
+            <span>Overview</span>
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <span class="text-text font-medium">Routes</span>
+          </div>
+
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+            <div class="flex items-center gap-2">
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted w-48">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                Search routes…
+              </div>
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Route
+              </button>
+            </div>
+          </div>
+
+          <div class="border border-border">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                  <th class="px-3 py-2 font-semibold">Route</th>
+                  <th class="px-3 py-2 font-semibold">Distance</th>
+                  <th class="px-3 py-2 font-semibold">Est. Duration</th>
+                  <th class="px-3 py-2 font-semibold">Status</th>
+                  <th class="px-3 py-2 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Baguio</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">246 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">6h 30m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">→</span> Baguio</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">250 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">7h 00m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Dagupan</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">210 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">5h 45m</td>
+                  <td class="px-3 py-2.5"><span class="border border-border text-muted bg-surface px-2 py-0.5 text-[11px] font-medium">Inactive</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">→</span> Vigan</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">400 km</td>
+                  <td class="px-3 py-2.5 font-mono text-xs tnum">8h 15m</td>
+                  <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                  <td class="px-3 py-2.5 text-right">
+                    <span class="inline-flex gap-2 text-muted">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STATES — SIDEBAR + TABLE (Route CRUD)                         -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-2 pb-2 border-b border-border">
+      States &mdash; Sidebar + Table
+    </h2>
+    <p class="text-sm text-muted max-w-2xl mb-8">
+      Add/Edit Route uses a <span class="text-text font-medium">slide-over drawer</span> — panel enters from the
+      right, table dims behind it rather than a centered modal or an inline row-expansion (the two other options
+      considered). First overlay surface in the project: backdrop dimming is new, but the drawer panel itself keeps
+      the flat language — a <span class="font-mono text-xs">border-l</span> separating it from the table, no
+      <span class="font-mono text-xs">shadow-*</span>. Scoped to Routes only for this pass; Trip/Bus Unit/Fare Rule
+      forms reuse this same drawer shape once it's confirmed.
+    </p>
+
+    <!-- ---- Add Route (drawer) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Add Route</h3>
+      <p class="text-sm text-muted mb-3">
+        Triggered by the "+ Add Route" button. Table dims and disables behind the drawer (Doherty Threshold —
+        no accidental clicks on a row that's about to be covered).
+      </p>
+      <div class="border-2 border-primary bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] opacity-40 pointer-events-none select-none">
+            <nav class="border-r border-border bg-surface p-3 space-y-1">
+              <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                Routes
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                Trips
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                Bus Units
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                Fare Rules
+              </div>
+              <div class="border-t border-border my-2"></div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                Manifest
+              </div>
+            </nav>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+                <span class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5">+ Add Route</span>
+              </div>
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Distance</th>
+                      <th class="px-3 py-2 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr><td class="px-3 py-2.5">Cubao &rarr; Baguio</td><td class="px-3 py-2.5 font-mono text-xs">246 km</td><td class="px-3 py-2.5">Active</td></tr>
+                    <tr><td class="px-3 py-2.5">Pasay &rarr; Baguio</td><td class="px-3 py-2.5 font-mono text-xs">250 km</td><td class="px-3 py-2.5">Active</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- drawer panel -->
+          <div class="absolute top-0 right-0 bottom-0 w-full sm:w-[380px] bg-background border-l-2 border-primary p-5 overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Add Route</h4>
+              <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Origin terminal</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-muted">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Select terminal&hellip;
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Destination terminal</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-muted">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Select terminal&hellip;
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Distance (km)</label>
+                  <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">0</div>
+                </div>
+                <div>
+                  <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Est. duration</label>
+                  <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">e.g. 6h 30m</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-4 border-2 border-primary bg-primary flex items-center justify-center shrink-0">
+                  <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <span class="text-sm text-text">Active (visible in trip search)</span>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Route</button>
+                <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Edit Route (drawer, pre-filled) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Edit Route</h3>
+      <p class="text-sm text-muted mb-3">
+        Same drawer and field set as Add, opened from a row's pencil icon — pre-filled, header text is the only
+        thing that changes ("Edit Route"), so the two entry points stay visually distinct without needing a
+        separate layout.
+      </p>
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] opacity-40 pointer-events-none select-none">
+            <nav class="border-r border-border bg-surface p-3 space-y-1">
+              <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                Routes
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                Trips
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                Bus Units
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                Fare Rules
+              </div>
+              <div class="border-t border-border my-2"></div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                Manifest
+              </div>
+            </nav>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+                <span class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5">+ Add Route</span>
+              </div>
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Distance</th>
+                      <th class="px-3 py-2 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr class="bg-primary/10"><td class="px-3 py-2.5">Cubao &rarr; Baguio</td><td class="px-3 py-2.5 font-mono text-xs">246 km</td><td class="px-3 py-2.5">Active</td></tr>
+                    <tr><td class="px-3 py-2.5">Pasay &rarr; Baguio</td><td class="px-3 py-2.5 font-mono text-xs">250 km</td><td class="px-3 py-2.5">Active</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute top-0 right-0 bottom-0 w-full sm:w-[380px] bg-background border-l-2 border-primary p-5 overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Edit Route</h4>
+              <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Origin terminal</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-text font-medium">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Cubao, Quezon City
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Destination terminal</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-text font-medium">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Baguio City
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Distance (km)</label>
+                  <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">246</div>
+                </div>
+                <div>
+                  <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Est. duration</label>
+                  <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">6h 30m</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-4 border-2 border-primary bg-primary flex items-center justify-center shrink-0">
+                  <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <span class="text-sm text-text">Active (visible in trip search)</span>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Route</button>
+                <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Validation error (Add Route drawer) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Validation error</h3>
+      <p class="text-sm text-muted mb-3">
+        Inline field errors on attempted save — danger border + small danger text under the offending field,
+        same pattern as the login screen's invalid-credentials state. Save stays enabled (not disabled-until-valid)
+        so the error only appears after a real attempt, not while the operator is still filling the form in.
+      </p>
+      <div class="border border-border bg-background p-5 flex justify-center">
+        <div class="w-full max-w-sm bg-background border border-border p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Add Route</h4>
+            <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </div>
+          <form class="space-y-4">
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Origin terminal</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="flex items-center gap-2 text-text font-medium">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Cubao, Quezon City
+                </span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Destination terminal</label>
+              <div class="border border-danger bg-danger/5 px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="flex items-center gap-2 text-muted">
+                  <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Select terminal&hellip;
+                </span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="text-[11px] text-danger mt-1">Destination is required.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Distance (km)</label>
+                <div class="border border-danger bg-danger/5 px-3 py-2.5 text-sm font-mono tabular-nums text-text">0</div>
+                <p class="text-[11px] text-danger mt-1">Must be greater than 0.</p>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Est. duration</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">e.g. 6h 30m</div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 border-2 border-primary bg-primary flex items-center justify-center shrink-0">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="text-sm text-text">Active (visible in trip search)</span>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Route</button>
+              <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Delete confirm (inline bar) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Delete confirm</h3>
+      <p class="text-sm text-muted mb-3">
+        Inline bar under the target row, not a modal — same precedent as the booking cancel-confirmation screen.
+        <span class="font-mono text-xs">danger</span> is reserved for exactly this kind of destructive-action
+        confirmation, same as elsewhere in the color scheme.
+      </p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Route</th>
+                <th class="px-3 py-2 font-semibold">Distance</th>
+                <th class="px-3 py-2 font-semibold">Status</th>
+                <th class="px-3 py-2 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">246 km</td>
+                <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4 text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-danger/5">
+                <td colspan="4" class="px-3 py-3">
+                  <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      <p class="text-sm text-danger">Delete <span class="font-medium">Cubao &rarr; Baguio</span>? This can't be undone.</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                      <button type="button" class="border border-border text-text font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Keep</button>
+                      <button type="button" class="bg-danger text-white font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Yes, Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">250 km</td>
+                <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Active</span></td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Empty list ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Empty list</h3>
+      <p class="text-sm text-muted mb-3">
+        No routes yet (brand-new operator account) — same restrained flat-message pattern as trip search's
+        zero-results state, CTA leads straight back into Add Route rather than leaving a dead end.
+      </p>
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Sierra Madre Trans</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+          </nav>
+          <div class="p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Routes</h4>
+            </div>
+            <div class="border border-border bg-surface py-16 px-6 flex flex-col items-center text-center">
+              <svg class="w-8 h-8 text-muted mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              <p class="font-display font-bold text-base uppercase tracking-wide mb-1">No routes yet</p>
+              <p class="text-sm text-muted max-w-xs mb-5">Add your first route to start scheduling trips for Sierra Madre Trans.</p>
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add Route
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STATES — TRIP CRUD                                            -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-2 pb-2 border-b border-border">
+      States &mdash; Trip CRUD
+    </h2>
+    <p class="text-sm text-muted max-w-2xl mb-8">
+      Same drawer shape as Route, reused rather than reinvented. Departure is the only field an operator sets
+      directly — estimated arrival is computed from the route's <span class="font-mono text-xs">estimated_duration_minutes</span>
+      and shown read-only, not entered twice.
+    </p>
+
+    <!-- ---- Add Trip (drawer) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Add Trip</h3>
+      <p class="text-sm text-muted mb-3">Bus Unit options are scoped to units not already booked over the chosen departure window (not shown as a static mockup, but the field itself is where that check would surface).</p>
+      <div class="border-2 border-primary bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] opacity-40 pointer-events-none select-none">
+            <nav class="border-r border-border bg-surface p-3 space-y-1">
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                Routes
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                Trips
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                Bus Units
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                Fare Rules
+              </div>
+              <div class="border-t border-border my-2"></div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                Manifest
+              </div>
+            </nav>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display font-bold text-lg uppercase tracking-wide">Trips</h4>
+                <span class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5">+ Add Trip</span>
+              </div>
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Bus Unit</th>
+                      <th class="px-3 py-2 font-semibold">Departure</th>
+                      <th class="px-3 py-2 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr><td class="px-3 py-2.5">Cubao &rarr; Baguio</td><td class="px-3 py-2.5 font-mono text-xs">NHW 1234</td><td class="px-3 py-2.5 font-mono text-xs">Aug 27, 11:00 PM</td><td class="px-3 py-2.5">Scheduled</td></tr>
+                    <tr><td class="px-3 py-2.5">Cubao &rarr; Dagupan</td><td class="px-3 py-2.5 font-mono text-xs">NCY 4321</td><td class="px-3 py-2.5 font-mono text-xs">Aug 26, 2:00 PM</td><td class="px-3 py-2.5">Boarding</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute top-0 right-0 bottom-0 w-full sm:w-[380px] bg-background border-l-2 border-primary p-5 overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Add Trip</h4>
+              <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Route</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-muted">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                    Select route&hellip;
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus unit</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-muted">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                    Select bus unit&hellip;
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Departure</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">Select date &amp; time&hellip;</div>
+              </div>
+              <div class="border border-border bg-surface px-3 py-2 text-xs text-muted">
+                Est. arrival: <span class="font-mono">&mdash;</span> <span class="text-muted/70">(auto, from route duration)</span>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Status</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="text-text">Scheduled</span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Trip</button>
+                <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Edit Trip (drawer, pre-filled) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Edit Trip</h3>
+      <p class="text-sm text-muted mb-3">Pre-filled from the selected row; est. arrival recalculates if the route changes.</p>
+      <div class="border border-border bg-background p-5 flex justify-center">
+        <div class="w-full max-w-sm bg-background border border-border p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Edit Trip</h4>
+            <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </div>
+          <form class="space-y-4">
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Route</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="flex items-center gap-2 text-text font-medium">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                  Cubao &rarr; Baguio
+                </span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus unit</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="flex items-center gap-2 text-text font-medium">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                  NHW 1234 &mdash; Double-Deck
+                </span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Departure</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">Aug 27, 2026 11:00 PM</div>
+            </div>
+            <div class="border border-border bg-surface px-3 py-2 text-xs text-muted">
+              Est. arrival: <span class="font-mono text-text">Aug 28, 2026 5:30 AM</span> <span class="text-muted/70">(auto, from route duration)</span>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Status</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="text-text">Scheduled</span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Trip</button>
+              <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Delete confirm (Trip) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Delete confirm</h3>
+      <p class="text-sm text-muted mb-3">Same inline-bar pattern as Routes. A trip with active bookings would need a stronger warning than this (refund/notify implications) — flagged here, not solved, since automated refunds are cut for MVP per <span class="font-mono text-xs">mvp-scope</span>.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Route</th>
+                <th class="px-3 py-2 font-semibold">Bus Unit</th>
+                <th class="px-3 py-2 font-semibold">Departure</th>
+                <th class="px-3 py-2 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                <td class="px-3 py-2.5 font-mono text-xs">NHW 1234</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">Aug 27, 11:00 PM</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4 text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-danger/5">
+                <td colspan="4" class="px-3 py-3">
+                  <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      <p class="text-sm text-danger">Delete the <span class="font-medium">Aug 27, 11:00 PM</span> trip? This can't be undone.</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                      <button type="button" class="border border-border text-text font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Keep</button>
+                      <button type="button" class="bg-danger text-white font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Yes, Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Dagupan</td>
+                <td class="px-3 py-2.5 font-mono text-xs">NCY 4321</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">Aug 26, 2:00 PM</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Empty list (Trip) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Empty list</h3>
+      <p class="text-sm text-muted mb-3">No trips scheduled yet — this operator has routes but hasn't scheduled a departure on any of them.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border bg-surface py-16 px-6 flex flex-col items-center text-center">
+          <svg class="w-8 h-8 text-muted mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+          <p class="font-display font-bold text-base uppercase tracking-wide mb-1">No trips scheduled</p>
+          <p class="text-sm text-muted max-w-xs mb-5">Schedule a departure on one of your routes so riders can find it in trip search.</p>
+          <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add Trip
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STATES — BUS UNIT CRUD                                       -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-2 pb-2 border-b border-border">
+      States &mdash; Bus Unit CRUD
+    </h2>
+    <p class="text-sm text-muted max-w-2xl mb-8">
+      Seat layout editing (the per-seat grid for aircon/deluxe/double-deck classes) is a separate flow, not part
+      of this form — it only applies once a reservable class is picked, and ordinary-class units have no seat map
+      at all (seat-count fallback per <span class="font-mono text-xs">mvp-scope</span>).
+    </p>
+
+    <!-- ---- Add Bus Unit (drawer) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Add Bus Unit</h3>
+      <div class="border-2 border-primary bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] opacity-40 pointer-events-none select-none">
+            <nav class="border-r border-border bg-surface p-3 space-y-1">
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                Routes
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                Trips
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                Bus Units
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                Fare Rules
+              </div>
+              <div class="border-t border-border my-2"></div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                Manifest
+              </div>
+            </nav>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display font-bold text-lg uppercase tracking-wide">Bus Units</h4>
+                <span class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5">+ Add Bus Unit</span>
+              </div>
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Plate Number</th>
+                      <th class="px-3 py-2 font-semibold">Class</th>
+                      <th class="px-3 py-2 font-semibold">Total Seats</th>
+                      <th class="px-3 py-2 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr><td class="px-3 py-2.5 font-mono text-xs">NHW 1234</td><td class="px-3 py-2.5"><span class="border border-secondary text-secondary bg-secondary/10 px-2 py-0.5 text-[11px] font-medium">Double-Deck</span></td><td class="px-3 py-2.5 font-mono text-xs">40</td><td class="px-3 py-2.5">Active</td></tr>
+                    <tr><td class="px-3 py-2.5 font-mono text-xs">NCY 4321</td><td class="px-3 py-2.5"><span class="border border-border text-text bg-surface px-2 py-0.5 text-[11px] font-medium">Aircon</span></td><td class="px-3 py-2.5 font-mono text-xs">45</td><td class="px-3 py-2.5">Active</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute top-0 right-0 bottom-0 w-full sm:w-[380px] bg-background border-l-2 border-primary p-5 overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Add Bus Unit</h4>
+              <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Plate number</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">e.g. NHW 1234</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus class</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="text-muted">Select class&hellip;</span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <p class="text-[11px] text-muted mt-1">Ordinary, Aircon, Deluxe, or Double-Deck. Seat map setup (aircon/deluxe/double-deck only) happens after saving.</p>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Total seats</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">0</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-4 border-2 border-primary bg-primary flex items-center justify-center shrink-0">
+                  <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </span>
+                <span class="text-sm text-text">Active (available to assign to trips)</span>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Bus Unit</button>
+                <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Edit Bus Unit (drawer, pre-filled) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Edit Bus Unit</h3>
+      <div class="border border-border bg-background p-5 flex justify-center">
+        <div class="w-full max-w-sm bg-background border border-border p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Edit Bus Unit</h4>
+            <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </div>
+          <form class="space-y-4">
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Plate number</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">NHW 1234</div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus class</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="text-text font-medium">Double-Deck</span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="text-[11px] text-muted mt-1">Changing class from a reservable one (aircon/deluxe/double-deck) to Ordinary, or vice versa, invalidates the existing seat map — flagged for a confirm step, not solved here.</p>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Total seats</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">40</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 border-2 border-primary bg-primary flex items-center justify-center shrink-0">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="text-sm text-text">Active (available to assign to trips)</span>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Bus Unit</button>
+              <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Delete confirm (Bus Unit) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Delete confirm</h3>
+      <p class="text-sm text-muted mb-3">Same inline-bar pattern. A bus unit assigned to future trips would need a stronger warning (those trips lose their vehicle) — flagged, not solved, same as Trip delete above.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Plate Number</th>
+                <th class="px-3 py-2 font-semibold">Class</th>
+                <th class="px-3 py-2 font-semibold">Total Seats</th>
+                <th class="px-3 py-2 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5 font-mono text-xs">NHW 1234</td>
+                <td class="px-3 py-2.5"><span class="border border-secondary text-secondary bg-secondary/10 px-2 py-0.5 text-[11px] font-medium">Double-Deck</span></td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">40</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4 text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-danger/5">
+                <td colspan="4" class="px-3 py-3">
+                  <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      <p class="text-sm text-danger">Delete bus unit <span class="font-medium">NHW 1234</span>? This can't be undone.</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                      <button type="button" class="border border-border text-text font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Keep</button>
+                      <button type="button" class="bg-danger text-white font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Yes, Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-mono text-xs">NCY 4321</td>
+                <td class="px-3 py-2.5"><span class="border border-border text-text bg-surface px-2 py-0.5 text-[11px] font-medium">Aircon</span></td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">45</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Empty list (Bus Unit) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Empty list</h3>
+      <p class="text-sm text-muted mb-3">No bus units in the fleet yet — nothing can be assigned to a trip until at least one exists.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border bg-surface py-16 px-6 flex flex-col items-center text-center">
+          <svg class="w-8 h-8 text-muted mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+          <p class="font-display font-bold text-base uppercase tracking-wide mb-1">No bus units yet</p>
+          <p class="text-sm text-muted max-w-xs mb-5">Add a bus unit before scheduling trips — every trip needs one assigned.</p>
+          <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add Bus Unit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STATES — FARE RULE CRUD                                      -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-2 pb-2 border-b border-border">
+      States &mdash; Fare Rule CRUD
+    </h2>
+    <p class="text-sm text-muted max-w-2xl mb-8">
+      Fare rules are effective-dated and looked up, not edited in place, per <span class="font-mono
+      text-xs">reference-code-format</span>'s sibling decision on fare history — Add creates a new row with a
+      future effective date rather than overwriting the current one; Edit is shown for completeness but flagged
+      as the unusual path.
+    </p>
+
+    <!-- ---- Add Fare Rule (drawer) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Add Fare Rule</h3>
+      <div class="border-2 border-primary bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="grid grid-cols-1 md:grid-cols-[180px_1fr] opacity-40 pointer-events-none select-none">
+            <nav class="border-r border-border bg-surface p-3 space-y-1">
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                Routes
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+                Trips
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+                Bus Units
+              </div>
+              <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+                Fare Rules
+              </div>
+              <div class="border-t border-border my-2"></div>
+              <div class="flex items-center gap-2 px-3 py-2 text-sm text-text">
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                Manifest
+              </div>
+            </nav>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h4 class="font-display font-bold text-lg uppercase tracking-wide">Fare Rules</h4>
+                <span class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5">+ Add Fare Rule</span>
+              </div>
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Class</th>
+                      <th class="px-3 py-2 font-semibold">Base Fare</th>
+                      <th class="px-3 py-2 font-semibold">Effective</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr><td class="px-3 py-2.5">Cubao &rarr; Baguio</td><td class="px-3 py-2.5">Double-Deck</td><td class="px-3 py-2.5 font-mono text-xs">&#8369;950</td><td class="px-3 py-2.5 font-mono text-xs">Jan 1, 2026</td></tr>
+                    <tr><td class="px-3 py-2.5">Cubao &rarr; Baguio</td><td class="px-3 py-2.5">Aircon</td><td class="px-3 py-2.5 font-mono text-xs">&#8369;620</td><td class="px-3 py-2.5 font-mono text-xs">Jan 1, 2026</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="absolute top-0 right-0 bottom-0 w-full sm:w-[380px] bg-background border-l-2 border-primary p-5 overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Add Fare Rule</h4>
+              <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Route</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="flex items-center gap-2 text-muted">
+                    <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                    Select route&hellip;
+                  </span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus class</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                  <span class="text-muted">Select class&hellip;</span>
+                  <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Base fare (&#8369;)</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">0.00</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Effective date</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-muted">Select date&hellip;</div>
+              </div>
+              <div class="flex gap-3 pt-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Fare Rule</button>
+                <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Edit Fare Rule (drawer, pre-filled) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Edit Fare Rule</h3>
+      <p class="text-sm text-muted mb-3">Flagged as the unusual path — a warning replaces the usual helper text since this rule may already be in effect.</p>
+      <div class="border border-border bg-background p-5 flex justify-center">
+        <div class="w-full max-w-sm bg-background border border-border p-5">
+          <div class="flex items-center justify-between mb-5">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Edit Fare Rule</h4>
+            <svg class="w-5 h-5 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </div>
+          <div class="border border-warning bg-warning/10 px-3 py-2 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-warning shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+            <p class="text-xs text-text">This fare is already effective. Consider Add Fare Rule with a future date instead of editing history.</p>
+          </div>
+          <form class="space-y-4">
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Route</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="flex items-center gap-2 text-text font-medium">
+                  <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+                  Cubao &rarr; Baguio
+                </span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Bus class</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm flex items-center justify-between">
+                <span class="text-text font-medium">Double-Deck</span>
+                <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Base fare (&#8369;)</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">950.00</div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Effective date</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm font-mono tabular-nums text-text">Jan 1, 2026</div>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Save Fare Rule</button>
+              <button type="button" class="border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Delete confirm (Fare Rule) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Delete confirm</h3>
+      <p class="text-sm text-muted mb-3">Same inline-bar pattern. Deleting an active fare rule with no earlier-dated rule to fall back on would break fare lookup for that route/class — flagged, not solved.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Route</th>
+                <th class="px-3 py-2 font-semibold">Class</th>
+                <th class="px-3 py-2 font-semibold">Base Fare</th>
+                <th class="px-3 py-2 font-semibold">Effective</th>
+                <th class="px-3 py-2 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                <td class="px-3 py-2.5">Double-Deck</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">&#8369;950</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">Jan 1, 2026</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4 text-danger" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+              <tr class="bg-danger/5">
+                <td colspan="5" class="px-3 py-3">
+                  <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+                      <p class="text-sm text-danger">Delete this fare rule (<span class="font-medium">&#8369;950, Double-Deck</span>)? This can't be undone.</p>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                      <button type="button" class="border border-border text-text font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Keep</button>
+                      <button type="button" class="bg-danger text-white font-display uppercase tracking-wide text-xs font-semibold px-3 py-2">Yes, Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                <td class="px-3 py-2.5">Aircon</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">&#8369;620</td>
+                <td class="px-3 py-2.5 font-mono text-xs tnum">Jan 1, 2026</td>
+                <td class="px-3 py-2.5 text-right">
+                  <span class="inline-flex gap-2 text-muted">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5Z"/></svg>
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0-.7 13a2 2 0 0 1-2 1.9H8.7a2 2 0 0 1-2-1.9L6 6"/></svg>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Empty list (Fare Rule) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Empty list</h3>
+      <p class="text-sm text-muted mb-3">No fare rules yet — trip search can't price any of this operator's trips until at least one exists per route/class.</p>
+      <div class="border border-border bg-background p-5">
+        <div class="border border-border bg-surface py-16 px-6 flex flex-col items-center text-center">
+          <svg class="w-8 h-8 text-muted mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+          <p class="font-display font-bold text-base uppercase tracking-wide mb-1">No fare rules yet</p>
+          <p class="text-sm text-muted max-w-xs mb-5">Add a fare rule for each route/class combination you plan to run.</p>
+          <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add Fare Rule
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-xs text-muted max-w-2xl">
+      CRUD build-out (Add/Edit/Delete/Empty, plus Validation for Route) is done for all four resources —
+      Route/Trip/Bus Unit/Fare Rule. Not yet done: the
+      <a href="../laws-of-ux-review-timing.md" class="text-primary underline underline-offset-2">laws-of-ux review pass</a>,
+      held until now per the usual practice of running it after a full batch rather than per screen.
+    </p>
+
+  </div>
+
+</body>
+</html>

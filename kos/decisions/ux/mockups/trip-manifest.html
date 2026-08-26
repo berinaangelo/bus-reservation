@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trip Manifest</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+  .tnum { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Trip Manifest</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        The operator-side screen where <span class="font-mono text-xs">OperatorStaff</span> check riders in at
+        boarding — the physical-world event underneath
+        <a href="../god-moments.md" class="text-primary underline underline-offset-2">god moment #4</a> (no paper,
+        no queue, the moment that decides whether a rider books digitally next time) and #6 (the manifest fills
+        itself in live instead of a phone log). Two things distinguish this screen from every CRUD table already
+        built for <a href="operator-dashboard.html" class="text-primary underline underline-offset-2">Operator
+        Dashboard</a>: <span class="text-text font-medium">bookings land in real time</span> while staff are
+        looking at it (a rider can complete checkout on their phone seconds before boarding), and the primary
+        action isn't edit/delete — it's <span class="text-text font-medium">check this specific person in, fast,
+        over and over, during a boarding rush</span>. Staff resolve a passenger the same way they resolve a lookup
+        at the counter: by <a href="../reference-code-format.md" class="text-primary underline underline-offset-2">
+        reference_code</a>, hand-typed. All three options below sit inside the
+        <span class="text-text font-medium">already-chosen Sidebar + Table console shell</span> — Manifest is
+        already a stubbed nav item there — so the nav chrome isn't being re-litigated; what varies is the
+        check-in interaction pattern in the main panel. Demo trip continues the
+        <span class="font-mono text-xs">JoyBus</span> double-deck / ₱950 booking from
+        <a href="seat-selection-passenger-details.html" class="text-primary underline underline-offset-2">Seat
+        Selection</a> — the Maria &amp; Jose Santos family booking (<span class="font-mono text-xs">4XK-7QM-9</span>)
+        is still on this bus. <span class="text-text font-medium">Option A — Roster Table + Quick Check-in
+        Bar</span> is chosen; B and C stay in the file for reference.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — ROSTER TABLE + QUICK CHECK-IN BAR                  -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Roster Table + Quick Check-in Bar</h3>
+          <p class="text-sm text-muted mt-1">
+            Extends the exact list/table shape already established for Route/Trip/Bus Unit/Fare Rule.
+            <span class="text-text font-medium">Jakob's Law</span> — staff are already trained on this shape from
+            every other screen in the console, one row down in the same sidebar.
+            <span class="text-text font-medium">Fitts's Law</span> — the reference_code check-in field lives in one
+            fixed bar pinned above the table, so the repeated counter motion (type code, hit Check In, next
+            passenger) never has to hunt row-by-row down a scrolling list.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background">
+        <!-- shared top brand bar -->
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <!-- sidebar -->
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+          </nav>
+
+          <!-- main content -->
+          <div class="p-5">
+            <!-- trip context bar -->
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4 pb-4 border-b border-border">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-display font-bold text-lg uppercase tracking-wide">Cubao <span class="text-muted mx-0.5">&rarr;</span> Baguio</h4>
+                  <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Double-Deck</span>
+                </div>
+                <p class="text-xs text-muted font-mono tnum">VL-2291 &middot; Departs 6:00 AM &middot; Boarding closes 5:55 AM</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="inline-flex items-center gap-1.5 border border-success text-success bg-success/10 px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">
+                  <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                  Live
+                </span>
+                <div class="text-right">
+                  <p class="font-mono text-sm font-semibold tnum">31 / 44 <span class="text-muted font-normal">checked in</span></p>
+                  <p class="text-[11px] text-muted font-mono tnum">44 / 48 seats booked</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- quick check-in bar -->
+            <div class="flex items-end gap-2 mb-4 flex-wrap">
+              <div class="flex-1 min-w-[220px]">
+                <label class="block text-[11px] font-display uppercase tracking-wide text-muted mb-1">Reference code</label>
+                <input type="text" placeholder="4XK-7QM-9" class="w-full border border-border bg-surface px-3 py-2.5 font-mono text-sm uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-5 py-2.5 flex items-center gap-1.5 shrink-0">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Check In
+              </button>
+              <div class="border border-border bg-surface px-3 py-2.5 flex items-center gap-2 text-xs text-muted w-48">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                Search roster…
+              </div>
+            </div>
+
+            <!-- roster table -->
+            <div class="border border-border">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                    <th class="px-3 py-2 font-semibold">Seat</th>
+                    <th class="px-3 py-2 font-semibold">Passenger</th>
+                    <th class="px-3 py-2 font-semibold">Ref Code</th>
+                    <th class="px-3 py-2 font-semibold">Contact</th>
+                    <th class="px-3 py-2 font-semibold">Status</th>
+                    <th class="px-3 py-2 font-semibold text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <tr class="bg-success/5 border-l-2 border-success">
+                    <td class="px-3 py-2.5 font-mono tnum">14A</td>
+                    <td class="px-3 py-2.5">
+                      Grace Mendoza
+                      <span class="ml-1.5 inline-flex items-center border border-success text-success bg-success/10 px-1.5 py-0.5 text-[10px] font-display uppercase tracking-wide font-semibold">New</span>
+                    </td>
+                    <td class="px-3 py-2.5 font-mono text-xs">7QT-4XM-2</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">0917 234 5678</td>
+                    <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked &middot; 12s ago</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono tnum">5A</td>
+                    <td class="px-3 py-2.5">Maria Santos <span class="text-muted text-xs">(+1)</span></td>
+                    <td class="px-3 py-2.5 font-mono text-xs">4XK-7QM-9</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">0918 555 1122</td>
+                    <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                    <td class="px-3 py-2.5 text-right text-muted text-xs">7:41 AM &middot; counter 2</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono tnum">5B</td>
+                    <td class="px-3 py-2.5">Jose Santos</td>
+                    <td class="px-3 py-2.5 font-mono text-xs">4XK-7QM-9</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">0918 555 1122</td>
+                    <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                    <td class="px-3 py-2.5 text-right text-muted text-xs">7:41 AM &middot; counter 2</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono tnum">8C</td>
+                    <td class="px-3 py-2.5">Rosario Dela Cruz</td>
+                    <td class="px-3 py-2.5 font-mono text-xs">P9K-3RM-5</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">0920 883 4410</td>
+                    <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono tnum">11D</td>
+                    <td class="px-3 py-2.5">Paolo Villanueva</td>
+                    <td class="px-3 py-2.5 font-mono text-xs">3TN-8XK-7</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">0917 662 9903</td>
+                    <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-[11px] text-muted mt-2">Showing 5 of 44 booked seats &middot; sorted newest-arrival first while boarding is open.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — SEAT-MAP MIRROR + CHECK-IN PANEL                   -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Seat-Map Mirror + Check-in Panel</h3>
+        <p class="text-sm text-muted mt-1">
+          Reuses the literal seat grid from <a href="seat-selection-passenger-details.html" class="text-primary underline underline-offset-2">Seat Selection</a> — same tile size, same A/B&nbsp;|&nbsp;C/D layout, same Lower/Upper deck toggle
+          — so "Seat 5A" means the identical physical seat to staff that it meant to the rider who booked it.
+          <span class="text-text font-medium">Law of Similarity / Jakob's Law-echo</span> — boarding progress reads
+          at a glance across the whole bus (a wall of green means done) instead of scanning a list row by row.
+          Tapping a seat reveals its passenger inline, mirroring the same tap-to-reveal mechanic
+          [[seat-selection]] already used for passenger-name capture (no separate step, Doherty Threshold).
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+          </nav>
+
+          <div class="p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4 pb-4 border-b border-border">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-display font-bold text-lg uppercase tracking-wide">Cubao <span class="text-muted mx-0.5">&rarr;</span> Baguio</h4>
+                  <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Double-Deck</span>
+                </div>
+                <p class="text-xs text-muted font-mono tnum">VL-2291 &middot; Departs 6:00 AM &middot; Boarding closes 5:55 AM</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="inline-flex items-center gap-1.5 border border-success text-success bg-success/10 px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">
+                  <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                  Live
+                </span>
+                <p class="font-mono text-sm font-semibold tnum">31 / 44 <span class="text-muted font-normal">checked in</span></p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-[1fr_260px] gap-6">
+              <!-- seat grid -->
+              <div>
+                <!-- legend -->
+                <div class="flex items-center gap-4 mb-4 flex-wrap text-xs">
+                  <div class="flex items-center gap-1.5"><span class="w-4 h-4 border border-border bg-surface"></span><span class="text-muted">Unsold</span></div>
+                  <div class="flex items-center gap-1.5"><span class="w-4 h-4 border border-accent bg-accent/10"></span><span class="text-muted">Booked &middot; awaiting boarding</span></div>
+                  <div class="flex items-center gap-1.5"><span class="w-4 h-4 bg-primary flex items-center justify-center"><svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-muted">Checked in</span></div>
+                </div>
+
+                <div class="inline-flex border border-border mb-3" role="tablist" aria-label="Deck">
+                  <button type="button" role="tab" aria-selected="true" class="px-4 py-2.5 font-display uppercase tracking-wide text-xs font-semibold bg-primary text-white focus:outline-none focus:ring-2 focus:ring-primary">Lower Deck</button>
+                  <button type="button" role="tab" aria-selected="false" class="px-4 py-2.5 font-display uppercase tracking-wide text-xs font-semibold text-muted border-l border-border hover:text-primary transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary">Upper Deck</button>
+                </div>
+
+                <p class="text-center text-[11px] uppercase tracking-wider text-muted mb-3">&mdash; Front of bus &mdash;</p>
+                <div class="flex justify-center mb-2">
+                  <div class="flex items-center gap-1.5 sm:gap-2 pl-6">
+                    <span class="w-9 sm:w-10 text-center text-[10px] text-muted font-mono">A</span>
+                    <span class="w-9 sm:w-10 text-center text-[10px] text-muted font-mono">B</span>
+                    <span class="w-3 sm:w-5"></span>
+                    <span class="w-9 sm:w-10 text-center text-[10px] text-muted font-mono">C</span>
+                    <span class="w-9 sm:w-10 text-center text-[10px] text-muted font-mono">D</span>
+                  </div>
+                </div>
+
+                <div class="flex justify-center mb-2">
+                  <div class="flex flex-col gap-1.5 sm:gap-2">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="w-5 shrink-0 text-[11px] font-mono text-muted text-right">1</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-border bg-surface text-muted font-mono text-[11px]">1A</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-accent bg-accent/10 text-accent font-mono text-[11px] font-medium">1B</span>
+                      <span class="w-3 sm:w-5"></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="w-5 shrink-0 text-[11px] font-mono text-muted text-right">2</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-accent bg-accent/10 text-accent font-mono text-[11px] font-medium">2B</span>
+                      <span class="w-3 sm:w-5"></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-border bg-surface text-muted font-mono text-[11px]">2D</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="w-5 shrink-0 text-[11px] font-mono text-muted text-right">3</span>
+                      <button type="button" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-accent bg-accent/10 text-accent font-mono text-[11px] font-medium ring-2 ring-accent">3A</button>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-3 sm:w-5"></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-accent bg-accent/10 text-accent font-mono text-[11px] font-medium">3C</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="w-5 shrink-0 text-[11px] font-mono text-muted text-right">4</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-primary border border-primary text-white font-mono text-[11px] font-medium"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+                      <span class="w-3 sm:w-5"></span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-border bg-surface text-muted font-mono text-[11px]">4C</span>
+                      <span class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center border border-accent bg-accent/10 text-accent font-mono text-[11px] font-medium">4D</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-[11px] text-muted text-center">Rows 5&ndash;12 continue below the fold &middot; same pattern.</p>
+              </div>
+
+              <!-- check-in panel: revealed on tap -->
+              <div class="border border-border bg-surface p-4 h-fit">
+                <p class="font-display uppercase tracking-wide text-xs text-muted mb-3">Seat 3A &middot; tapped</p>
+                <p class="font-medium text-base mb-0.5">Rosario Dela Cruz</p>
+                <p class="text-xs text-muted font-mono tnum mb-3">0920 883 4410</p>
+                <div class="flex items-center justify-between text-xs mb-4 border-t border-border pt-3">
+                  <span class="text-muted">Ref code</span>
+                  <span class="font-mono">P9K-3RM-5</span>
+                </div>
+                <button type="button" class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3 flex items-center justify-center gap-1.5">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  Check In
+                </button>
+                <p class="text-[11px] text-muted mt-3">Or type a reference_code directly &mdash; jumps straight to that seat without hunting the grid.</p>
+                <input type="text" placeholder="Ref code…" class="w-full border border-border bg-background px-3 py-2 font-mono text-xs uppercase mt-1.5 focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+            </div>
+
+            <p class="text-[11px] text-muted mt-4 border-t border-border pt-3">
+              <span class="text-text font-medium">Ordinary-class trips</span> (GL Trans / ₱480, no reservable seats)
+              have no grid to mirror &mdash; same duality as Seat Selection. The manifest for those falls back to a
+              plain checked-in/total counter with the roster as a flat list, not built out here since it doesn't
+              vary by layout option. <span class="text-text font-medium">Open note:</span> "Booked &middot; awaiting
+              boarding" is a new use of the <span class="font-mono text-xs">accent</span> color role &mdash;
+              color-scheme.md didn't define this state; flagging rather than quietly inventing a 7th role.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — SPLIT PANEL: LIVE ROSTER + CHECK-IN DETAIL         -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Split Panel: Live Roster + Check-in Detail</h3>
+        <p class="text-sm text-muted mt-1">
+          Same split-panel shape already chosen for <a href="seat-selection-passenger-details.html" class="text-primary underline underline-offset-2">Seat Selection</a> and
+          <a href="booking-lookup.html" class="text-primary underline underline-offset-2">Booking Lookup</a>: a
+          persistent check-in form pinned on the right, a live-updating roster on the left.
+          <span class="text-text font-medium">Fitts's Law</span> — during a boarding rush the check-in field never
+          relocates on screen between passengers, so staff's hand and eyes make the same short trip dozens of
+          times in a row. New arrivals surface as an unread count rather than interrupting the field staff is
+          typing into.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+          </nav>
+
+          <div class="p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4 pb-4 border-b border-border">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-display font-bold text-lg uppercase tracking-wide">Cubao <span class="text-muted mx-0.5">&rarr;</span> Baguio</h4>
+                  <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Double-Deck</span>
+                </div>
+                <p class="text-xs text-muted font-mono tnum">VL-2291 &middot; Departs 6:00 AM &middot; Boarding closes 5:55 AM</p>
+              </div>
+              <span class="inline-flex items-center gap-1.5 border border-success text-success bg-success/10 px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                Live
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-[1fr_300px] gap-0 border border-border">
+              <!-- left: live roster -->
+              <div class="border-r border-border">
+                <div class="flex items-center justify-between px-3 py-2.5 bg-surface border-b border-border">
+                  <div class="flex gap-1">
+                    <span class="px-2.5 py-1 bg-primary text-white text-[11px] font-display uppercase tracking-wide font-semibold">All &middot; 44</span>
+                    <span class="px-2.5 py-1 text-muted text-[11px] font-display uppercase tracking-wide font-semibold">Not in &middot; 13</span>
+                    <span class="px-2.5 py-1 text-muted text-[11px] font-display uppercase tracking-wide font-semibold">In &middot; 31</span>
+                  </div>
+                  <span class="inline-flex items-center gap-1 border border-success text-success bg-success/10 px-2 py-0.5 text-[10px] font-display uppercase tracking-wide font-semibold">2 new</span>
+                </div>
+                <div class="divide-y divide-border max-h-[340px] overflow-y-auto">
+                  <div class="flex items-center justify-between px-3 py-2.5 bg-success/5 border-l-2 border-success">
+                    <div>
+                      <p class="text-sm font-medium">Grace Mendoza <span class="font-mono text-xs text-muted">&middot; 14A</span></p>
+                      <p class="text-[11px] text-muted font-mono">7QT-4XM-2</p>
+                    </div>
+                    <span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2.5">
+                    <div>
+                      <p class="text-sm font-medium">Maria Santos <span class="font-mono text-xs text-muted">&middot; 5A</span></p>
+                      <p class="text-[11px] text-muted font-mono">4XK-7QM-9</p>
+                    </div>
+                    <span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> In</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2.5">
+                    <div>
+                      <p class="text-sm font-medium">Jose Santos <span class="font-mono text-xs text-muted">&middot; 5B</span></p>
+                      <p class="text-[11px] text-muted font-mono">4XK-7QM-9</p>
+                    </div>
+                    <span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> In</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2.5 bg-success/5 border-l-2 border-success">
+                    <div>
+                      <p class="text-sm font-medium">Kim Bautista <span class="font-mono text-xs text-muted">&middot; 9C</span></p>
+                      <p class="text-[11px] text-muted font-mono">D2R-9TN-4</p>
+                    </div>
+                    <span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2.5">
+                    <div>
+                      <p class="text-sm font-medium">Rosario Dela Cruz <span class="font-mono text-xs text-muted">&middot; 3A</span></p>
+                      <p class="text-[11px] text-muted font-mono">P9K-3RM-5</p>
+                    </div>
+                    <span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2.5">
+                    <div>
+                      <p class="text-sm font-medium">Paolo Villanueva <span class="font-mono text-xs text-muted">&middot; 11D</span></p>
+                      <p class="text-[11px] text-muted font-mono">3TN-8XK-7</p>
+                    </div>
+                    <span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- right: check-in detail -->
+              <div class="p-4 bg-surface">
+                <label class="block text-[11px] font-display uppercase tracking-wide text-muted mb-1">Reference code</label>
+                <input type="text" autofocus placeholder="4XK-7QM-9" class="w-full border border-border bg-background px-3 py-2.5 font-mono text-sm uppercase tracking-wide mb-2 focus:outline-none focus:ring-2 focus:ring-primary" />
+                <button type="button" class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 mb-4">Look Up</button>
+
+                <div class="border border-border bg-background p-3 mb-4">
+                  <p class="text-[11px] text-muted font-display uppercase tracking-wide mb-1">Resolved</p>
+                  <p class="font-medium text-sm">Grace Mendoza <span class="font-mono text-xs text-muted">&middot; Seat 14A</span></p>
+                  <p class="text-xs text-muted font-mono tnum mb-3">0917 234 5678</p>
+                  <button type="button" class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5 flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Confirm Check-in
+                  </button>
+                </div>
+
+                <div class="border-t border-border pt-3">
+                  <p class="text-[11px] text-muted font-display uppercase tracking-wide mb-1.5">Last checked in</p>
+                  <p class="text-xs text-success flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Seat 5B &middot; Jose Santos &middot; 7:41 AM
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted mt-3">
+              Right panel reveal-in-place on Look Up echoes the mechanic already chosen for
+              <a href="booking-lookup.html" class="text-primary underline underline-offset-2">Booking Lookup</a> —
+              same pattern, staff-facing instead of rider-facing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="max-w-2xl border-t border-border pt-6">
+      <p class="text-xs text-muted leading-relaxed">
+        <span class="text-text font-medium">Option A (Roster Table + Quick Check-in Bar) is chosen.</span>
+        <span class="text-text font-medium">Not built yet:</span> states (loading
+        on lookup, a toast/highlight for a booking that lands while staff are mid-check-in, an
+        already-checked-in double-tap warning, all-checked-in/boarding-closed end state, zero-bookings empty
+        trip), the laws-of-ux review pass, and how "bookings land in real time" is actually wired
+        (Action Cable channel scoped to <span class="font-mono text-xs">trip_id</span> is the likely mechanism,
+        not yet a decision doc) &mdash; same "options first, states after the pick" practice used for every prior
+        screen in this file set.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

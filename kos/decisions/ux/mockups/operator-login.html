@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operator Login</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Operator Login</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        The entry point for <span class="font-mono text-xs">OperatorStaff</span> — admin accounts scoped to
+        one operator, who manage their own Route/Trip/BusUnit/FareRule and view the trip manifest at
+        boarding. Separate account system from the rider side, which has no login at all (guest checkout,
+        <span class="font-mono text-xs">reference_code</span> + contact number for lookup). Email + password
+        only — no forgot-password flow, MFA, or operator picker is decided for v1, so none of the three
+        options below invent one. <span class="text-text font-medium">Option B — Split Panel</span> is
+        chosen, extended below with its default and submitting states.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — CENTERED CARD                                      -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-2xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Centered Card</h3>
+        <p class="text-sm text-muted mt-1">
+          Plain centered card on a flat background — the single most recognized login shape on the web.
+          <span class="text-text font-medium">Jakob's Law</span> — an operator opening this once a day
+          shouldn't have to parse anything novel to get to their trip manifest; the fastest login is the one
+          that looks like every other login.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background p-6 sm:p-10 flex items-center justify-center">
+        <div class="w-full max-w-sm">
+          <div class="flex flex-col items-center text-center mb-6">
+            <span class="font-display font-bold text-2xl text-primary leading-none mb-1">TS</span>
+            <p class="text-xs text-muted">Terminal Signal — Operator Console</p>
+          </div>
+
+          <div class="border border-danger bg-danger/10 px-3 py-2.5 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p class="text-xs text-danger">Incorrect email or password.</p>
+          </div>
+
+          <form class="space-y-4">
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Email</label>
+              <div class="border border-border bg-surface px-3 py-2.5 text-sm text-muted">ops@victoryliner.com</div>
+            </div>
+            <div>
+              <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Password</label>
+              <div class="border border-danger bg-surface px-3 py-2.5 text-sm text-muted">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+            </div>
+            <button type="button"
+              class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">
+              Log In
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — SPLIT PANEL                                        -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-2xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Split Panel</h3>
+          <p class="text-sm text-muted mt-1">
+            Brand/context panel on one side, form on the other — the same split-panel idiom already used for
+            Seat Selection and Booking Lookup. <span class="text-text font-medium">Jakob's Law, applied
+            within-product</span> rather than web-wide: an operator who's seen the rider side of Terminal
+            Signal recognizes the shape immediately, and the brand panel gives a place to state plainly that
+            this console only manages one operator's own fleet.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background grid grid-cols-1 md:grid-cols-2">
+        <div class="bg-primary text-white p-6 sm:p-10 flex flex-col justify-center">
+          <span class="font-display font-bold text-2xl leading-none mb-2">TS</span>
+          <p class="font-display uppercase tracking-wide text-sm font-semibold mb-2">Operator Console</p>
+          <p class="text-sm text-white/80 leading-relaxed max-w-xs">
+            Manage your own routes, trips, fleet and fares, and view the trip manifest at boarding — scoped
+            to your operator account only.
+          </p>
+        </div>
+        <div class="p-6 sm:p-10 flex items-center">
+          <div class="w-full">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-4">Log in to continue</p>
+
+            <div class="border border-danger bg-danger/10 px-3 py-2.5 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p class="text-xs text-danger">Incorrect email or password.</p>
+            </div>
+
+            <form class="space-y-4">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Email</label>
+                <div class="border border-border bg-surface px-3 py-2.5 text-sm text-muted">ops@victoryliner.com</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1.5">Password</label>
+                <div class="border border-danger bg-surface px-3 py-2.5 text-sm text-muted">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+              </div>
+              <button type="button"
+                class="w-full bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">
+                Log In
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — CONSOLE / TERMINAL STYLE                           -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-2xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Console / Terminal Style</h3>
+        <p class="text-sm text-muted mt-1">
+          Denser, mono-forward framing — mono field labels, a titled console frame, an operator-tier icon
+          per the iconography system's admin overflow. <span class="text-text font-medium">Gestalt —
+          similarity</span>: deliberately reads as a different register from the rider-facing screens, so an
+          operator always knows at a glance which side of the product they're on, without a persistent
+          "you are staff" banner doing that work instead.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background p-6 sm:p-10 flex items-center justify-center">
+        <div class="w-full max-w-sm border border-border bg-[#171F17]">
+          <div class="flex items-center gap-2 px-4 py-2.5 border-b border-border/20">
+            <svg class="w-4 h-4 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M7 8h10M7 12h6"/></svg>
+            <p class="font-mono text-[11px] tracking-wide text-white/60">operator-console</p>
+          </div>
+
+          <div class="p-5">
+            <p class="font-mono text-[11px] text-white/50 mb-4">&gt; authenticate --operator</p>
+
+            <div class="border border-danger bg-danger/20 px-3 py-2 mb-4 flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p class="font-mono text-[11px] text-danger">auth_error: invalid credentials</p>
+            </div>
+
+            <form class="space-y-3">
+              <div>
+                <label class="block font-mono text-[10px] uppercase tracking-wider text-white/50 mb-1">email</label>
+                <div class="border border-white/20 bg-white/5 px-3 py-2 font-mono text-xs text-white/70">ops@victoryliner.com</div>
+              </div>
+              <div>
+                <label class="block font-mono text-[10px] uppercase tracking-wider text-white/50 mb-1">password</label>
+                <div class="border border-danger bg-white/5 px-3 py-2 font-mono text-xs text-white/70">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+              </div>
+              <button type="button"
+                class="w-full bg-accent text-[#1E2925] font-mono uppercase tracking-wide text-[11px] font-semibold px-4 py-2.5">
+                log_in
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STATES (chosen design only)                                   -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-6 pb-2 border-b border-border">
+      States &mdash; Split Panel
+    </h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+
+      <!-- Default -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Default</h3>
+        <p class="text-sm text-muted mb-3">
+          No error banner, fields empty and ready to type — the state on first load, before any submit
+          attempt.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-primary text-white p-5 flex flex-col justify-center">
+            <span class="font-display font-bold text-lg leading-none mb-1.5">TS</span>
+            <p class="font-display uppercase tracking-wide text-xs font-semibold mb-1.5">Operator Console</p>
+            <p class="text-xs text-white/80 leading-relaxed">Manage your own routes, trips, fleet and fares.</p>
+          </div>
+          <div class="p-5">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-3">Log in to continue</p>
+            <div class="space-y-3">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Email</label>
+                <div class="border border-border bg-surface px-3 py-2 text-sm text-muted/50">you@operator.com</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Password</label>
+                <div class="border border-border bg-surface px-3 py-2 text-sm text-muted/50">&mdash;</div>
+              </div>
+              <div class="w-full bg-accent/40 text-[#1E2925]/50 text-center font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2.5">Log In</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submitting -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Submitting (loading)</h3>
+        <p class="text-sm text-muted mb-3">
+          Right after submit. Fields lock (dimmed, disabled) and the button swaps its label so a second tap
+          can't fire a duplicate login request — same guard pattern as the search/cancel flows.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-primary text-white p-5 flex flex-col justify-center">
+            <span class="font-display font-bold text-lg leading-none mb-1.5">TS</span>
+            <p class="font-display uppercase tracking-wide text-xs font-semibold mb-1.5">Operator Console</p>
+            <p class="text-xs text-white/80 leading-relaxed">Manage your own routes, trips, fleet and fares.</p>
+          </div>
+          <div class="p-5 opacity-60">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-3">Log in to continue</p>
+            <div class="space-y-3">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Email</label>
+                <div class="border border-border bg-surface px-3 py-2 text-sm text-muted">ops@victoryliner.com</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Password</label>
+                <div class="border border-border bg-surface px-3 py-2 text-sm text-muted">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</div>
+              </div>
+              <div class="w-full bg-accent text-[#1E2925] flex items-center justify-center gap-2 font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2.5">
+                <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                Logging in&hellip;
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invalid credentials -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Invalid credentials</h3>
+        <p class="text-sm text-muted mb-3">
+          Generic wording on purpose &mdash; doesn't confirm whether the email exists, just that the
+          email/password pair didn't match. Password field re-empties; email is kept so the operator isn't
+          retyping both.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-primary text-white p-5 flex flex-col justify-center">
+            <span class="font-display font-bold text-lg leading-none mb-1.5">TS</span>
+            <p class="font-display uppercase tracking-wide text-xs font-semibold mb-1.5">Operator Console</p>
+            <p class="text-xs text-white/80 leading-relaxed">Manage your own routes, trips, fleet and fares.</p>
+          </div>
+          <div class="p-5">
+            <div class="border border-danger bg-danger/10 px-3 py-2 mb-3 flex items-center gap-2">
+              <svg class="w-4 h-4 text-danger shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p class="text-xs text-danger">Incorrect email or password.</p>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Email</label>
+                <div class="border border-border bg-surface px-3 py-2 text-sm text-muted">ops@victoryliner.com</div>
+              </div>
+              <div>
+                <label class="block font-display uppercase tracking-wider text-[11px] text-muted mb-1">Password</label>
+                <div class="border border-danger bg-surface px-3 py-2 text-sm text-muted/50">&mdash;</div>
+              </div>
+              <div class="w-full bg-accent text-[#1E2925] text-center font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2.5">Log In</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -39,6 +39,8 @@ Last updated: 2026-08-25
 - [shape-and-surface](decisions/ux/shape-and-surface.md) — sharp corners, flat elevation (border not shadow), filled buttons by default
 - [motion](decisions/ux/motion.md) — minimal interactions only for MVP: short functional transitions, no orchestrated animation
 - [platform-mark](decisions/ux/platform-mark.md) — "TS" monogram placeholder wordmark, Barlow Condensed Bold
+- [operator-login mockup](decisions/ux/mockups/operator-login.html) — 3 layout options for OperatorStaff login (Centered Card, Split Panel, Console/Terminal Style); Split Panel chosen, states built out
+- [operator-dashboard mockup](decisions/ux/mockups/operator-dashboard.html) — 3 IA options for the Route/Trip/BusUnit/FareRule CRUD console (Sidebar+Table, Tabbed Workspace, Overview Launcher), scoped to own operator; Sidebar + Table chosen, Add/Edit (slide-over drawer)/Delete/Empty states built for all 4 resources (+Validation for Route), laws-of-ux pass not yet run
 
 ## Reference
 

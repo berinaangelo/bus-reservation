@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Booking Detail / Cancel</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Booking Detail / Cancel</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        The full-page destination a rider lands on after finding or opening a specific booking — from
+        <span class="font-mono text-xs">booking-lookup.html</span>'s found panel, or a "Manage Booking" link
+        off <span class="font-mono text-xs">e-ticket-confirmation.html</span>. Same god moment #5 (no login,
+        <span class="font-mono text-xs">reference_code</span> + contact number is the account system) carried
+        to a full detail view, with the same simple-cancel capability: void + release seat, no refund
+        automation. <span class="text-text font-medium">Option C — Status Banner, Stacked Sections is
+        chosen</span>, full build-out, states and variants below.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16 items-start">
+
+      <!-- Option A — Ticket-Stub Full Page -->
+      <div>
+        <div class="mb-4">
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Ticket-Stub Full Page</h3>
+          <p class="text-sm text-muted mt-1">
+            Single centered column, same ticket-stub shape as <span class="font-mono text-xs">e-ticket-confirmation.html</span>:
+            reference-code hero, dashed tear, trip/passenger/fare blocks, danger-outline Cancel below the tear.
+            <span class="text-text font-medium">Jakob's Law</span> — the rider already saw this exact shape
+            right after paying; returning here to manage the booking is free to parse.
+          </p>
+        </div>
+
+        <div class="border-2 border-primary bg-background p-4 sm:p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+            <span class="text-xs text-muted">Terminal Signal</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-5 h-5 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="text-xs font-medium">Booking Confirmed</p>
+          </div>
+          <p class="font-mono tabular-nums text-2xl font-semibold leading-none mb-3">4XK-7QM-9</p>
+          <div class="relative border-t-2 border-dashed border-border mb-3" aria-hidden="true"></div>
+          <div class="h-3 bg-surface border border-border w-4/5 mb-2"></div>
+          <div class="h-3 bg-surface border border-border w-3/5 mb-3"></div>
+          <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Cancel Booking</div>
+        </div>
+      </div>
+
+      <!-- Option B — Two-Column with Sticky Action Panel -->
+      <div>
+        <div class="mb-4">
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Sticky Action Panel</h3>
+          <p class="text-sm text-muted mt-1">
+            Trip/passenger/fare detail scrolls on the left; a sticky right panel repeats status + reference
+            code and holds the Cancel button as a fixed target. <span class="text-text font-medium">Fitts's
+            Law</span> — reuses the sticky-summary idiom from Seat Selection. Weaker fit here: it solves a
+            long-scroll problem this content doesn't have (no multi-leg itineraries, no large party sizes for
+            MVP), so the extra layout scaffolding buys nothing yet.
+          </p>
+        </div>
+
+        <div class="border border-border bg-background flex">
+          <div class="flex-1 p-4 space-y-2">
+            <div class="h-3 bg-surface border border-border w-4/5"></div>
+            <div class="h-3 bg-surface border border-border w-full"></div>
+            <div class="h-3 bg-surface border border-border w-3/5"></div>
+            <div class="h-10 bg-surface border border-border w-full mt-3"></div>
+          </div>
+          <div class="w-28 shrink-0 border-l border-border bg-surface p-3 flex flex-col gap-2 self-start">
+            <span class="w-4 h-4 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="font-mono text-[9px] leading-tight">4XK-<br/>7QM-9</p>
+            <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[9px] font-semibold px-2 py-1.5">Cancel</div>
+          </div>
+        </div>
+        <p class="text-[10px] text-muted mt-2 italic">Right column stays pinned as the left column scrolls (desktop only).</p>
+      </div>
+
+      <!-- Option C — Stacked Sections with Status Banner — Chosen -->
+      <div>
+        <div class="mb-4">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Status Banner, Stacked Sections</h3>
+            <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              Chosen
+            </span>
+          </div>
+          <p class="text-sm text-muted mt-1">
+            Full-width colored status banner at top, then stacked bordered sections (trip, passengers,
+            reference/fare), cancel pinned in a bottom action bar. <span class="text-text font-medium">
+            Gestalt grouping</span> via section borders — status, trip, passengers and fare each read as
+            their own scannable block instead of one dense card. Echoes the Timeline Rail rhythm of Trip
+            Search Results, so the visual language stays consistent across the booking flow.
+          </p>
+        </div>
+
+        <div class="border border-border bg-background">
+          <div class="bg-success/10 border-b-2 border-success px-4 py-2.5 flex items-center gap-2">
+            <span class="w-4 h-4 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="text-xs font-medium">Booking Confirmed</p>
+          </div>
+          <div class="p-4 space-y-3">
+            <div class="border border-border p-3">
+              <div class="h-2.5 bg-surface w-3/5"></div>
+            </div>
+            <div class="border border-border p-3">
+              <div class="h-2.5 bg-surface w-4/5"></div>
+            </div>
+          </div>
+          <div class="border-t border-border p-3">
+            <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[10px] font-semibold px-3 py-2">Cancel Booking</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==== CHOSEN — FULL BUILD-OUT ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Chosen — Option C, full build-out</h2>
+
+    <div class="mb-6 max-w-2xl">
+      <p class="text-sm text-muted leading-relaxed">
+        Real copy in place of the comparison stub above: a confirmed Deluxe booking, two passengers, both
+        seated. Times shown are Asia/Manila local, converted from the UTC-stored
+        <span class="font-mono text-xs">departure_at</span>.
+      </p>
+    </div>
+
+    <div class="max-w-md mb-16">
+      <div class="border border-border bg-background">
+        <div class="flex items-center gap-2 px-5 pt-5 mb-1">
+          <span class="font-display font-bold text-lg text-primary leading-none">TS</span>
+          <span class="text-xs text-muted">Terminal Signal</span>
+        </div>
+        <div class="bg-success/10 border-y-2 border-success px-5 py-3 flex items-center justify-between gap-2 mt-4">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="text-sm font-medium">Booking Confirmed</p>
+          </div>
+          <p class="font-mono tabular-nums text-base font-semibold text-text">4XK-7QM-9</p>
+        </div>
+
+        <div class="p-5 space-y-4">
+          <div class="border border-border p-4">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Trip</p>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <p class="font-medium text-sm">Victory Liner</p>
+              <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Deluxe</span>
+            </div>
+            <p class="text-sm mb-1">Cubao &rarr; Baguio</p>
+            <p class="font-mono tabular-nums text-xs text-muted">Aug 28, 2026 &middot; 6:00 AM &rarr; 11:30 AM</p>
+          </div>
+
+          <div class="border border-border p-4">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Passengers</p>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-sm">
+                <span>Maria Santos</span>
+                <span class="font-mono tabular-nums text-xs text-muted">Seat 2A</span>
+              </div>
+              <div class="flex items-center justify-between text-sm">
+                <span>Jose Santos</span>
+                <span class="font-mono tabular-nums text-xs text-muted">Seat 2B</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-muted mt-2">Contact: 0917 123 4567</p>
+          </div>
+
+          <div class="border border-border p-4">
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Fare</p>
+            <div class="flex items-center justify-between text-xs text-muted mb-1">
+              <span>&#8369;780.00 &times; 2 passengers</span>
+              <span class="font-mono tabular-nums">&#8369;1,560.00</span>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-border">
+              <p class="font-display uppercase tracking-wide text-xs font-semibold">Total Paid</p>
+              <p class="font-mono tabular-nums text-lg text-accent font-semibold">&#8369;1,560.00</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-border p-5">
+          <button type="button"
+            class="w-full flex items-center justify-center gap-2 border border-danger text-danger font-display uppercase tracking-wide text-xs font-semibold px-4 py-3 hover:bg-danger/10 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-danger">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>
+            Cancel Booking
+          </button>
+          <p class="text-[11px] text-muted text-center mt-2">Voids the booking and releases both seats. No refund is issued automatically.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==== STATES ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">States — Option C</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+
+      <!-- Cancel confirmation -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Cancel confirmation</h3>
+        <p class="text-sm text-muted mb-3">
+          Same inline-bar pattern as <span class="font-mono text-xs">booking-lookup.html</span> — void +
+          release seat is irreversible for MVP, so the bottom action area swaps the Cancel button for a
+          confirm bar in place rather than firing on first tap or opening a modal (flat/no-overlay shape
+          language). The status banner stays green until the rider actually confirms.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-success/10 border-y-2 border-success px-4 py-2.5 flex items-center gap-2">
+            <span class="w-4 h-4 rounded-full bg-success flex items-center justify-center shrink-0">
+              <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            <p class="text-xs font-medium">Booking Confirmed</p>
+          </div>
+          <div class="p-4">
+            <p class="font-medium text-sm mb-1">Victory Liner &middot; Cubao &rarr; Baguio</p>
+            <p class="text-xs text-muted">Aug 28, 2026 &middot; 6:00 AM &middot; Seats 2A, 2B</p>
+          </div>
+          <div class="border-t border-border p-4">
+            <div class="border border-danger bg-danger/10 p-3">
+              <p class="text-sm font-medium mb-2">Cancel this booking? This can't be undone.</p>
+              <div class="flex gap-2">
+                <button type="button" class="flex-1 border border-border bg-background text-text font-display uppercase tracking-wide text-xs font-semibold px-3 py-2.5">Keep Booking</button>
+                <button type="button" class="flex-1 bg-danger text-white font-display uppercase tracking-wide text-xs font-semibold px-3 py-2.5">Yes, Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancelled just now -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Cancelled (just now)</h3>
+        <p class="text-sm text-muted mb-3">
+          <span class="text-text font-medium">Peak-End Rule</span> — this is what the rider remembers, so it's
+          an explicit end state, not a silent redirect. The banner flips from green to gray/muted — the same
+          status-communication slot the confirmed state used, now telling the truth about what happened.
+          Copy carried over verbatim from the decided wording in
+          <span class="font-mono text-xs">booking-lookup.html</span>.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-muted/10 border-y-2 border-muted px-4 py-2.5 flex items-center gap-2">
+            <span class="w-4 h-4 rounded-full bg-muted flex items-center justify-center shrink-0">
+              <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </span>
+            <p class="text-xs font-medium">Booking Cancelled</p>
+          </div>
+          <div class="p-4">
+            <p class="text-sm text-text leading-snug mb-2">Seats 2A and 2B on Victory Liner &middot; Cubao &rarr; Baguio have been released.</p>
+            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if you paid online.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Already cancelled -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Already cancelled (returning later)</h3>
+        <p class="text-sm text-muted mb-3">
+          Same banner and body as "cancelled just now" — a rider opening this link a week later gets the
+          same honest status regardless of when they view it. No Cancel button in the bottom action area:
+          the action already happened, so there's nothing left to offer.
+        </p>
+        <div class="border border-border bg-background">
+          <div class="bg-muted/10 border-y-2 border-muted px-4 py-2.5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </span>
+              <p class="text-xs font-medium">Booking Cancelled</p>
+            </div>
+            <p class="text-[11px] text-muted font-mono tabular-nums">Aug 20, 2026</p>
+          </div>
+          <div class="p-4">
+            <p class="text-sm text-text leading-snug mb-2">Seats 2A and 2B on Victory Liner &middot; Cubao &rarr; Baguio have been released.</p>
+            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if you paid online.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Not found / no access -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">No booking loaded</h3>
+        <p class="text-sm text-muted mb-3">
+          This screen is only ever reached with a code + contact number already verified upstream (via
+          <span class="font-mono text-xs">booking-lookup.html</span>), so it has no lookup form of its own —
+          if that verification is missing, it redirects to lookup rather than rendering an empty detail
+          card or an empty banner.
+        </p>
+        <div class="border border-border bg-background p-5 flex items-center justify-center min-h-[120px]">
+          <p class="text-xs text-muted text-center italic">Redirects to Booking Lookup — this screen doesn't re-ask for the code.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==== VARIANTS ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Variants</h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+
+      <!-- Ordinary class -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Ordinary-class booking — no seat numbers</h3>
+        <p class="text-sm text-muted mb-4">
+          Same rule as the other mockups: no <span class="font-mono text-xs">TripSeat</span> row, so the
+          passenger list drops the seat column instead of showing one empty. Cancel copy drops the seat
+          reference too, since there's no assigned seat to name.
+        </p>
+        <div class="border border-border bg-background p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <p class="font-medium text-sm">Genesis Transport</p>
+            <span class="inline-flex items-center border border-border text-muted px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Aircon</span>
+          </div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Passengers</p>
+          <div class="space-y-1.5 mb-3">
+            <div class="flex items-center justify-between text-sm">
+              <span>Ana Reyes</span>
+              <span class="text-xs text-muted italic">Open seating</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Carlo Reyes</span>
+              <span class="text-xs text-muted italic">Open seating</span>
+            </div>
+          </div>
+          <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2.5">Cancel Booking</div>
+          <p class="text-[11px] text-muted mt-2">Voids the booking and releases 2 seats. No refund is issued automatically.</p>
+        </div>
+      </div>
+
+      <!-- Multi-passenger / family -->
+      <div>
+        <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Multi-passenger — family booking</h3>
+        <p class="text-sm text-muted mb-4">
+          God moment #2 carries through: one Cancel Booking voids the whole party at once, not per
+          passenger — matches the "simple cancel" scope in <span class="font-mono text-xs">mvp-scope.md</span>
+          and the same rule already built into <span class="font-mono text-xs">booking-lookup.html</span>.
+        </p>
+        <div class="border border-border bg-background p-5">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <p class="font-medium text-sm">Victory Liner</p>
+            <span class="inline-flex items-center gap-1 border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 font-display uppercase tracking-wide text-[11px] font-semibold">Deluxe</span>
+          </div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Passengers</p>
+          <div class="space-y-1.5 mb-3">
+            <div class="flex items-center justify-between text-sm"><span>Maria Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 2A</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Jose Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 2B</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Ana Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 3A</span></div>
+            <div class="flex items-center justify-between text-sm"><span>Miguel Santos</span><span class="font-mono tabular-nums text-xs text-muted">Seat 3B</span></div>
+          </div>
+          <div class="w-full border border-danger text-danger text-center font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2.5">Cancel Booking</div>
+          <p class="text-[11px] text-muted mt-2">Voids the booking and releases all 4 seats. No refund is issued automatically.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==== IMPLEMENTATION NOTES ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">
+      Implementation notes
+    </h2>
+    <section class="mb-4">
+      <div class="border border-border bg-surface p-5 sm:p-6">
+        <ul class="text-sm text-muted leading-relaxed list-disc pl-5 space-y-2">
+          <li>
+            <span class="text-text font-medium">Void + release-seat-only, no refund automation.</span>
+            <a href="../../mvp-scope.md" class="text-primary underline decoration-primary/40">mvp-scope.md</a>
+            keeps refund automation and any cancellation/fare audit trail out of scope for v1 — the cancelled
+            copy here is deliberately honest about that ("no refund is issued automatically"), not vague.
+          </li>
+          <li>
+            <span class="text-text font-medium">This screen assumes prior verification, not raw access by
+            reference code alone.</span> Per <a href="../../god-moments.md" class="text-primary underline decoration-primary/40">god-moments.md</a>
+            #5, <span class="font-mono text-xs">reference_code</span> + contact number is the account system
+            for v1 — this detail page is the destination after that pair is checked
+            (<a href="booking-lookup.html" class="text-primary underline decoration-primary/40">booking-lookup.html</a>),
+            not a second place to re-enter it. A direct link (e.g. bookmarked URL) should still require that
+            verification before rendering real booking data.
+          </li>
+          <li>
+            <span class="text-text font-medium">Cancel is a mutating, double-tap-prone action with no
+            documented server-side idempotency key.</span> <a href="../../payment-idempotency.md" class="text-primary underline decoration-primary/40">payment-idempotency.md</a>
+            only covers checkout/payment submission. The inline confirm-step here is a UX guard against a
+            double-tap, not a substitute for a real idempotency decision on the cancel endpoint — flagging as
+            an open gap, not resolving it in this mockup.
+          </li>
+          <li>
+            <span class="text-text font-medium">Cancelled-state copy is reused verbatim</span> from the
+            decided wording in <a href="booking-lookup.html" class="text-primary underline decoration-primary/40">booking-lookup.html</a>'s
+            cancelled end-state, extended here to name every released seat rather than just one.
+          </li>
+          <li>
+            <span class="text-text font-medium">Reference code format and timestamps</span> follow
+            <a href="../../reference-code-format.md" class="text-primary underline decoration-primary/40">reference-code-format.md</a>
+            (grouped <span class="font-mono text-xs">XXX-XXX-C</span>) and
+            <a href="../../utc-storage-ph-display.md" class="text-primary underline decoration-primary/40">utc-storage-ph-display.md</a>
+            (UTC stored, Asia/Manila displayed) — no new conventions introduced.
+          </li>
+          <li>
+            <span class="text-text font-medium">Fare figures are minor-units-derived display, never raw
+            integers</span> — <a href="../../money-as-minor-units.md" class="text-primary underline decoration-primary/40">money-as-minor-units.md</a>.
+          </li>
+          <li>
+            <span class="text-text font-medium">Option C (Status Banner, Stacked Sections) chosen.</span>
+            Options A and B stay in the comparison above for reference, not deleted, same convention as
+            every prior screen. A laws-of-ux pass is deferred until this batch of mockups is ready for
+            review, per this project's standing practice.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
