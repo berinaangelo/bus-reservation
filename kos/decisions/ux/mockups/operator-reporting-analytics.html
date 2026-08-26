@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Operator Reporting/Analytics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+  .tnum { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-8 max-w-2xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Operator Reporting/Analytics</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        <span class="text-danger font-medium">Scope note:</span> this is
+        <a href="../mvp-scope.md" class="text-primary underline underline-offset-2">mvp-scope cut #7</a>
+        ("build when operators start asking for it") — not committed for v1. Same
+        forward-looking-preview handling as
+        <a href="rider-login-booking-history.html" class="text-primary underline underline-offset-2">Rider Login</a>
+        and <a href="platform-admin.html" class="text-primary underline underline-offset-2">Platform Admin</a>:
+        flagged here, parked until real demand shows up, not a scope reversal.
+      </p>
+      <p class="text-sm text-muted leading-relaxed mt-3">
+        All three options sit inside the already-chosen
+        <a href="operator-dashboard.html" class="text-primary underline underline-offset-2">Sidebar + Table console
+        shell</a> — a new <span class="text-text font-medium">Reports</span> nav item joins Routes/Trips/Bus Units/
+        Fare Rules/Manifest, nav chrome isn't re-litigated. What varies is how the main panel presents the report
+        itself. Icons are <span class="text-text font-medium">Tabler</span>, per
+        <a href="../iconography.md" class="text-primary underline underline-offset-2">iconography.md</a>'s
+        operator-side rule. Demo data continues <span class="font-mono text-xs">Victory Liner</span> and its four
+        routes from <a href="operator-dashboard.html" class="text-primary underline underline-offset-2">Operator
+        Dashboard</a>. <span class="text-text font-medium">Option C — Split Panel</span> is chosen; A and B stay
+        in the file for reference.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — OVERVIEW DASHBOARD (STAT CARDS + TREND)            -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Overview Dashboard (Stat Cards + Trend)</h3>
+        <p class="text-sm text-muted mt-1">
+          Landing view leads with headline KPIs (revenue, bookings, occupancy, avg fare) and a revenue trend chart,
+          top-routes list below. <span class="text-text font-medium">Jakob's Law</span> — this is the shape of
+          nearly every analytics dashboard (Stripe, Shopify, Google Analytics) an operator has plausibly used
+          before; the answer to "how's the business doing" is the first thing on screen, no filtering required.
+          <span class="text-text font-medium">Peak-End Rule</span> — echoes the "what's running today" framing
+          already used for <a href="operator-dashboard.html" class="text-primary underline underline-offset-2">
+          Option C — Overview Launcher</a>, but for money/occupancy instead of resource counts.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <!-- shared top brand bar -->
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <!-- sidebar -->
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <!-- main content -->
+          <div class="p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Reports</h4>
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+                This month &middot; Jul 1&ndash;31, 2026
+              </div>
+            </div>
+
+            <!-- stat cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+              <div class="border-2 border-primary bg-primary/5 p-4">
+                <div class="flex items-center gap-1.5 text-primary mb-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Revenue</span>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">&#8369;487,320</p>
+                <p class="text-xs text-success mt-0.5 flex items-center gap-1">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+                  +12% vs last month
+                </p>
+              </div>
+              <div class="border border-border bg-surface p-4">
+                <div class="flex items-center gap-1.5 text-muted mb-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+                  <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Bookings</span>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">612</p>
+                <p class="text-xs text-muted mt-0.5">seats sold</p>
+              </div>
+              <div class="border border-border bg-surface p-4">
+                <div class="flex items-center gap-1.5 text-muted mb-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                  <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Occupancy</span>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">78%</p>
+                <p class="text-xs text-muted mt-0.5">avg seats filled</p>
+              </div>
+              <div class="border border-border bg-surface p-4">
+                <div class="flex items-center gap-1.5 text-muted mb-2">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <span class="font-display uppercase tracking-wide text-[11px] font-semibold">Avg Fare</span>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">&#8369;796</p>
+                <p class="text-xs text-muted mt-0.5">per seat</p>
+              </div>
+            </div>
+
+            <!-- trend chart (css bars, no chart lib) -->
+            <div class="border border-border p-4 mb-6">
+              <p class="font-display uppercase tracking-wide text-xs text-muted mb-4">Revenue &middot; last 14 days</p>
+              <div class="flex items-end gap-1.5 h-28">
+                <div class="flex-1 bg-primary/25" style="height: 42%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 55%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 38%"></div>
+                <div class="flex-1 bg-primary/40" style="height: 61%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 47%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 58%"></div>
+                <div class="flex-1 bg-primary/40" style="height: 70%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 50%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 63%"></div>
+                <div class="flex-1 bg-primary/40" style="height: 75%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 66%"></div>
+                <div class="flex-1 bg-primary/25" style="height: 72%"></div>
+                <div class="flex-1 bg-primary/40" style="height: 84%"></div>
+                <div class="flex-1 bg-primary" style="height: 100%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-muted font-mono mt-1.5">
+                <span>Jul 18</span><span>Jul 31</span>
+              </div>
+            </div>
+
+            <!-- top routes -->
+            <p class="font-display uppercase tracking-wide text-xs text-muted mb-2">Top routes by revenue</p>
+            <div class="border border-border">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                    <th class="px-3 py-2 font-semibold">Route</th>
+                    <th class="px-3 py-2 font-semibold">Trips</th>
+                    <th class="px-3 py-2 font-semibold">Occupancy</th>
+                    <th class="px-3 py-2 font-semibold text-right">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">62</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">91%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;142,800</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">54</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">84%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;118,200</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Vigan</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">38</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">73%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;96,450</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Dagupan</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">41</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">65%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;71,300</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — REPORT TABLE (FILTERABLE, EXPORTABLE)              -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Report Table (Filterable, Exportable)</h3>
+        <p class="text-sm text-muted mt-1">
+          No charts — a per-trip table (route, class, seats sold/total, occupancy, revenue) with a date-range +
+          route filter bar and a CSV export, reusing the exact list-table shape every other console screen already
+          uses. <span class="text-text font-medium">Jakob's Law</span> — zero new visual vocabulary for staff who
+          already scan Route/Trip/Bus Unit/Fare Rule tables daily; a spreadsheet-shaped report is also the format
+          an operator's own back-office bookkeeping most likely already expects. Export ties directly to
+          <a href="../rails-pagination-and-batch-export-processing.md" class="text-primary underline underline-offset-2">
+          the streaming-vs-job-based export decision</a>: a narrow date range streams inline (instant download);
+          a full-history export queues a background job and the row appears in-page once ready — no email/SMS to
+          rely on, since that's <a href="../mvp-scope.md" class="text-primary underline underline-offset-2">cut
+          #2</a> too.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <div class="p-5">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Reports &middot; Trips</h4>
+              <button type="button" class="border border-primary text-primary font-display uppercase tracking-wide text-xs font-semibold px-3 py-1.5 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                Export CSV
+              </button>
+            </div>
+
+            <!-- filter bar -->
+            <div class="flex items-center gap-2 mb-4 flex-wrap">
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+                Jul 1&ndash;31, 2026
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted">
+                All routes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted">
+                All classes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+
+            <div class="border border-border">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                    <th class="px-3 py-2 font-semibold">Trip</th>
+                    <th class="px-3 py-2 font-semibold">Route</th>
+                    <th class="px-3 py-2 font-semibold">Class</th>
+                    <th class="px-3 py-2 font-semibold">Seats</th>
+                    <th class="px-3 py-2 font-semibold">Occupancy</th>
+                    <th class="px-3 py-2 font-semibold text-right">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">VL-2291 <span class="text-muted">&middot; Jul 31</span></td>
+                    <td class="px-3 py-2.5">Cubao &rarr; Baguio</td>
+                    <td class="px-3 py-2.5"><span class="border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 text-[11px] font-medium">Double-Deck</span></td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">44 / 48</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">92%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;41,800</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">VL-1187 <span class="text-muted">&middot; Jul 31</span></td>
+                    <td class="px-3 py-2.5">Pasay &rarr; Baguio</td>
+                    <td class="px-3 py-2.5"><span class="border border-border bg-surface text-muted px-2 py-0.5 text-[11px] font-medium">Aircon</span></td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">38 / 45</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">84%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;22,800</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">VL-0934 <span class="text-muted">&middot; Jul 30</span></td>
+                    <td class="px-3 py-2.5">Cubao &rarr; Vigan</td>
+                    <td class="px-3 py-2.5"><span class="border border-border bg-surface text-muted px-2 py-0.5 text-[11px] font-medium">Ordinary</span></td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">31 / 45</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">69%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;14,880</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">VL-2288 <span class="text-muted">&middot; Jul 30</span></td>
+                    <td class="px-3 py-2.5">Cubao &rarr; Baguio</td>
+                    <td class="px-3 py-2.5"><span class="border border-secondary bg-secondary/10 text-secondary px-2 py-0.5 text-[11px] font-medium">Double-Deck</span></td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">47 / 48</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum">98%</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-right">&#8369;44,650</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-[11px] text-muted mt-2">Showing 4 of 214 trips in range &middot; page-based (Pagy default), not cursor — an exact count and jump-to-page are useful for an operator's own bookkeeping.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — SPLIT PANEL: FILTERS LEFT, REPORT RIGHT            -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Split Panel: Filters Left, Report Right</h3>
+          <p class="text-sm text-muted mt-1">
+            A persistent filter/report-type panel pinned on the left (date range, route, class, report type: Revenue /
+            Occupancy / Route Performance), the chosen report's chart + table renders on the right.
+            <span class="text-text font-medium">Fitts's Law</span> — same split-panel precedent as
+            <a href="seat-selection-passenger-details.html" class="text-primary underline underline-offset-2">Seat
+            Selection</a>, <a href="booking-lookup.html" class="text-primary underline underline-offset-2">Booking
+            Lookup</a> and <a href="trip-manifest.html" class="text-primary underline underline-offset-2">Trip
+            Manifest</a>: filters never relocate while an operator tries several slices of the same date range in a
+            row. Splits the difference between A and B — a chart for the at-a-glance read, plus the underlying
+            table for the number an operator actually wants to quote or export.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <div class="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+            <!-- left: filter/report-type panel -->
+            <div class="border-r border-border bg-surface p-4">
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-2">Report</p>
+              <div class="space-y-1 mb-4">
+                <div class="px-3 py-2 bg-primary text-white text-sm font-medium">Revenue</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Occupancy</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Route Performance</div>
+              </div>
+
+              <div class="border-t border-border mb-4"></div>
+
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Date range</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-4 flex items-center justify-between">
+                Jul 1&ndash;31, 2026
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Route</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-4 flex items-center justify-between">
+                All routes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Bus class</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-5 flex items-center justify-between">
+                All classes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+
+              <button type="button" class="w-full border border-primary text-primary font-display uppercase tracking-wide text-xs font-semibold px-3 py-2 flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                Export CSV
+              </button>
+            </div>
+
+            <!-- right: visualized report -->
+            <div class="p-5">
+              <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+                <div>
+                  <h4 class="font-display font-bold text-lg uppercase tracking-wide">Revenue</h4>
+                  <p class="text-xs text-muted">Jul 1&ndash;31, 2026 &middot; All routes &middot; All classes</p>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">&#8369;487,320</p>
+              </div>
+
+              <div class="border border-border p-4 mb-5">
+                <div class="flex items-end gap-1.5 h-28">
+                  <div class="flex-1 bg-primary/30" style="height: 42%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 55%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 38%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 61%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 47%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 58%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 70%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 50%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 63%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 75%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 66%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 72%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 84%"></div>
+                  <div class="flex-1 bg-primary" style="height: 100%"></div>
+                </div>
+                <p class="text-[10px] text-muted text-right mt-1.5">&uarr; Today</p>
+              </div>
+
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Trips</th>
+                      <th class="px-3 py-2 font-semibold">Occupancy</th>
+                      <th class="px-3 py-2 font-semibold text-right">Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr>
+                      <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">62</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">91%</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">&#8369;142,800</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">54</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">84%</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">&#8369;118,200</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Vigan</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">38</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">73%</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">&#8369;96,450</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STATES — SPLIT PANEL (chosen)                                 -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-2 pb-2 border-b border-border">
+      States &mdash; Split Panel
+    </h2>
+    <p class="text-sm text-muted max-w-2xl mb-8">
+      Three states for the chosen Option C: switching the report type in the left panel, the right panel while a
+      filter change is fetching new data, and a filtered slice that comes back with nothing to show.
+    </p>
+
+    <!-- ---- Report switched to Occupancy ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Report switched &mdash; Occupancy</h3>
+      <p class="text-sm text-muted mb-3">
+        Clicking "Occupancy" in the left panel swaps the active row (Law of Similarity &mdash; same selected-state
+        treatment as the console's own sidebar nav, one visual language for "this is the active thing" everywhere
+        in the shell) and the whole right panel re-renders: headline number becomes the occupancy %, the table
+        drops the Revenue column for Seats Sold/Total since that's what this report is actually about, and column
+        order re-sorts by Occupancy instead of Revenue.
+      </p>
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <div class="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+            <div class="border-r border-border bg-surface p-4">
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-2">Report</p>
+              <div class="space-y-1 mb-4">
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Revenue</div>
+                <div class="px-3 py-2 bg-primary text-white text-sm font-medium">Occupancy</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Route Performance</div>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Date range</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-4 flex items-center justify-between">
+                Jul 1&ndash;31, 2026
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Route</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-4 flex items-center justify-between">
+                All routes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Bus class</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-5 flex items-center justify-between">
+                All classes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <button type="button" class="w-full border border-primary text-primary font-display uppercase tracking-wide text-xs font-semibold px-3 py-2 flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                Export CSV
+              </button>
+            </div>
+
+            <div class="p-5">
+              <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+                <div>
+                  <h4 class="font-display font-bold text-lg uppercase tracking-wide">Occupancy</h4>
+                  <p class="text-xs text-muted">Jul 1&ndash;31, 2026 &middot; All routes &middot; All classes</p>
+                </div>
+                <p class="font-mono text-2xl font-medium tnum">78%</p>
+              </div>
+
+              <div class="border border-border p-4 mb-5">
+                <div class="flex items-end gap-1.5 h-28">
+                  <div class="flex-1 bg-primary/30" style="height: 58%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 64%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 51%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 72%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 60%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 69%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 78%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 62%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 74%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 83%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 71%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 80%"></div>
+                  <div class="flex-1 bg-primary/30" style="height: 88%"></div>
+                  <div class="flex-1 bg-primary" style="height: 95%"></div>
+                </div>
+                <p class="text-[10px] text-muted text-right mt-1.5">&uarr; Today</p>
+              </div>
+
+              <div class="border border-border">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                      <th class="px-3 py-2 font-semibold">Route</th>
+                      <th class="px-3 py-2 font-semibold">Trips</th>
+                      <th class="px-3 py-2 font-semibold">Seats sold</th>
+                      <th class="px-3 py-2 font-semibold text-right">Occupancy</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <tr>
+                      <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">62</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">2,652 / 2,916</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">91%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-2.5">Pasay <span class="text-muted mx-1">&rarr;</span> Baguio</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">54</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">2,041 / 2,430</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">84%</td>
+                    </tr>
+                    <tr>
+                      <td class="px-3 py-2.5">Cubao <span class="text-muted mx-1">&rarr;</span> Vigan</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">38</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum">1,249 / 1,710</td>
+                      <td class="px-3 py-2.5 font-mono text-xs tnum text-right font-medium text-primary">73%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Loading (filter change) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Loading &mdash; filter changed</h3>
+      <p class="text-sm text-muted mb-3">
+        Triggered the instant any filter changes (date range, route, class, or report type). Only the right panel
+        dims and disables &mdash; the left filter panel stays fully interactive so an operator can queue up the
+        next change immediately rather than waiting out each fetch one at a time (<span class="text-text
+        font-medium">Doherty Threshold</span>, same "don't block the whole screen for a partial update" reasoning
+        as the console's Add/Edit drawers dimming only the table behind them).
+      </p>
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <div class="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+            <div class="border-r border-border bg-surface p-4">
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-2">Report</p>
+              <div class="space-y-1 mb-4">
+                <div class="px-3 py-2 bg-primary text-white text-sm font-medium">Revenue</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Occupancy</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Route Performance</div>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Date range</p>
+              <div class="border-2 border-primary bg-background px-3 py-2 text-xs text-text mb-4 flex items-center justify-between font-medium">
+                Aug 1&ndash;15, 2026
+                <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Route</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-4 flex items-center justify-between">
+                All routes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Bus class</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-5 flex items-center justify-between">
+                All classes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <button type="button" class="w-full border border-primary text-primary font-display uppercase tracking-wide text-xs font-semibold px-3 py-2 flex items-center justify-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                Export CSV
+              </button>
+            </div>
+
+            <div class="relative min-h-[380px]">
+              <div class="p-5 opacity-30 pointer-events-none select-none">
+                <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+                  <div>
+                    <h4 class="font-display font-bold text-lg uppercase tracking-wide">Revenue</h4>
+                    <p class="text-xs text-muted">Aug 1&ndash;15, 2026 &middot; All routes &middot; All classes</p>
+                  </div>
+                  <p class="font-mono text-2xl font-medium tnum">&#8369;&mdash;</p>
+                </div>
+                <div class="border border-border p-4 mb-5 h-28"></div>
+                <div class="border border-border h-32"></div>
+              </div>
+              <div class="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <svg class="w-6 h-6 text-primary animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+                <p class="text-xs text-muted font-display uppercase tracking-wide">Loading report&hellip;</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Empty (no trips in range) ---- -->
+    <div class="mb-12">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Empty &mdash; no trips in range</h3>
+      <p class="text-sm text-muted mb-3">
+        A filter combination with nothing behind it &mdash; here, a route/date slice before that route had any
+        trips. Filters stay populated and editable rather than resetting (<span class="text-text
+        font-medium">Peak-End Rule</span>, same practice as Trip Search's zero-results state), the exact filter
+        combination is restated in the empty-state copy so the operator isn't left guessing what produced it, and
+        "Clear filters" is one click away rather than requiring each field to be reset by hand.
+      </p>
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Operator Console</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">Victory Liner</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[180px_1fr]">
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M18 3v18"/><path d="M6 8h12M6 16h12"/></svg>
+              Routes
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>
+              Trips
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="9" rx="1"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/><path d="M3 13h18M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg>
+              Bus Units
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/><path d="M9 12h6"/></svg>
+              Fare Rules
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="5" y="4" width="14" height="17" rx="1"/></svg>
+              Manifest
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8 13 13.7 9 9.7 3.3 15.4"/></svg>
+              Reports
+            </div>
+          </nav>
+
+          <div class="grid grid-cols-1 sm:grid-cols-[220px_1fr]">
+            <div class="border-r border-border bg-surface p-4">
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-2">Report</p>
+              <div class="space-y-1 mb-4">
+                <div class="px-3 py-2 bg-primary text-white text-sm font-medium">Revenue</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Occupancy</div>
+                <div class="px-3 py-2 text-sm text-text hover:bg-background">Route Performance</div>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Date range</p>
+              <div class="border-2 border-primary bg-background px-3 py-2 text-xs text-text mb-4 flex items-center justify-between font-medium">
+                Jan 1&ndash;15, 2026
+                <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Route</p>
+              <div class="border-2 border-primary bg-background px-3 py-2 text-xs text-text mb-4 flex items-center justify-between font-medium">
+                Cubao &rarr; Dagupan
+                <svg class="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <p class="font-display uppercase tracking-wide text-[11px] text-muted mb-1.5">Bus class</p>
+              <div class="border border-border bg-background px-3 py-2 text-xs text-muted mb-5 flex items-center justify-between">
+                All classes
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+              <button type="button" class="w-full border border-border text-muted font-display uppercase tracking-wide text-xs font-semibold px-3 py-2 flex items-center justify-center gap-1.5 opacity-50 pointer-events-none">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13m0 0-4-4m4 4 4-4"/><path d="M4 18v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+                Export CSV
+              </button>
+            </div>
+
+            <div class="p-5 flex flex-col items-center justify-center text-center min-h-[380px]">
+              <svg class="w-10 h-10 text-muted mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14v3M12 10v7M17 6v11"/><path d="M18.5 4.5 21 2m0 0-2.5 0M21 2v2.5" opacity="0"/></svg>
+              <p class="text-sm font-medium text-text mb-1">No trips found</p>
+              <p class="text-xs text-muted max-w-xs mb-4">
+                Cubao &rarr; Dagupan had no scheduled trips between Jan 1&ndash;15, 2026 &mdash; the route wasn't
+                added until later. Try a different date range or route.
+              </p>
+              <button type="button" class="border border-primary text-primary font-display uppercase tracking-wide text-xs font-semibold px-4 py-2">Clear filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="max-w-2xl border-t border-border pt-6">
+      <p class="text-xs text-muted leading-relaxed">
+        <span class="text-text font-medium">Option C (Split Panel: Filters Left, Report Right) is chosen</span>
+        &mdash; A and B stay in the file for reference, same convention as every other mockup file. States (report
+        switching, loading, empty) are built above. Ran the laws-of-ux pass over the whole batch and fixed 3
+        findings, all scoped to the chosen build-out since A/B are reference-only: the left panel's report-type
+        list and its filter fields had no boundary between them beyond spacing (<span class="text-text
+        font-medium">Law of Common Region</span>) &mdash; added a divider, matching the sidebar's own convention for
+        separating unrelated nav groups; the trend charts used three arbitrary bar-opacity levels with no legend
+        explaining what they meant (<span class="text-text font-medium">Law of Similarity</span>) &mdash; flattened
+        to one shade plus a labeled "Today" bar, the one distinction that's actually real; and the Occupancy report's
+        table bolded its own metric column in <span class="font-mono text-xs">primary</span> while the Revenue
+        report's table left its equivalent column unstyled, an inconsistent treatment for the same role across the
+        two reports &mdash; the Revenue column now gets the same emphasis. Reminder: this whole screen is a parked
+        preview (mvp-scope cut #7), not scheduled work.
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Knowledge Base Index — bus-reservation
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 
 ## Plan
 - [PLAN.md](PLAN.md) — one-sentence scope, primary flow, entity model, links to scope/decisions
@@ -13,7 +13,8 @@ Last updated: 2026-08-25
 - [utc-storage-ph-display](decisions/utc-storage-ph-display.md) — store UTC, display Asia/Manila
 - [seat-hold-ttl](decisions/seat-hold-ttl.md) — default 1hr, stored in a SystemSetting table, admin-only (console/seed, no in-app UI for MVP)
 - [reference-code-format](decisions/reference-code-format.md) — 6-char grouped alnum + Luhn mod N checksum, e.g. `4XK-7QM-9`
-- [payment-idempotency](decisions/payment-idempotency.md) — idempotency key required on checkout/payment submission
+- [payment-method](decisions/payment-method.md) — cash-only for v1 (no KYC for GCash/Maya yet), collected on board via trip manifest check-in, no checkout payment gate
+- [payment-idempotency](decisions/payment-idempotency.md) — idempotency key required on checkout submission (guards duplicate bookings, not duplicate charges)
 - [rails-api-only-vue-spa](decisions/rails-api-only-vue-spa.md) — Rails is JSON-only, Vue owns the whole UI; no ERB/ViewComponent/Turbo
 - [rails-thin-controllers-organizer-interactor-pattern](decisions/rails-thin-controllers-organizer-interactor-pattern.md) — thin controllers + Interactor/Organizer
 - [rails-db-transactions-locking-idempotency](decisions/rails-db-transactions-locking-idempotency.md) — transactions, pessimistic lock on seat claims, optimistic lock elsewhere
@@ -41,6 +42,8 @@ Last updated: 2026-08-25
 - [platform-mark](decisions/ux/platform-mark.md) — "TS" monogram placeholder wordmark, Barlow Condensed Bold
 - [operator-login mockup](decisions/ux/mockups/operator-login.html) — 3 layout options for OperatorStaff login (Centered Card, Split Panel, Console/Terminal Style); Split Panel chosen, states built out
 - [operator-dashboard mockup](decisions/ux/mockups/operator-dashboard.html) — 3 IA options for the Route/Trip/BusUnit/FareRule CRUD console (Sidebar+Table, Tabbed Workspace, Overview Launcher), scoped to own operator; Sidebar + Table chosen, Add/Edit (slide-over drawer)/Delete/Empty states built for all 4 resources (+Validation for Route), laws-of-ux pass not yet run
+- [platform-admin mockup](decisions/ux/mockups/platform-admin.html) — forward-looking preview of operator onboarding/approval (mvp-scope cut #5, not v1); 3 IA options for the new PlatformAdmin persona (Sidebar+Table+Drawer, Split Panel Queue+Detail, Single-Column Expandable Card Feed); Sidebar+Table+Drawer chosen, CRUD forms/states/laws-of-ux pass deferred (parked preview, not committed)
+- [operator-reporting-analytics mockup](decisions/ux/mockups/operator-reporting-analytics.html) — forward-looking preview of operator reporting/analytics (mvp-scope cut #7, not v1); 3 options (Overview Dashboard stat-cards+trend, Report Table filterable/exportable, Split Panel filters+report) inside the existing Sidebar+Table console shell; Split Panel chosen, report-switch/loading/empty states built, laws-of-ux pass done (3 fixes: filter-panel divider, chart bar-opacity legend, cross-report column emphasis)
 
 ## Reference
 

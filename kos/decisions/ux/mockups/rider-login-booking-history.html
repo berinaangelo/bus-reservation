@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rider Login + Booking History</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+  .tabular { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-8 max-w-3xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Rider Login + Booking History</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        <span class="text-text font-medium">Not scheduled for the current build.</span> Rider accounts are
+        explicitly cut for v1 — guest lookup via <span class="font-mono text-xs">reference_code</span> + contact
+        number (see <span class="font-mono text-xs">booking-lookup.html</span>) is the v1 "account system." This
+        file is a forward-looking preview only, kept for when repeat-booking volume makes search-from-scratch
+        costly enough to justify it. It's designed to <span class="text-text font-medium">sit alongside</span>
+        guest lookup, not replace it — a rider who never logs in can still always find a single booking by code.
+        <span class="text-text font-medium">Option B — Split Panel: Account Left, History Right</span> is
+        chosen below, badged the same way as every other screen's pick; Options A and C stay in the file for
+        reference.
+      </p>
+      <div class="mt-4 border border-warning bg-warning/10 px-4 py-3 flex items-start gap-2.5">
+        <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p class="text-xs text-muted leading-relaxed">
+          <span class="text-text font-medium">Open dependency, not solved here:</span> all three options below
+          use phone number + SMS one-time code instead of email/password — it reuses the contact number already
+          collected at booking and avoids inventing a password-reset flow. But SMS/email notifications are
+          <span class="font-mono">also</span> cut for v1 (mvp-scope #2), and OTP delivery needs that same SMS
+          provider integration. This mockup can't ship before that dependency does, even if rider accounts get
+          greenlit on their own.
+        </p>
+      </div>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-1 pb-2 border-b border-border">Options considered</h2>
+    <p class="text-xs text-muted mb-8">No option is picked yet — presented neutrally, exploration only.</p>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — SINGLE-COLUMN STACKED                              -->
+    <!-- ============================================================ -->
+    <section class="mb-20">
+      <div class="mb-5 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Single-Column Stacked</h3>
+        <p class="text-sm text-muted mt-1">
+          Log in on top, history reveals below in the same column — the same reveal-in-place mechanic as
+          Booking Lookup's Option B. <span class="text-text font-medium">Jakob's Law</span>: the plainest,
+          most-recognized "sign in → see your list" shape, no new pattern to learn. History renders as a flat
+          list of row cards, matching Trip Search Results' Manifest Row idiom.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 1. Log In -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">1. Log in — enter code</p>
+          <div class="border border-border bg-background p-6 sm:p-8">
+            <div class="max-w-sm mx-auto">
+              <div class="flex flex-col items-center text-center mb-6">
+                <span class="font-display font-bold text-2xl text-primary leading-none mb-1">TS</span>
+                <p class="text-xs text-muted">Log in to see your bookings</p>
+              </div>
+              <p class="text-sm text-text mb-4">
+                Code sent to <span class="font-mono">0917 &bull;&bull;&bull; 214</span>
+              </p>
+              <div class="flex gap-2 mb-4">
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">4</div>
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">8</div>
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">2</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+              </div>
+              <p class="text-xs text-muted mb-4">Didn't get it? <span class="text-primary font-medium">Resend in 0:42</span></p>
+              <button type="button" class="w-full bg-accent/60 text-[#1E2925]/60 font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Continue</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Booking History -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">2. Booking history</p>
+          <div class="border border-border bg-background p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <p class="font-display font-bold text-lg uppercase tracking-wide">Your bookings</p>
+              <button class="text-xs text-muted flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Log out
+              </button>
+            </div>
+
+            <div class="space-y-2">
+              <!-- Row: upcoming -->
+              <div class="border border-border bg-surface p-3.5 flex items-center gap-3">
+                <span class="border border-primary text-primary bg-primary/10 px-2 py-0.5 font-display uppercase tracking-wide text-[10px] font-semibold shrink-0">Upcoming</span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium truncate">Manila &rarr; Baguio</p>
+                  <p class="text-xs text-muted tabular">Aug 30, 11:00 PM &bull; JoyBus &bull; Double-Deck</p>
+                </div>
+                <p class="font-mono text-xs text-muted shrink-0">4XK-7QM-9</p>
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <!-- Row: completed -->
+              <div class="border border-border bg-surface p-3.5 flex items-center gap-3 opacity-80">
+                <span class="border border-border text-muted bg-background px-2 py-0.5 font-display uppercase tracking-wide text-[10px] font-semibold shrink-0">Completed</span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium truncate">Manila &rarr; Baguio</p>
+                  <p class="text-xs text-muted tabular">Jul 12, 6:30 AM &bull; GL Trans &bull; Ordinary</p>
+                </div>
+                <p class="font-mono text-xs text-muted shrink-0">P8H-3RT-2</p>
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <!-- Row: cancelled -->
+              <div class="border border-border bg-surface p-3.5 flex items-center gap-3 opacity-70">
+                <span class="border border-danger text-danger bg-danger/10 px-2 py-0.5 font-display uppercase tracking-wide text-[10px] font-semibold shrink-0">Cancelled</span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium truncate">Manila &rarr; Baguio</p>
+                  <p class="text-xs text-muted tabular">Jun 2, 9:00 PM &bull; Victory Liner &bull; Deluxe</p>
+                </div>
+                <p class="font-mono text-xs text-muted shrink-0">J2M-9XW-6</p>
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — SPLIT PANEL: ACCOUNT LEFT, HISTORY RIGHT           -->
+    <!-- ============================================================ -->
+    <section class="mb-20">
+      <div class="mb-5 max-w-3xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Split Panel: Account Left, History Right</h3>
+          <p class="text-sm text-muted mt-1">
+            Persistent account panel (phone number, log out, quick counts) beside the list, with
+            Upcoming/Past tabs above the list itself. Same split-panel idiom already used for Seat Selection,
+            Booking Lookup, and Operator Login &mdash; <span class="text-text font-medium">Jakob's Law, applied
+            within-product</span>. <span class="text-text font-medium">Hick's Law</span>: two tabs, not a status
+            filter dropdown, since Upcoming vs. Past is the only split a rider actually needs day-to-day.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 1. Log In -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">1. Log in — enter code</p>
+          <div class="border-2 border-primary bg-background grid grid-cols-1 sm:grid-cols-2">
+            <div class="bg-primary text-white p-6 flex flex-col justify-center">
+              <span class="font-display font-bold text-xl leading-none mb-2">TS</span>
+              <p class="font-display uppercase tracking-wide text-xs font-semibold mb-2">Your bookings, one login away</p>
+              <p class="text-xs text-white/80 leading-relaxed">
+                Skip re-entering a reference code every time &mdash; see every trip tied to your number in one
+                place.
+              </p>
+            </div>
+            <div class="p-6 flex items-center">
+              <div class="w-full">
+                <p class="text-sm text-text mb-4">Code sent to <span class="font-mono">0917 &bull;&bull;&bull; 214</span></p>
+                <div class="flex gap-2 mb-4">
+                  <div class="w-10 h-11 border border-primary bg-surface flex items-center justify-center font-mono text-base">4</div>
+                  <div class="w-10 h-11 border border-primary bg-surface flex items-center justify-center font-mono text-base">8</div>
+                  <div class="w-10 h-11 border border-primary bg-surface flex items-center justify-center font-mono text-base">2</div>
+                  <div class="w-10 h-11 border border-border bg-surface flex items-center justify-center font-mono text-base text-muted">&ndash;</div>
+                  <div class="w-10 h-11 border border-border bg-surface flex items-center justify-center font-mono text-base text-muted">&ndash;</div>
+                  <div class="w-10 h-11 border border-border bg-surface flex items-center justify-center font-mono text-base text-muted">&ndash;</div>
+                </div>
+                <p class="text-xs text-muted mb-4">Resend in <span class="text-primary font-medium">0:42</span></p>
+                <button type="button" class="w-full bg-accent/60 text-[#1E2925]/60 font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Continue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Booking History -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">2. Booking history</p>
+          <div class="border-2 border-primary bg-background grid grid-cols-1 sm:grid-cols-[180px_1fr]">
+            <div class="border-b sm:border-b-0 sm:border-r border-border p-5 bg-surface flex flex-col">
+              <span class="w-9 h-9 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary mb-3">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="11" r="4"/></svg>
+              </span>
+              <p class="font-mono text-xs text-text mb-1">0917 &bull;&bull;&bull; 214</p>
+              <p class="text-[11px] text-muted mb-4">3 bookings total</p>
+              <button class="mt-auto text-xs text-muted flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Log out
+              </button>
+            </div>
+            <div class="p-5">
+              <div class="flex gap-1 mb-4 border-b border-border">
+                <button class="px-3 py-2 text-xs font-display uppercase tracking-wide font-semibold text-primary border-b-2 border-primary -mb-px">Upcoming <span class="text-[10px]">(1)</span></button>
+                <button class="px-3 py-2 text-xs font-display uppercase tracking-wide font-semibold text-muted">Past <span class="text-[10px]">(2)</span></button>
+              </div>
+              <div class="border border-primary bg-primary/5 p-3.5 flex items-center gap-3">
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium truncate">Manila &rarr; Baguio</p>
+                  <p class="text-xs text-muted tabular">Aug 30, 11:00 PM &bull; JoyBus &bull; Double-Deck</p>
+                  <p class="font-mono text-[11px] text-muted mt-0.5">4XK-7QM-9</p>
+                </div>
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — HERO NEXT TRIP + GROUPED TIMELINE                  -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-5 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Hero Next Trip + Grouped Timeline</h3>
+        <p class="text-sm text-muted mt-1">
+          Login collapses to a thin top strip once authenticated; the next upcoming trip renders as an
+          oversized ticket-stub hero card (echoes E-Ticket Confirmation's aesthetic), with past bookings below
+          grouped under a lighter-weight timeline. <span class="text-text font-medium">Peak-End Rule</span>:
+          leads with the one thing a returning rider actually opened the app to check &mdash; "when's my next
+          bus" &mdash; rather than treating every booking as equally prominent.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 1. Log In -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">1. Log in — enter code</p>
+          <div class="border border-border bg-background p-6 sm:p-8 flex items-center justify-center">
+            <div class="w-full max-w-sm">
+              <div class="flex items-center gap-2 mb-6">
+                <svg class="w-4 h-4 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                <p class="text-sm text-text">Code sent to <span class="font-mono">0917 &bull;&bull;&bull; 214</span></p>
+              </div>
+              <div class="flex gap-2 mb-4 justify-center">
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">4</div>
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">8</div>
+                <div class="w-11 h-12 border border-primary bg-surface flex items-center justify-center font-mono text-lg">2</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+                <div class="w-11 h-12 border border-border bg-surface flex items-center justify-center font-mono text-lg text-muted">&ndash;</div>
+              </div>
+              <p class="text-xs text-muted mb-4 text-center">Resend in <span class="text-primary font-medium">0:42</span></p>
+              <button type="button" class="w-full bg-accent/60 text-[#1E2925]/60 font-display uppercase tracking-wide text-xs font-semibold px-4 py-3">Continue</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Booking History -->
+        <div>
+          <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">2. Booking history</p>
+          <div class="border border-border bg-background p-5">
+            <div class="flex items-center justify-between mb-4">
+              <p class="font-mono text-[11px] text-muted">0917 &bull;&bull;&bull; 214</p>
+              <button class="text-xs text-muted flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Log out
+              </button>
+            </div>
+
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Next trip</p>
+            <div class="border-2 border-primary bg-primary/5 p-4 mb-6 relative overflow-hidden">
+              <span class="absolute top-0 right-0 border-l border-b border-primary text-primary bg-background px-2 py-1 font-display uppercase tracking-wide text-[10px] font-semibold">Upcoming</span>
+              <p class="font-display font-bold text-xl leading-tight mb-1">Manila &rarr; Baguio</p>
+              <p class="text-sm text-muted tabular mb-3">Aug 30, 2026 &bull; 11:00 PM &bull; JoyBus &bull; Double-Deck</p>
+              <div class="flex items-center justify-between">
+                <p class="font-mono text-sm text-text">4XK-7QM-9</p>
+                <p class="font-mono text-lg font-semibold text-accent tabular">&#8369;950</p>
+              </div>
+            </div>
+
+            <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-2">Past</p>
+            <div class="space-y-0 border-l border-border ml-1.5">
+              <div class="pl-4 pb-4 relative">
+                <span class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-muted"></span>
+                <p class="text-sm font-medium">Manila &rarr; Baguio <span class="text-xs text-muted font-normal">&bull; GL Trans &bull; Ordinary</span></p>
+                <p class="text-xs text-muted tabular">Jul 12, 2026 &bull; P8H-3RT-2</p>
+              </div>
+              <div class="pl-4 pb-1 relative opacity-70">
+                <span class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-danger"></span>
+                <p class="text-sm font-medium">Manila &rarr; Baguio <span class="text-xs text-muted font-normal">&bull; Victory Liner &bull; Deluxe</span></p>
+                <p class="text-xs text-danger tabular">Cancelled &bull; Jun 2, 2026 &bull; J2M-9XW-6</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="max-w-3xl border-t border-border pt-6">
+      <p class="text-xs text-muted leading-relaxed">
+        Not built: full states (invalid/expired code, no bookings yet, resend, tab-switch to Past), and a
+        laws-of-ux pass on the chosen Option B &mdash; held per the project's usual "options first, states
+        after the pick" practice, and doubly so here since this whole screen is a preview, not committed work.
+      </p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

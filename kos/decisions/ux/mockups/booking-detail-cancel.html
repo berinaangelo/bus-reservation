@@ -231,7 +231,7 @@
               <span class="font-mono tabular-nums">&#8369;1,560.00</span>
             </div>
             <div class="flex items-center justify-between pt-2 border-t border-border">
-              <p class="font-display uppercase tracking-wide text-xs font-semibold">Total Paid</p>
+              <p class="font-display uppercase tracking-wide text-xs font-semibold">Total Due &middot; Cash on Board</p>
               <p class="font-mono tabular-nums text-lg text-accent font-semibold">&#8369;1,560.00</p>
             </div>
           </div>
@@ -304,7 +304,7 @@
           </div>
           <div class="p-4">
             <p class="text-sm text-text leading-snug mb-2">Seats 2A and 2B on Victory Liner &middot; Cubao &rarr; Baguio have been released.</p>
-            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if you paid online.</p>
+            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if cash was already collected.</p>
           </div>
         </div>
       </div>
@@ -329,7 +329,7 @@
           </div>
           <div class="p-4">
             <p class="text-sm text-text leading-snug mb-2">Seats 2A and 2B on Victory Liner &middot; Cubao &rarr; Baguio have been released.</p>
-            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if you paid online.</p>
+            <p class="text-xs text-muted leading-snug">No refund is issued automatically for this booking — contact the operator directly if cash was already collected.</p>
           </div>
         </div>
       </div>
@@ -436,7 +436,7 @@
           <li>
             <span class="text-text font-medium">Cancel is a mutating, double-tap-prone action with no
             documented server-side idempotency key.</span> <a href="../../payment-idempotency.md" class="text-primary underline decoration-primary/40">payment-idempotency.md</a>
-            only covers checkout/payment submission. The inline confirm-step here is a UX guard against a
+            only covers checkout submission. The inline confirm-step here is a UX guard against a
             double-tap, not a substitute for a real idempotency decision on the cancel endpoint — flagging as
             an open gap, not resolving it in this mockup.
           </li>

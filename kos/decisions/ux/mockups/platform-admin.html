@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Platform Admin — Operator Onboarding</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+  rel="stylesheet"
+/>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#27915C',
+          secondary: '#7747AE',
+          accent: '#EE862B',
+          success: '#30A66B',
+          warning: '#F0B80F',
+          danger: '#C9262C',
+          text: '#1E2925',
+          muted: '#5E6E69',
+          surface: '#F3F7F5',
+          background: '#F9FBFA',
+          border: '#E1E8E4',
+        },
+        fontFamily: {
+          display: ['"Barlow Condensed"', 'sans-serif'],
+          sans: ['"Barlow"', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  body { font-family: 'Barlow', sans-serif; }
+  .tnum { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="bg-[#E7E9E6] text-text">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+
+    <header class="mb-12 max-w-3xl">
+      <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
+      <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">Platform Admin — Operator Onboarding</h1>
+
+      <div class="border border-warning bg-warning/10 px-3 py-2.5 mb-4 flex items-start gap-2">
+        <svg class="w-4 h-4 text-warning shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <p class="text-xs text-text leading-relaxed">
+          <span class="font-medium">Scope flag:</span> operator onboarding/approval is item #5 on
+          <span class="font-mono text-[11px]">mvp-scope.md</span>'s cut list — "build past roughly a dozen
+          operators, once manual DB seeding stops scaling." Same situation as
+          <a href="rider-login-booking-history.html" class="text-primary underline underline-offset-2">rider-login-booking-history.html</a>:
+          a forward-looking preview at the user's request, not a v1 commitment. For MVP, operators are still
+          seeded directly in the DB by whoever runs the platform.
+        </p>
+      </div>
+
+      <p class="text-sm text-muted leading-relaxed">
+        A new persona: <span class="font-mono text-xs">PlatformAdmin</span> — Terminal Signal's own staff, not
+        an operator. Where <span class="font-mono text-xs">OperatorStaff</span> manage one operator's own fleet,
+        this console sits one level above: reviewing bus companies that want to list trips on the platform, and
+        approving or rejecting them before an <span class="font-mono text-xs">Operator</span> +
+        first <span class="font-mono text-xs">OperatorStaff</span> account gets created. Icons follow the
+        operator-side Tabler tier per <a href="../iconography.md" class="text-primary underline underline-offset-2">iconography.md</a>.
+        <span class="text-text font-medium">Option A — Sidebar + Table + Drawer</span> is chosen; B and C stay
+        in the file for reference. CRUD forms, states (loading, empty queue, rejection reason), and the
+        laws-of-ux pass stay deferred — this screen is a parked preview, not a committed build, so states aren't
+        picked up unprompted the way they were for the primary-flow screens.
+      </p>
+    </header>
+
+    <!-- ==== OPTIONS CONSIDERED ==== -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mb-6 pb-2 border-b border-border">Options considered</h2>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A — SIDEBAR + TABLE + DRAWER                           -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option A — Sidebar + Table + Drawer</h3>
+          <p class="text-sm text-muted mt-1">
+            The exact <a href="operator-dashboard.html" class="text-primary underline underline-offset-2">operator-dashboard.html</a>
+            shell reused wholesale — sidebar swaps Route/Trip/Bus Unit/Fare Rule for Applications/Operators, a
+            pending-count badge sits on the sidebar item, and clicking a row opens the same slide-over drawer
+            already built for Route/Trip/Bus Unit/Fare Rule CRUD. <span class="text-text font-medium">Jakob's
+            Law, applied within-product</span> — zero new pattern for anyone who already knows the operator
+            console; the drawer's Approve/Reject footer is the only genuinely new surface.
+          </p>
+        </div>
+        <span class="shrink-0 inline-flex items-center gap-1.5 border border-primary text-primary bg-primary/10 px-3 py-1 font-display uppercase tracking-wide text-xs font-semibold">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Chosen
+        </span>
+      </div>
+
+      <div class="border-2 border-primary bg-background">
+        <!-- shared top brand bar -->
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Platform Admin</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs text-white/90 font-medium">A. Reyes &middot; Platform Staff</span>
+            <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[190px_1fr]">
+          <!-- sidebar -->
+          <nav class="border-r border-border bg-surface p-3 space-y-1">
+            <div class="flex items-center justify-between gap-2 px-3 py-2 bg-primary text-white text-sm font-medium">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M7 8h10M7 12h6"/></svg>
+                Applications
+              </span>
+              <span class="bg-white text-primary text-[10px] font-mono font-semibold px-1.5 leading-4">3</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-8h10l4 8-4 8H7l-4-8Z"/></svg>
+              Operators
+            </div>
+            <div class="border-t border-border my-2"></div>
+            <div class="flex items-center gap-2 px-3 py-2 text-sm text-text hover:bg-background">
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
+              Platform Staff
+            </div>
+          </nav>
+
+          <!-- main content -->
+          <div class="p-5 relative overflow-hidden">
+            <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <h4 class="font-display font-bold text-lg uppercase tracking-wide">Applications</h4>
+              <div class="border border-border bg-surface px-3 py-1.5 flex items-center gap-2 text-xs text-muted w-48">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                Search companies…
+              </div>
+            </div>
+
+            <div class="border border-border">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                    <th class="px-3 py-2 font-semibold">Company</th>
+                    <th class="px-3 py-2 font-semibold">Contact</th>
+                    <th class="px-3 py-2 font-semibold">Submitted</th>
+                    <th class="px-3 py-2 font-semibold">Status</th>
+                    <th class="px-3 py-2 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <tr class="bg-warning/5">
+                    <td class="px-3 py-2.5 font-medium">Batangas Star Express</td>
+                    <td class="px-3 py-2.5 text-muted">R. Villanueva</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-muted">Aug 24, 2026</td>
+                    <td class="px-3 py-2.5"><span class="border border-warning text-warning bg-warning/10 px-2 py-0.5 text-[11px] font-medium">Pending</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="text-primary text-xs font-medium underline underline-offset-2 cursor-pointer">Review</span>
+                    </td>
+                  </tr>
+                  <tr class="bg-warning/5">
+                    <td class="px-3 py-2.5 font-medium">Northern Skyway Liner</td>
+                    <td class="px-3 py-2.5 text-muted">J. Domingo</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-muted">Aug 23, 2026</td>
+                    <td class="px-3 py-2.5"><span class="border border-warning text-warning bg-warning/10 px-2 py-0.5 text-[11px] font-medium">Pending</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="text-primary text-xs font-medium underline underline-offset-2 cursor-pointer">Review</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-medium">Sierra Madre Trans</td>
+                    <td class="px-3 py-2.5 text-muted">L. Ramos</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-muted">Aug 20, 2026</td>
+                    <td class="px-3 py-2.5"><span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Approved</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="text-muted text-xs">&mdash;</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2.5 font-medium">QuickHop Vans</td>
+                    <td class="px-3 py-2.5 text-muted">M. Cruz</td>
+                    <td class="px-3 py-2.5 font-mono text-xs tnum text-muted">Aug 18, 2026</td>
+                    <td class="px-3 py-2.5"><span class="border border-danger text-danger bg-danger/10 px-2 py-0.5 text-[11px] font-medium">Rejected</span></td>
+                    <td class="px-3 py-2.5 text-right">
+                      <span class="text-muted text-xs">&mdash;</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- drawer, illustrated over the table to show the mechanic -->
+            <div class="absolute top-0 right-0 h-full w-[280px] border-l border-border bg-background p-4 shadow-none">
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <p class="font-display uppercase tracking-wider text-[10px] text-muted mb-1">Application</p>
+                  <h5 class="font-display font-bold text-sm uppercase tracking-wide">Batangas Star Express</h5>
+                </div>
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </div>
+              <dl class="space-y-2 text-xs mb-4">
+                <div><dt class="text-muted">Contact</dt><dd>R. Villanueva &middot; r.villanueva@bse.ph</dd></div>
+                <div><dt class="text-muted">LTFRB franchise no.</dt><dd class="font-mono">2024-CPC-0417</dd></div>
+                <div><dt class="text-muted">Requested routes</dt><dd>Cubao ⇄ Batangas</dd></div>
+                <div><dt class="text-muted">Documents</dt><dd class="text-primary underline underline-offset-2">business_permit.pdf</dd></div>
+              </dl>
+              <div class="flex gap-2">
+                <button type="button" class="flex-1 bg-accent text-[#1E2925] font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2">Approve</button>
+                <button type="button" class="flex-1 border border-danger text-danger font-display uppercase tracking-wide text-[11px] font-semibold px-3 py-2">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B — SPLIT PANEL: QUEUE LEFT, DETAIL RIGHT              -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option B — Split Panel: Queue Left, Detail Right</h3>
+        <p class="text-sm text-muted mt-1">
+          Persistent two-pane layout, no drawer or modal — the same split-panel idiom already used for Seat
+          Selection, Booking Lookup, Trip Manifest and Operator Login. <span class="text-text font-medium">Fitts's
+          Law</span>: Approve/Reject live in a fixed spot at the bottom of the right pane, so a reviewer working
+          through several applications in a row never has to re-locate the action after each click — only the
+          content above it swaps. Status filter tabs sit above the queue rather than as separate nav items,
+          since it's one dataset viewed three ways, not three different resources.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Platform Admin</span>
+          </div>
+          <span class="text-xs text-white/90 font-medium">A. Reyes &middot; Platform Staff</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-[280px_1fr]">
+          <!-- queue -->
+          <div class="border-r border-border">
+            <div class="flex border-b border-border text-xs font-display uppercase tracking-wide">
+              <div class="flex-1 text-center px-2 py-2 bg-surface border-b-2 border-primary text-primary font-semibold">Pending (2)</div>
+              <div class="flex-1 text-center px-2 py-2 text-muted">Approved</div>
+              <div class="flex-1 text-center px-2 py-2 text-muted">Rejected</div>
+            </div>
+            <div class="divide-y divide-border">
+              <div class="px-4 py-3 bg-primary/10 border-l-2 border-primary">
+                <p class="text-sm font-medium">Batangas Star Express</p>
+                <p class="text-xs text-muted">R. Villanueva &middot; Aug 24</p>
+              </div>
+              <div class="px-4 py-3 hover:bg-surface">
+                <p class="text-sm font-medium">Northern Skyway Liner</p>
+                <p class="text-xs text-muted">J. Domingo &middot; Aug 23</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- detail -->
+          <div class="p-5 flex flex-col">
+            <div class="flex-1">
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-1">Application &middot; Pending</p>
+                  <h4 class="font-display font-bold text-xl uppercase tracking-wide">Batangas Star Express</h4>
+                </div>
+                <span class="border border-warning text-warning bg-warning/10 px-2 py-0.5 text-[11px] font-medium">Pending</span>
+              </div>
+              <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm mb-4">
+                <div><p class="text-xs text-muted mb-0.5">Contact person</p><p>R. Villanueva</p></div>
+                <div><p class="text-xs text-muted mb-0.5">Email</p><p>r.villanueva@bse.ph</p></div>
+                <div><p class="text-xs text-muted mb-0.5">Phone</p><p class="font-mono">0917 555 0142</p></div>
+                <div><p class="text-xs text-muted mb-0.5">LTFRB franchise no.</p><p class="font-mono">2024-CPC-0417</p></div>
+                <div class="col-span-2"><p class="text-xs text-muted mb-0.5">Requested routes</p><p>Cubao ⇄ Batangas, Cubao ⇄ Lipa</p></div>
+              </div>
+              <div class="border border-border bg-surface px-3 py-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+                <span class="text-xs text-primary underline underline-offset-2">business_permit.pdf</span>
+              </div>
+            </div>
+            <div class="flex gap-2 pt-4 border-t border-border mt-4">
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5">Approve</button>
+              <button type="button" class="border border-danger text-danger font-display uppercase tracking-wide text-xs font-semibold px-4 py-2.5">Reject</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C — SINGLE-COLUMN EXPANDABLE CARD FEED                 -->
+    <!-- ============================================================ -->
+    <section class="mb-16">
+      <div class="mb-4 max-w-3xl">
+        <h3 class="font-display font-bold text-lg uppercase tracking-wide">Option C — Single-Column Expandable Card Feed</h3>
+        <p class="text-sm text-muted mt-1">
+          No sidebar, no split panel, no drawer — one scrollable feed of application cards, most recent first,
+          each already showing enough to decide (contact, franchise no., permit link) with Approve/Reject right
+          on the card. Justified by <span class="text-text font-medium">the queue's own expected size</span>:
+          mvp-scope's own rationale for cutting this screen is "past roughly a dozen operators" — this queue
+          never holds more than a handful of rows even once built, so a triage IA built for high volume (A's
+          drawer, B's persistent split panel) is solving a scale problem this screen won't actually have. Cards
+          expand in place for the rare application needing a closer look (echoes Booking Lookup's reveal-in-place
+          mechanic) rather than routing to a separate detail surface.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background">
+        <div class="bg-primary text-white px-5 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg leading-none">TS</span>
+            <span class="font-display uppercase tracking-wide text-xs font-semibold text-white/80">Platform Admin</span>
+          </div>
+          <span class="text-xs text-white/90 font-medium">A. Reyes &middot; Platform Staff</span>
+        </div>
+
+        <div class="p-5 max-w-2xl mx-auto space-y-3">
+          <div class="flex items-center justify-between mb-1">
+            <h4 class="font-display font-bold text-lg uppercase tracking-wide">Applications</h4>
+            <div class="flex gap-3 text-xs font-display uppercase tracking-wide">
+              <span class="text-primary font-semibold border-b-2 border-primary pb-1">All</span>
+              <span class="text-muted pb-1">Pending</span>
+              <span class="text-muted pb-1">Decided</span>
+            </div>
+          </div>
+
+          <!-- expanded card -->
+          <div class="border-2 border-primary bg-background p-4">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <p class="font-medium text-sm">Batangas Star Express</p>
+                <p class="text-xs text-muted">R. Villanueva &middot; r.villanueva@bse.ph &middot; submitted Aug 24, 2026</p>
+              </div>
+              <span class="border border-warning text-warning bg-warning/10 px-2 py-0.5 text-[11px] font-medium shrink-0">Pending</span>
+            </div>
+            <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-xs my-3 py-3 border-y border-border">
+              <div><p class="text-muted mb-0.5">LTFRB franchise no.</p><p class="font-mono">2024-CPC-0417</p></div>
+              <div><p class="text-muted mb-0.5">Phone</p><p class="font-mono">0917 555 0142</p></div>
+              <div class="col-span-2"><p class="text-muted mb-0.5">Requested routes</p><p>Cubao ⇄ Batangas, Cubao ⇄ Lipa</p></div>
+              <div class="col-span-2 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-muted shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>
+                <span class="text-primary underline underline-offset-2">business_permit.pdf</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-[11px] font-semibold px-4 py-2">Approve</button>
+              <button type="button" class="border border-danger text-danger font-display uppercase tracking-wide text-[11px] font-semibold px-4 py-2">Reject</button>
+            </div>
+          </div>
+
+          <!-- collapsed cards -->
+          <div class="border border-border p-4 flex items-center justify-between">
+            <div>
+              <p class="font-medium text-sm">Northern Skyway Liner</p>
+              <p class="text-xs text-muted">J. Domingo &middot; submitted Aug 23, 2026</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="border border-warning text-warning bg-warning/10 px-2 py-0.5 text-[11px] font-medium">Pending</span>
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="border border-border p-4 flex items-center justify-between">
+            <div>
+              <p class="font-medium text-sm">Sierra Madre Trans</p>
+              <p class="text-xs text-muted">L. Ramos &middot; submitted Aug 20, 2026</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="border border-success text-success bg-success/10 px-2 py-0.5 text-[11px] font-medium">Approved</span>
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div class="border border-border p-4 flex items-center justify-between">
+            <div>
+              <p class="font-medium text-sm">QuickHop Vans</p>
+              <p class="text-xs text-muted">M. Cruz &middot; submitted Aug 18, 2026</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="border border-danger text-danger bg-danger/10 px-2 py-0.5 text-[11px] font-medium">Rejected</span>
+              <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="border border-border bg-surface px-4 py-3 text-xs text-muted leading-relaxed max-w-3xl">
+      <span class="text-text font-medium">Not yet decided, on purpose:</span> what Approve actually triggers
+      (creating the <span class="font-mono text-[11px]">Operator</span> + first
+      <span class="font-mono text-[11px]">OperatorStaff</span> record is clear; how that first login's
+      credentials reach the operator is not, since SMS/email is itself cut for MVP per
+      <span class="font-mono text-[11px]">mvp-scope.md</span> #2) — flagged here rather than invented, same as
+      <a href="rider-login-booking-history.html" class="text-primary underline underline-offset-2">rider-login-booking-history.html</a>
+      flagged its own SMS dependency.
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -52,9 +52,11 @@
       <p class="font-display uppercase tracking-[0.15em] text-xs text-muted mb-2">Terminal Signal — UX decision</p>
       <h1 class="font-display font-bold text-3xl sm:text-4xl leading-none mb-3">E-Ticket / Confirmation</h1>
       <p class="text-sm text-muted leading-relaxed">
-        God moment #3: the ticket exists the instant payment clears — <span class="font-mono text-xs">reference_code</span>
-        and QR render immediately, no "check your email" gap. Three layout options for what renders on that
-        screen; Option B is chosen, same working pattern as the two mockups before it.
+        God moment #3: the ticket exists the instant the booking is confirmed — no payment gate to
+        clear first (cash is collected on board, see <span class="font-mono text-xs">payment-method.md</span>) —
+        <span class="font-mono text-xs">reference_code</span> and QR render immediately, no "check your email" gap.
+        Three layout options for what renders on that screen; Option B is chosen, same working pattern as the
+        two mockups before it.
       </p>
     </header>
 
@@ -240,7 +242,7 @@
           </span>
           <div>
             <p class="text-sm font-medium leading-tight">Booking Confirmed</p>
-            <p class="text-[11px] text-muted font-mono tabular-nums">Paid Aug 26, 2026 &middot; 3:42 PM</p>
+            <p class="text-[11px] text-muted font-mono tabular-nums">Booked Aug 26, 2026 &middot; 3:42 PM</p>
           </div>
         </div>
 
@@ -312,7 +314,7 @@
             <span class="font-mono tabular-nums">&#8369;1,560.00</span>
           </div>
           <div class="flex items-center justify-between pt-2 border-t border-border">
-            <p class="font-display uppercase tracking-wide text-xs font-semibold">Total Paid</p>
+            <p class="font-display uppercase tracking-wide text-xs font-semibold">Total Due &middot; Cash on Board</p>
             <p class="font-mono tabular-nums text-lg text-accent font-semibold">&#8369;1,560.00</p>
           </div>
         </div>
@@ -424,11 +426,13 @@
             the UI itself teaches the correct mental model instead of leaving it ambiguous.
           </li>
           <li>
-            <span class="text-text font-medium">Scope boundary: this screen starts at "paid."</span> It renders
-            once <span class="font-mono text-xs">Booking.status = confirmed</span> and
-            <span class="font-mono text-xs">Payment.paid_at</span> is set. Any "processing payment" transitional
-            state gestured at in <a href="../../payment-idempotency.md" class="text-primary underline decoration-primary/40">payment-idempotency.md</a>
-            belongs to the payment-step screen, not this one.
+            <span class="text-text font-medium">Scope boundary: this screen starts at "confirmed," not "paid."</span>
+            It renders once <span class="font-mono text-xs">Booking.status = confirmed</span>, which happens on
+            submission — there's no payment step to wait on
+            (<a href="../../payment-method.md" class="text-primary underline decoration-primary/40">payment-method.md</a>,
+            cash collected on board). <span class="font-mono text-xs">Payment.status</span> starts
+            <span class="font-mono text-xs">pending_cash</span> and is flipped to <span class="font-mono text-xs">collected</span>
+            later at boarding — that's the trip manifest's job, not this screen's.
           </li>
           <li>
             <span class="text-text font-medium">No email fallback exists yet.</span> Per

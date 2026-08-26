@@ -13,7 +13,8 @@ build trust or get the app recommended), mapped against the primary flow in
    the trust hinge for everything downstream.
 2. **Booking the whole family in one pass.** Multi-seat, multi-passenger checkout in a single
    flow — booking-for-family is the PH norm, not the edge case.
-3. **Ticket exists the instant payment clears.** QR + reference_code render immediately, no
+3. **Ticket exists the instant the booking is confirmed.** No payment gate to clear first
+   ([[payment-method]] — cash collected on board) — QR + reference_code render immediately, no
    "check your email" gap.
 4. **Boarding without paper, without a queue.** reference_code/QR gets the rider checked in
    instantly at the terminal counter — the one god moment that happens in the physical world,

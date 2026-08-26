@@ -9,16 +9,18 @@ MVP scope for bus-reservation, after a ruthless-simplicity pass on the rough ent
 
 **Kept:** Terminal/Route/Operator/BusUnit, trip search, Seat+TripSeat with hold TTL (reservable
 classes), ordinary-class seat-count fallback, FareRule lookup (effective-dated, no history UI),
-Booking/BookingSeat/Passenger, single mock Payment provider, reference_code+QR e-ticket, guest
-booking lookup via reference_code+contact (this is the account system for v1), seat-hold expiry
-sweep job, OperatorStaff auth+CRUD scoped to own operator, trip manifest, simple cancel (void +
-release seat, no refund automation).
+Booking/BookingSeat/Passenger, cash-on-board Payment record (no checkout gate — see
+[[payment-method]]), reference_code+QR e-ticket, guest booking lookup via reference_code+contact
+(this is the account system for v1), seat-hold expiry sweep job, OperatorStaff auth+CRUD scoped to
+own operator, trip manifest (also where staff mark a booking's cash as collected), simple cancel
+(void + release seat, no refund automation).
 
 **Cut for v1, ranked by post-MVP significance** (highest first — build these soonest once
 triggered):
 
-1. **Automated refunds / Refund entity** — build when a real payment gateway replaces the mock
-   one. Table stakes once real money moves; deferring past that point is a trust/support risk.
+1. **Automated refunds / Refund entity** — build once real online payment (GCash/Maya) becomes
+   possible ([[payment-method]] is cash-only until KYC/business verification is available). Table
+   stakes once real money moves through the app; deferring past that point is a trust/support risk.
 2. **SMS/email notifications** — build when real (non-test) bookings start happening. The
    in-session ticket has no fallback if the rider closes the tab.
 3. **Route via-stops / multi-leg routes** — build when onboarding an operator whose real route

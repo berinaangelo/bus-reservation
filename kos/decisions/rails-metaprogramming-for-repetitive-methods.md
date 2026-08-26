@@ -28,7 +28,7 @@ end
 
 class Booking < ApplicationRecord
   include Statusable
-  has_statuses :pending_payment, :confirmed, :cancelled, :no_show, :completed
+  has_statuses :confirmed, :cancelled, :no_show, :completed
 end
 ```
 

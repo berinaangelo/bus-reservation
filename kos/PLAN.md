@@ -13,8 +13,8 @@ QR ticket to board with — no account required.
 2. Rider picks a trip (operator, class, fare, departure time).
 3. Rider selects seat(s) — seat map for aircon/deluxe/double-deck, seat count for ordinary —
    and enters passenger name(s) + one contact number.
-4. Rider pays (mock provider for MVP).
-5. Rider gets an e-ticket: QR + reference_code.
+4. Rider confirms the booking (cash-on-board — no payment gate, see [[payment-method]]).
+5. Rider gets an e-ticket: QR + reference_code, issued immediately on confirmation.
 6. Rider looks up or cancels the booking later via reference_code + contact number.
 
 Operator staff exist to make step 1 possible: CRUD their own Route/Trip/BusUnit/FareRule, view
@@ -42,12 +42,12 @@ the trip manifest at boarding. Same story, other side of the same flow — not a
 - **Passenger** — rider details captured at booking time (full_name, contact_number), separate
   from User because booking-for-someone-else is the PH norm.
 - **Booking** — trip_id, user_id (nullable — guest checkout), reference_code (shows on the
-  e-ticket/QR for terminal boarding), status (pending_payment/confirmed/cancelled/no_show/
-  completed), total_amount.
+  e-ticket/QR for terminal boarding), status (confirmed/cancelled/no_show/completed) — confirmed
+  immediately on submission, no pending_payment state (see [[payment-method]]), total_amount.
 - **BookingSeat** — join between Booking and TripSeat + Passenger. For ordinary trips this
   collapses to a seat_count on Booking, no seat rows.
-- **Payment** — booking_id, provider (gcash/maya/mock), amount, status, transaction_ref,
-  paid_at.
+- **Payment** — booking_id, amount, status (pending_cash/collected), collected_at. Cash-only for
+  v1, not a checkout gate — see [[payment-method]].
 - **User** — rider account. Cut from MVP scope (see [[mvp-scope]]) — reference_code + contact
   number lookup covers guest booking management instead.
 - **OperatorStaff** — admin accounts scoped to one operator, managing their own trips/fares.
@@ -66,7 +66,8 @@ post-MVP list. See [[god-moments]] for the UX moments the plan is optimized arou
 - [[utc-storage-ph-display]] — store UTC, display Asia/Manila
 - [[seat-hold-ttl]] — default 1 hour, admin-configurable system setting
 - [[reference-code-format]] — 6-char grouped alnum + checksum, e.g. `4XK-7QM-9`
-- [[payment-idempotency]] — idempotency key required on checkout/payment submission
+- [[payment-method]] — cash-only, collected on board; no checkout payment gate
+- [[payment-idempotency]] — idempotency key required on checkout submission
 
 **Rails engineering guidelines** (carried over/adapted from the user's HRIS project, see
 `decisions/rails-*.md` and [[rails-api-only-vue-spa]] for the one adaptation that mattered —
