@@ -23,8 +23,12 @@ class ApplicableFareRuleTest < ActiveSupport::TestCase
   end
 
   test "ignores a future-dated rule" do
-    create(:fare_rule, route: @route, bus_class: :aircon, effective_date: 1.day.from_now.to_date)
-    trip = create(:trip, route: @route, bus_unit: create(:aircon_bus_unit), departure_at: 12.hours.from_now)
+    trip = create(:trip, route: @route, bus_unit: create(:aircon_bus_unit), departure_at: 1.day.from_now)
+    travel_date = trip.departure_at.in_time_zone("Asia/Manila").to_date
+    # A fixed offset from the trip's own travel date, not independent "from now" arithmetic on
+    # both sides -- the previous version could land the "future" rule on the same Manila calendar
+    # day as the trip depending on time-of-day, making the rule not actually future relative to it.
+    create(:fare_rule, route: @route, bus_class: :aircon, effective_date: travel_date + 5.days)
 
     assert_nil resolve(trip)
   end

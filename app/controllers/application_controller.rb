@@ -14,4 +14,10 @@ class ApplicationController < ActionController::API
   rescue_from ArgumentError do
     render json: { error: "Invalid request" }, status: :bad_request
   end
+
+  # Raised by `authorize` (Pundit::Authorization) when the acting OperatorStaff isn't scoped to
+  # the record's operator -- see kos/decisions/rails-pundit-for-authorization.md.
+  rescue_from Pundit::NotAuthorizedError do
+    render json: { error: "Forbidden" }, status: :forbidden
+  end
 end

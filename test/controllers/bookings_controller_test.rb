@@ -107,4 +107,41 @@ class BookingsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "cancel voids a confirmed booking and releases its seat" do
+    trip = create(:trip, bus_unit: create(:aircon_bus_unit))
+    booking = create(:booking, trip: trip, contact_number: "09171234567")
+    trip_seat = create(:trip_seat, trip: trip, seat: create(:seat, bus_unit: trip.bus_unit), status: :booked, booking: booking)
+    create(:passenger, booking: booking, trip_seat: trip_seat)
+
+    patch cancel_api_v1_booking_path(reference_code: booking.reference_code), params: { contact_number: "0917 123 4567" }
+
+    assert_response :success
+    assert_equal "cancelled", JSON.parse(response.body)["status"]
+    assert trip_seat.reload.available?
+  end
+
+  test "cancel is idempotent against a double-tap" do
+    booking = create(:booking, contact_number: "09171234567")
+
+    patch cancel_api_v1_booking_path(reference_code: booking.reference_code), params: { contact_number: "09171234567" }
+    patch cancel_api_v1_booking_path(reference_code: booking.reference_code), params: { contact_number: "09171234567" }
+
+    assert_response :success
+    assert_equal "cancelled", JSON.parse(response.body)["status"]
+  end
+
+  test "cancel returns 422 for a bad checksum" do
+    patch cancel_api_v1_booking_path(reference_code: "4XK7QM0"), params: { contact_number: "09171234567" }
+
+    assert_response :unprocessable_entity
+  end
+
+  test "cancel returns 404 when the contact_number doesn't match" do
+    booking = create(:booking, contact_number: "09171234567")
+
+    patch cancel_api_v1_booking_path(reference_code: booking.reference_code), params: { contact_number: "09990000000" }
+
+    assert_response :not_found
+  end
 end

@@ -7,5 +7,9 @@ FactoryBot.define do
     contact_number { Faker::PhoneNumber.cell_phone }
     seat_count { nil }
     sequence(:idempotency_key) { |n| "idem-key-#{n}-#{SecureRandom.hex(4)}" }
+
+    trait :checked_in do
+      checked_in_at { Time.current }
+    end
   end
 end

@@ -26,4 +26,13 @@ class SystemSettingTest < ActiveSupport::TestCase
   test "seat_hold_ttl_minutes falls back to 60 when unset" do
     assert_equal 60, SystemSetting.seat_hold_ttl_minutes
   end
+
+  test "operator_session_ttl_minutes reads the configured value" do
+    create(:system_setting, key: "operator_session_ttl_minutes", value: "720")
+    assert_equal 720, SystemSetting.operator_session_ttl_minutes
+  end
+
+  test "operator_session_ttl_minutes falls back to 1440 when unset" do
+    assert_equal 1440, SystemSetting.operator_session_ttl_minutes
+  end
 end

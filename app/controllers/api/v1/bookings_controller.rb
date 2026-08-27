@@ -20,16 +20,41 @@ module Api
       end
 
       def show
-        lookup = BookingLookup.new(reference_code: params[:reference_code], contact_number: params[:contact_number])
-        return render json: { error: "Invalid reference code" }, status: :unprocessable_entity if lookup.invalid_code?
-
-        booking = lookup.call
-        return render json: { error: "Booking not found" }, status: :not_found if booking.nil?
+        booking = find_booking
+        return if booking.nil? # find_booking already rendered the error response
 
         render json: BookingPresenter.new(booking)
       end
 
+      # Requires the same reference_code + contact_number verification as #show -- per
+      # kos/decisions/ux/mockups/booking-detail-cancel.html, this isn't a second place to
+      # re-enter that pair, but a direct/bookmarked request must still prove it before mutating
+      # anything.
+      def cancel
+        booking = find_booking
+        return if booking.nil?
+
+        result = nil
+        ActiveRecord::Base.transaction do
+          result = Bookings::Cancel.call!(booking: booking)
+        end
+
+        render json: BookingPresenter.new(result.booking)
+      end
+
       private
+
+      def find_booking
+        lookup = BookingLookup.new(reference_code: params[:reference_code], contact_number: params[:contact_number])
+        if lookup.invalid_code?
+          render json: { error: "Invalid reference code" }, status: :unprocessable_entity
+          return nil
+        end
+
+        booking = lookup.call
+        render json: { error: "Booking not found" }, status: :not_found if booking.nil?
+        booking
+      end
 
       def checkout_params
         params.permit(:trip_id, :contact_number, :idempotency_key, trip_seat_ids: [], passengers: [ :full_name ])

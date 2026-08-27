@@ -22,4 +22,8 @@ class TripSeat < ApplicationRecord
   def bookable?
     available? || (held? && held_until.present? && held_until < Time.current)
   end
+
+  # Held past its TTL with no booking ever attached -- an abandoned checkout. Feeds
+  # ReleaseExpiredSeatHoldsJob. See kos/decisions/seat-hold-ttl.md.
+  scope :stale_hold, -> { held.where(held_until: ...Time.current) }
 end

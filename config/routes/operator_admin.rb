@@ -2,8 +2,16 @@
 # OperatorStaff's own operator. Loaded via `draw :operator_admin` from config/routes.rb.
 # See kos/decisions/rails-routes-split-into-dedicated-files.md
 namespace :operator do
-  # resources :routes
-  # resources :trips
-  # resources :bus_units
-  # resources :fare_rules
+  resource :session, only: [ :create, :destroy ]
+
+  resources :trips, only: [ :index, :show, :create, :update, :destroy ] do
+    resource :manifest, only: [ :show ], controller: "trip_manifests"
+    resources :check_ins, only: [ :create ]
+  end
+
+  resources :payments, only: [ :update ]
+
+  resources :routes
+  resources :bus_units
+  resources :fare_rules
 end

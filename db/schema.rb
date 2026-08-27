@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_100014) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_100016) do
   create_table "bookings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "checked_in_at"
     t.string "contact_number", null: false
     t.datetime "created_at", null: false
     t.string "idempotency_key", null: false
@@ -50,6 +51,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_100014) do
     t.datetime "updated_at", null: false
     t.index ["route_id", "bus_class", "effective_date"], name: "index_fare_rules_on_route_class_and_date"
     t.index ["route_id"], name: "index_fare_rules_on_route_id"
+  end
+
+  create_table "operator_sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "operator_staff_id", null: false
+    t.string "token_digest", null: false
+    t.datetime "updated_at", null: false
+    t.index ["operator_staff_id"], name: "index_operator_sessions_on_operator_staff_id"
+    t.index ["token_digest"], name: "index_operator_sessions_on_token_digest", unique: true
   end
 
   create_table "operator_staff", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -174,6 +185,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_100014) do
   add_foreign_key "bookings", "trips"
   add_foreign_key "bus_units", "operators"
   add_foreign_key "fare_rules", "routes", on_delete: :cascade
+  add_foreign_key "operator_sessions", "operator_staff", on_delete: :cascade
   add_foreign_key "operator_staff", "operators", on_delete: :cascade
   add_foreign_key "passengers", "bookings", on_delete: :cascade
   add_foreign_key "passengers", "trip_seats"

@@ -33,4 +33,28 @@ class TripTest < ActiveSupport::TestCase
     assert_not trip.destroy
     assert_includes trip.errors[:base], "Cannot delete record because dependent bookings exist"
   end
+
+  test "bus_unit is blocked from an overlapping trip on the same window" do
+    bus_unit = create(:aircon_bus_unit)
+    create(:trip, bus_unit: bus_unit, departure_at: Time.zone.parse("2026-09-01 08:00"), arrival_at: Time.zone.parse("2026-09-01 12:00"))
+
+    overlapping = build(:trip, bus_unit: bus_unit, departure_at: Time.zone.parse("2026-09-01 10:00"), arrival_at: Time.zone.parse("2026-09-01 14:00"))
+    assert_not overlapping.valid?
+    assert_includes overlapping.errors[:bus_unit_id], "is already booked for an overlapping trip"
+  end
+
+  test "bus_unit overlap ignores cancelled trips" do
+    bus_unit = create(:aircon_bus_unit)
+    create(:trip, bus_unit: bus_unit, status: :cancelled, departure_at: Time.zone.parse("2026-09-01 08:00"), arrival_at: Time.zone.parse("2026-09-01 12:00"))
+
+    overlapping = build(:trip, bus_unit: bus_unit, departure_at: Time.zone.parse("2026-09-01 10:00"), arrival_at: Time.zone.parse("2026-09-01 14:00"))
+    assert overlapping.valid?
+  end
+
+  test "bus_unit overlap excludes itself when updating an unrelated attribute" do
+    trip = create(:trip)
+
+    trip.status = :boarding
+    assert trip.valid?
+  end
 end

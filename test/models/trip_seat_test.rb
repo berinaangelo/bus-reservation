@@ -36,4 +36,19 @@ class TripSeatTest < ActiveSupport::TestCase
     assert_not build(:trip_seat, status: :held, held_until: 1.hour.from_now).bookable?
     assert_not build(:trip_seat, status: :booked).bookable?
   end
+
+  test "stale_hold includes only expired holds" do
+    trip = create(:trip)
+    expired_hold = create(:trip_seat, trip: trip, status: :held, held_until: 1.minute.ago)
+    live_hold = create(:trip_seat, trip: trip, status: :held, held_until: 1.hour.from_now)
+    available = create(:trip_seat, trip: trip, status: :available)
+    booked = create(:trip_seat, trip: trip, status: :booked)
+
+    stale_ids = TripSeat.stale_hold.pluck(:id)
+
+    assert_equal [ expired_hold.id ], stale_ids
+    assert_not_includes stale_ids, live_hold.id
+    assert_not_includes stale_ids, available.id
+    assert_not_includes stale_ids, booked.id
+  end
 end
