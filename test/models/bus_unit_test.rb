@@ -41,6 +41,13 @@ class BusUnitTest < ActiveSupport::TestCase
     assert_includes dupe.errors[:plate_number], "has already been taken"
   end
 
+  test "fare_class maps each STI type to the matching FareRule.bus_class key" do
+    assert_equal :ordinary, build(:ordinary_bus_unit).fare_class
+    assert_equal :aircon, build(:aircon_bus_unit).fare_class
+    assert_equal :deluxe, build(:deluxe_bus_unit).fare_class
+    assert_equal :double_deck, build(:double_deck_bus_unit).fare_class
+  end
+
   test "destroying a bus_unit with trips is restricted" do
     bus_unit = create(:aircon_bus_unit)
     create(:trip, bus_unit: bus_unit)

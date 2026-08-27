@@ -16,4 +16,9 @@ class BusUnit < ApplicationRecord
   def decks
     [ nil ]
   end
+
+  # Maps the STI type to the matching FareRule.bus_class enum key, e.g. AirconBusUnit -> :aircon.
+  def fare_class
+    self.class.name.underscore.delete_suffix("_bus_unit").to_sym
+  end
 end

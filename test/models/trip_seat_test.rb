@@ -29,4 +29,11 @@ class TripSeatTest < ActiveSupport::TestCase
     assert_not_includes bookable_ids, live_hold.id
     assert_not_includes bookable_ids, booked.id
   end
+
+  test "bookable? instance method mirrors the bookable scope" do
+    assert build(:trip_seat, status: :available).bookable?
+    assert build(:trip_seat, status: :held, held_until: 1.minute.ago).bookable?
+    assert_not build(:trip_seat, status: :held, held_until: 1.hour.from_now).bookable?
+    assert_not build(:trip_seat, status: :booked).bookable?
+  end
 end

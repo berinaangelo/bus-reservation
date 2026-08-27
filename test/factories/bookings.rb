@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :booking do
     trip
-    sequence(:reference_code) { |n| "REF#{1000 + n}" }
+    reference_code { ReferenceCode.generate }
     status { :confirmed }
     total_amount { 95_000 } # centavos
     contact_number { Faker::PhoneNumber.cell_phone }
