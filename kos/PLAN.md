@@ -79,4 +79,10 @@ metaprogramming, route file splitting, skinny models, testing conventions. Full 
 
 ## Next step
 
-Scaffold the Rails app + Vue frontend, and migrations for the kept entities above.
+**Data layer done (2026-08-27)** — migrations + models for the entities above are built and
+tested; see [[data-model-schema]] for what changed translating this rough sketch into Rails (the
+`Passenger`/`BookingSeat` merge, `BusUnit` STI, index/cascade decisions). That note is now the
+ground truth for the schema, not this section.
+
+Next: build the checkout flow (Form Object + Interactor) and `TripSearch` against the real
+models, then the Vue frontend consuming them.

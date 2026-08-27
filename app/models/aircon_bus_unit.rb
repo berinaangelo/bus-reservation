@@ -1,0 +1,2 @@
+class AirconBusUnit < ReservableBusUnit
+end

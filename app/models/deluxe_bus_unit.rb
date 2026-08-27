@@ -1,0 +1,2 @@
+class DeluxeBusUnit < ReservableBusUnit
+end

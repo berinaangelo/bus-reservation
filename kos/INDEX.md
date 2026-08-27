@@ -15,6 +15,7 @@ Last updated: 2026-08-26
 - [reference-code-format](decisions/reference-code-format.md) — 6-char grouped alnum + Luhn mod N checksum, e.g. `4XK-7QM-9`
 - [payment-method](decisions/payment-method.md) — cash-only for v1 (no KYC for GCash/Maya yet), collected on board via trip manifest check-in, no checkout payment gate
 - [payment-idempotency](decisions/payment-idempotency.md) — idempotency key required on checkout submission (guards duplicate bookings, not duplicate charges)
+- [data-model-schema](decisions/data-model-schema.md) — migrations/models built for the PLAN.md entity sketch: Passenger/BookingSeat merged into one table, BusUnit as STI, per-relationship on-delete cascade/restrict, indexes matched to real query needs, no summary table yet (reporting is cut #7)
 - [rails-api-only-vue-spa](decisions/rails-api-only-vue-spa.md) — Rails is JSON-only, Vue owns the whole UI; no ERB/ViewComponent/Turbo
 - [rails-thin-controllers-organizer-interactor-pattern](decisions/rails-thin-controllers-organizer-interactor-pattern.md) — thin controllers + Interactor/Organizer
 - [rails-db-transactions-locking-idempotency](decisions/rails-db-transactions-locking-idempotency.md) — transactions, pessimistic lock on seat claims, optimistic lock elsewhere

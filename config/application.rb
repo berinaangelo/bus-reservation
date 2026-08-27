@@ -16,6 +16,10 @@ module BusReservation
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # Rails is JSON-only; Vue owns the whole UI as a separate frontend.
+    # See kos/decisions/rails-api-only-vue-spa.md
+    config.api_only = true
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

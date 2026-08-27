@@ -7,8 +7,9 @@ module ActiveSupport
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-    fixtures :all
+    # Test data via FactoryBot + Faker instead of fixtures.
+    # See kos/decisions/rails-testing-minitest-factorybot-faker.md
+    include FactoryBot::Syntax::Methods
 
     # Add more helper methods to be used by all tests here...
   end
