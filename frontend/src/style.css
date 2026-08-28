@@ -1,1 +1,53 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* Terminal Signal design tokens — see kos/decisions/ux/color-scheme.md and typography.md.
+   Tailwind v4 is CSS-first: these become bg-primary/text-muted/border-border/font-display/...
+   utilities automatically, no tailwind.config.js needed. */
+@theme {
+  --color-primary: #27915c;
+  --color-secondary: #7747ae;
+  --color-accent: #ee862b;
+  --color-success: #30a66b;
+  --color-warning: #f0b80f;
+  --color-danger: #c9262c;
+  --color-text: #1e2925;
+  --color-muted: #5e6e69;
+  --color-surface: #f3f7f5;
+  --color-background: #f9fbfa;
+  --color-border: #e1e8e4;
+
+  /* WCAG AA override: white text on --color-accent fails at 2.60:1 in light mode. */
+  --color-accent-text: #1e2925;
+
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-sans: 'Barlow', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+/* Dark mode: same token names, inverted values, re-declared as plain custom-property overrides
+   (not a second @theme block) — every already-generated utility re-themes with no dark:
+   variants needed anywhere. System-preference-only for now, no manual toggle. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #3fc086;
+    --color-secondary: #ac85db;
+    --color-accent: #f5a155;
+    --color-success: #43c88c;
+    --color-warning: #f3c233;
+    --color-danger: #e2585c;
+    --color-text: #e7eeea;
+    --color-muted: #93a69e;
+    --color-surface: #171f17;
+    --color-background: #10160f;
+    --color-border: #2a362e;
+
+    /* Dark theme's Background value doubles as accent text, per color-scheme.md. */
+    --color-accent-text: #10160f;
+  }
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
