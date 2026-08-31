@@ -17,6 +17,7 @@ class CheckoutForm
   validate :trip_exists
   validate :trip_is_scheduled
   validate :passengers_have_names
+  validate :passenger_count_within_limit
   validate :seat_selection_matches_bus_class
 
   def passengers=(value)
@@ -51,6 +52,14 @@ class CheckoutForm
     unless passengers.is_a?(Array) && passengers.all? { |p| p.is_a?(Hash) && p[:full_name].present? }
       errors.add(:passengers, "must each have a full_name")
     end
+  end
+
+  # See kos/decisions/ux/mockups/seat-selection-passenger-details.html -- "Up to 6 seats per
+  # booking" is shown on the screen itself, but wasn't enforced server-side until now.
+  def passenger_count_within_limit
+    return if passengers.blank?
+
+    errors.add(:passengers, "must not exceed 6 seats per booking") if passengers.size > 6
   end
 
   def seat_selection_matches_bus_class

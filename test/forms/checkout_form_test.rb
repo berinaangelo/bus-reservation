@@ -82,6 +82,14 @@ class CheckoutFormTest < ActiveSupport::TestCase
     assert_includes form.errors[:passengers], "must each have a full_name"
   end
 
+  test "invalid with more than 6 passengers" do
+    seven_passengers = Array.new(7) { |n| { full_name: "Passenger #{n}" } }
+    form = build_form(trip_id: @ordinary_trip.id, trip_seat_ids: nil, passengers: seven_passengers)
+
+    assert_not form.valid?
+    assert_includes form.errors[:passengers], "must not exceed 6 seats per booking"
+  end
+
   test "invalid with no passengers" do
     form = build_form(trip_id: @reservable_trip.id, trip_seat_ids: [], passengers: [])
 

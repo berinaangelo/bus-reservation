@@ -7,6 +7,7 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import BaseInput from '../../components/ui/BaseInput.vue'
 import PasswordInput from '../../components/ui/PasswordInput.vue'
 import BaseSelect from '../../components/ui/BaseSelect.vue'
+import BaseAutocomplete from '../../components/ui/BaseAutocomplete.vue'
 import BaseDialog from '../../components/ui/BaseDialog.vue'
 import BaseDrawer from '../../components/ui/BaseDrawer.vue'
 import BaseToast from '../../components/ui/BaseToast.vue'
@@ -24,6 +25,13 @@ const terminalOptions: SelectOption<number>[] = [
 ]
 const selectValue = ref<number | null>(null)
 const selectErrorValue = ref<number | null>(null)
+
+const autocompleteValue = ref<number | null>(null)
+const autocompleteQuery = ref('')
+async function mockTerminalLoader(q: string): Promise<SelectOption<number>[]> {
+  await new Promise((resolve) => setTimeout(resolve, 400)) // simulate network latency
+  return terminalOptions.filter((opt) => opt.label.toLowerCase().includes(q.toLowerCase()))
+}
 
 const showStackedDialog = ref(true)
 const showInlineDialog = ref(true)
@@ -103,6 +111,26 @@ const dismissibleToasts = ref({ danger: true, success: true, warning: true, info
         label="Destination terminal"
         error="Destination is required."
       />
+    </section>
+
+    <!-- BaseAutocomplete -->
+    <section class="space-y-3">
+      <h2
+        class="font-display uppercase tracking-wide text-sm text-muted border-b border-border pb-1"
+      >
+        BaseAutocomplete
+      </h2>
+      <BaseAutocomplete
+        v-model="autocompleteValue"
+        v-model:query="autocompleteQuery"
+        :loader="mockTerminalLoader"
+        label="From"
+        placeholder="Origin terminal"
+      >
+        <template #leading="{ iconClass }">
+          <MapPin :class="iconClass" class="w-4 h-4 shrink-0" />
+        </template>
+      </BaseAutocomplete>
     </section>
 
     <!-- BaseDialog -->

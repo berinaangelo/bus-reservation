@@ -6,7 +6,7 @@
 withDefaults(
   defineProps<{
     modelValue: string
-    type?: 'text' | 'email' | 'password' // 'password' is normally reached via PasswordInput
+    type?: 'text' | 'email' | 'password' | 'date' | 'tel' // 'password' is normally reached via PasswordInput
     label?: string
     placeholder?: string
     /** Presence = error state; also rendered as helper text below the field. */
@@ -16,6 +16,9 @@ withDefaults(
     id?: string
     name?: string
     autocomplete?: string
+    /** Only meaningful for type="date" (or "number", if ever needed). */
+    min?: string
+    max?: string
   }>(),
   {
     type: 'text',
@@ -27,6 +30,8 @@ withDefaults(
     id: undefined,
     name: undefined,
     autocomplete: undefined,
+    min: undefined,
+    max: undefined,
   },
 )
 
@@ -65,6 +70,8 @@ defineSlots<{
           :disabled="disabled"
           :required="required"
           :autocomplete="autocomplete"
+          :min="min"
+          :max="max"
           class="w-full min-w-0 bg-transparent text-base font-mono tracking-wide text-text placeholder:text-muted placeholder:font-sans focus:outline-none disabled:cursor-not-allowed disabled:text-muted"
           @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         />

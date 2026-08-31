@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # Rider-facing resources go here directly.
-      resources :trips, only: [ :index ]
+      resources :trips, only: [ :index ] do
+        member { get :seats }
+      end
+      resources :terminals, only: [ :index ]
       resources :bookings, only: [ :create, :show ], param: :reference_code do
         member do
           patch :cancel

@@ -15,6 +15,19 @@ export interface Trip {
   origin_terminal: string
   destination_terminal: string
   fare: number | null // minor units (centavos); null when no FareRule is configured yet
+  seats_available: number
+}
+
+// GET /api/v1/trips — cursor (keyset), not page-based, see
+// kos/decisions/rails-pagination-and-batch-export-processing.md. next_cursor is an opaque token,
+// pass it back as the `cursor` param to fetch the next page; has_more false means the whole
+// result set (for this origin/destination/date) has been loaded.
+export interface TripSearchResponse {
+  trips: Trip[]
+  meta: {
+    next_cursor: string | null
+    has_more: boolean
+  }
 }
 
 export interface OperatorTrip {
