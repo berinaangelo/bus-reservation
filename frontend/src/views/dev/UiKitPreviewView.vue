@@ -84,6 +84,11 @@ const dismissibleToasts = ref({ danger: true, success: true, warning: true, info
         </template>
       </BaseInput>
       <BaseInput v-model="errorValue" label="Origin terminal" error="Destination is required." />
+      <BaseInput
+        model-value="4XK-7QM-8"
+        label="Reference code"
+        warning="Doesn't look quite right — check for a mistyped character."
+      />
       <BaseInput model-value="Locked" label="Disabled field" disabled />
       <PasswordInput
         v-model="passwordValue"

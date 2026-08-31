@@ -21,6 +21,9 @@
 //      #e-ticket-print-area below) rather than generating a downloadable image — no image-export
 //      library is installed, and SMS/email notifications are cut for v1 (mvp-scope.md cut #2), so
 //      this is the rider's only durable copy of the ticket.
+//   6. A "Manage Booking" button was added (not in the original mockup), linking to
+//      BookingDetailView once that screen existed as its own destination — see that view's header
+//      comment. It hands off through bookingAccess.ts using contact_number already on Booking.
 //
 // Data source: SeatSelectionView's onSubmit stashes the just-created Booking in
 // checkoutStore.lastBooking before navigating here (see stores/checkout.ts's header comment) —
@@ -35,6 +38,7 @@ import { Check, ArrowRight, Download } from '@lucide/vue'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import Empty from '../../components/ui/Empty.vue'
 import { useCheckoutStore } from '../../stores/checkout'
+import { useBookingAccessStore } from '../../stores/bookingAccess'
 import { formatFare, formatTime, formatDate, formatDuration } from '../../utils/format'
 import type { Booking } from '../../types/booking'
 
@@ -42,6 +46,7 @@ const props = defineProps<{ referenceCode: string }>()
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()
+const bookingAccessStore = useBookingAccessStore()
 
 const booking = ref<Booking | null>(null)
 const notFoundHere = ref(false)
@@ -55,6 +60,7 @@ onMounted(async () => {
   const candidate = checkoutStore.lastBooking
   if (candidate && candidate.reference_code === props.referenceCode) {
     booking.value = candidate
+    bookingAccessStore.setVerified(candidate.reference_code, candidate.contact_number)
     try {
       qrSvg.value = await QRCode.toString(candidate.reference_code, {
         type: 'svg',
@@ -88,6 +94,11 @@ const duration = computed(() =>
 
 function goToLookup() {
   router.push({ name: 'booking-lookup' })
+}
+
+function goToDetail() {
+  if (!booking.value) return
+  router.push({ name: 'booking-detail', params: { referenceCode: booking.value.reference_code } })
 }
 
 function goToTripSearch() {
@@ -240,6 +251,9 @@ function onSaveTicket() {
       </BaseButton>
     </div>
 
+    <BaseButton variant="secondary" class="w-full mt-3" @click="goToDetail">
+      Manage Booking
+    </BaseButton>
     <BaseButton variant="secondary" class="w-full mt-3" @click="goToTripSearch">
       Book Another Trip
     </BaseButton>

@@ -3,6 +3,8 @@
 // seat-selection-passenger-details.html (contact number field): label above, icon+input in one
 // inline row inside a single bordered box (icon is NOT absolutely positioned). Focus ring lives on
 // the outer wrapper (focus-within), not the <input> itself.
+import { AlertTriangle } from '@lucide/vue'
+
 withDefaults(
   defineProps<{
     modelValue: string
@@ -11,6 +13,12 @@ withDefaults(
     placeholder?: string
     /** Presence = error state; also rendered as helper text below the field. */
     error?: string
+    /**
+     * Presence = warning state — amber, not danger, and rendered *inside* the box (icon + text,
+     * below the input row) rather than below it. For a "this is probably a typo, not necessarily
+     * wrong" signal — see booking-lookup.html's checksum-typo state. Ignored if `error` is set.
+     */
+    warning?: string
     disabled?: boolean
     required?: boolean
     id?: string
@@ -25,6 +33,7 @@ withDefaults(
     label: undefined,
     placeholder: undefined,
     error: undefined,
+    warning: undefined,
     disabled: false,
     required: false,
     id: undefined,
@@ -48,7 +57,7 @@ defineSlots<{
     <div
       class="border p-3 focus-within:ring-2 focus-within:ring-primary transition-colors duration-150 motion-reduce:transition-none"
       :class="[
-        error ? 'border-danger bg-danger/5' : 'border-border bg-surface',
+        error ? 'border-danger bg-danger/5' : warning ? 'border-warning bg-warning/10' : 'border-border bg-surface',
         disabled && 'opacity-60 cursor-not-allowed',
       ]"
     >
@@ -60,7 +69,7 @@ defineSlots<{
         {{ label }}
       </label>
       <div class="flex items-center gap-2">
-        <slot name="leading" :icon-class="error ? 'text-danger' : 'text-primary'" />
+        <slot name="leading" :icon-class="error ? 'text-danger' : warning ? 'text-warning' : 'text-primary'" />
         <input
           :id="id"
           :name="name"
@@ -76,6 +85,10 @@ defineSlots<{
           @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         />
         <slot name="trailing" :icon-class="error ? 'text-danger' : 'text-muted'" />
+      </div>
+      <div v-if="!error && warning" class="flex items-start gap-1.5 mt-1.5">
+        <AlertTriangle class="w-3 h-3 text-warning shrink-0 mt-0.5" />
+        <p class="text-[11px] text-text leading-snug">{{ warning }}</p>
       </div>
     </div>
     <p v-if="error" class="text-[11px] text-danger mt-1">{{ error }}</p>
