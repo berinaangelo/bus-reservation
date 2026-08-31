@@ -154,7 +154,7 @@ function goToLookup() {
       </BaseButton>
     </div>
 
-    <div v-else-if="booking" class="max-w-md">
+    <div v-else-if="booking" class="max-w-md mx-auto">
       <div class="border border-border bg-background">
         <!-- status banner -->
         <div

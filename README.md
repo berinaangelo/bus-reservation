@@ -11,7 +11,8 @@ frontend, communicating over JSON — see
 
 ## Screenshots
 
-Rider flow, end to end — search a trip, pick one, select a seat, get the e-ticket:
+Rider flow, end to end — search a trip, pick one, select a seat, get the e-ticket, manage the
+booking afterward:
 
 | | |
 |---|---|
@@ -19,6 +20,8 @@ Rider flow, end to end — search a trip, pick one, select a seat, get the e-tic
 | 1. Trip Search | 2. Trip Search Results |
 | ![Seat Selection](kos/screenshots/03-seat-selection.png) | ![E-Ticket Confirmation](kos/screenshots/04-e-ticket-confirmation.png) |
 | 3. Seat Selection | 4. E-Ticket Confirmation |
+| ![Booking Detail](kos/screenshots/05-booking-detail.png) | |
+| 5. Booking Detail / Cancel | |
 
 ## Getting started
 
