@@ -41,7 +41,12 @@ export function formatDate(iso: string): string {
 // regardless of timezone, since both timestamps are UTC instants under the hood.
 export function formatDuration(startIso: string, endIso: string): string {
   const ms = new Date(endIso).getTime() - new Date(startIso).getTime()
-  const totalMinutes = Math.max(0, Math.round(ms / 60_000))
+  return formatMinutes(Math.max(0, Math.round(ms / 60_000)))
+}
+
+// Minutes-only duration formatter, e.g. a route's estimated_duration_minutes (no start/end
+// timestamps to diff — the API already gives us a plain minute count).
+export function formatMinutes(totalMinutes: number): string {
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
   if (hours === 0) return `${minutes}m`
