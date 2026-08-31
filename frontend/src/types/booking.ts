@@ -10,7 +10,7 @@ export interface Booking {
   status: string
   contact_number: string
   total_amount: number // minor units (centavos)
-  seat_count: number
+  seat_count: number | null // null for reservable-class bookings — see create_booking.rb; use passengers.length for a count that works for both classes
   trip: {
     departure_at: string
     arrival_at: string

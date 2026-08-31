@@ -74,5 +74,23 @@ export const useOperatorAuthStore = defineStore('operatorAuth', () => {
     }
   }
 
-  return { token, staff, expiresAt, isAuthenticated, hydrate, login, logout, clearSession }
+  /** Extends the session's expiry — used by the "stay logged in" prompt. Throws on failure
+   *  (e.g. the session already lapsed server-side); the caller decides how to handle that. */
+  async function renewSession() {
+    const res = await operatorSession.renew()
+    expiresAt.value = res.expires_at
+    persist()
+  }
+
+  return {
+    token,
+    staff,
+    expiresAt,
+    isAuthenticated,
+    hydrate,
+    login,
+    logout,
+    clearSession,
+    renewSession,
+  }
 })

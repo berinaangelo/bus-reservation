@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_100016) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_082012) do
   create_table "bookings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "checked_in_at"
     t.string "contact_number", null: false
@@ -67,6 +67,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_100016) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "locked_at"
     t.string "name", null: false
     t.bigint "operator_id", null: false
     t.string "password_digest", null: false
@@ -94,6 +96,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_100016) do
     t.datetime "updated_at", null: false
     t.index ["booking_id"], name: "index_passengers_on_booking_id"
     t.index ["trip_seat_id"], name: "index_passengers_on_trip_seat_id", unique: true
+  end
+
+  create_table "password_reset_tokens", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "operator_staff_id", null: false
+    t.string "token_digest", null: false
+    t.datetime "updated_at", null: false
+    t.index ["operator_staff_id"], name: "index_password_reset_tokens_on_operator_staff_id"
+    t.index ["token_digest"], name: "index_password_reset_tokens_on_token_digest", unique: true
   end
 
   create_table "payments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -189,6 +201,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_100016) do
   add_foreign_key "operator_staff", "operators", on_delete: :cascade
   add_foreign_key "passengers", "bookings", on_delete: :cascade
   add_foreign_key "passengers", "trip_seats"
+  add_foreign_key "password_reset_tokens", "operator_staff", on_delete: :cascade
   add_foreign_key "payments", "bookings", on_delete: :cascade
   add_foreign_key "routes", "operators"
   add_foreign_key "routes", "terminals", column: "destination_terminal_id"

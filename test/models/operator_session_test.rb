@@ -64,4 +64,13 @@ class OperatorSessionTest < ActiveSupport::TestCase
     assert build(:operator_session, expires_at: 1.minute.ago).expired?
     assert_not build(:operator_session, expires_at: 1.minute.from_now).expired?
   end
+
+  test "renew! extends expires_at by the configured TTL from now" do
+    create(:system_setting, key: "operator_session_ttl_minutes", value: "30")
+    session = create(:operator_session, expires_at: 2.minutes.from_now)
+
+    session.renew!
+
+    assert_in_delta 30.minutes.from_now, session.expires_at, 1.second
+  end
 end

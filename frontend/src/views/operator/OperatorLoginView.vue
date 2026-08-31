@@ -1,13 +1,11 @@
 <script setup lang="ts">
-// Standalone screen, no OperatorLayout chrome — the chosen "Split Panel" mockup
-// (kos/decisions/ux/mockups/operator-login.html) has no sidebar for an unauthenticated user.
-// Functional (not just a placeholder) since it's the one screen this infra pass needs working
-// end-to-end to verify the auth store/guard/API client together. Refactored to consume the base
-// UI kit (frontend/src/components/ui/) — this was its original reference markup.
+// Split Panel layout (kos/decisions/ux/mockups/operator-login.html, chosen Option B), via the
+// shared OperatorAuthLayout also used by ForgotPasswordView/ResetPasswordView.
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOperatorAuthStore } from '../../stores/operatorAuth'
 import { ApiError } from '../../api/types'
+import OperatorAuthLayout from '../../layouts/OperatorAuthLayout.vue'
 import BaseInput from '../../components/ui/BaseInput.vue'
 import PasswordInput from '../../components/ui/PasswordInput.vue'
 import BaseButton from '../../components/ui/BaseButton.vue'
@@ -21,6 +19,12 @@ const submitting = ref(false)
 const auth = useOperatorAuthStore()
 const router = useRouter()
 const route = useRoute()
+
+// Set by useSessionExpiryWarning's redirect when the session lapses without the operator
+// explicitly logging out.
+if (route.query.reason === 'expired') {
+  error.value = 'Your session expired. Please log in again.'
+}
 
 async function onSubmit() {
   error.value = null
@@ -39,11 +43,13 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-background">
-    <form class="w-full max-w-sm border border-border bg-surface p-6" @submit.prevent="onSubmit">
-      <h1 class="mb-4 font-display text-2xl font-bold text-primary">Operator Console</h1>
+  <OperatorAuthLayout>
+    <p class="font-display uppercase tracking-wider text-[11px] text-muted mb-4">
+      Log in to continue
+    </p>
 
-      <BaseToast v-if="error" variant="danger" :message="error" :dismissible="false" class="mb-3" />
+    <form @submit.prevent="onSubmit">
+      <BaseToast v-if="error" variant="danger" :message="error" :dismissible="false" class="mb-4" />
 
       <BaseInput
         id="email"
@@ -73,6 +79,13 @@ async function onSubmit() {
       >
         Log in
       </BaseButton>
+
+      <router-link
+        :to="{ name: 'operator-forgot-password' }"
+        class="block mt-3 text-xs text-muted hover:text-primary transition-colors duration-150 motion-reduce:transition-none"
+      >
+        Forgot password?
+      </router-link>
     </form>
-  </div>
+  </OperatorAuthLayout>
 </template>

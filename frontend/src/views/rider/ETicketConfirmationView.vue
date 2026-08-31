@@ -8,10 +8,15 @@
 //   2. The "Booked Aug 26, 2026 · 3:42 PM" timestamp line is dropped — Booking has no created_at
 //      (see types/booking.ts, matches app/presenters/booking_presenter.rb exactly).
 //   3. The bus-class badge ("Deluxe" pill) is dropped — Booking/trip has no bus_class field.
-//   4. The QR box renders the mockup's static grid-icon SVG placeholder verbatim, not a real
-//      encoded QR — no QR-generation library is wired in. QR camera-scan check-in is cut from
-//      MVP (staff hand-type the reference code), and the mockup itself flags this as "not a
-//      decided visual treatment."
+//   4. The QR box renders a real encoded QR (via the `qrcode` package), not the mockup's static
+//      grid-icon placeholder — mvp-scope.md keeps "reference_code+QR e-ticket" in scope even
+//      though QR *camera-scan check-in* (staff scanning it) is cut; this just readies the code
+//      for that or any other future use (e.g. a payment-flow workaround) to build against without
+//      redoing the ticket. It encodes the reference_code as plain text, nothing more — same value
+//      already shown next to it, so there's no new backend surface. Colors are hardcoded black-on-
+//      white rather than the --color-text/--color-background theme tokens: a QR needs guaranteed
+//      contrast to scan (dark mode would print/photograph as a light-on-dark code), and this ships
+//      on paper/screenshots outside the app's own theming anyway.
 //   5. "Save Ticket" calls window.print() (see the @media print block in style.css, scoped to
 //      #e-ticket-print-area below) rather than generating a downloadable image — no image-export
 //      library is installed, and SMS/email notifications are cut for v1 (mvp-scope.md cut #2), so
@@ -25,6 +30,7 @@
 // fall back to Booking Lookup, where the rider can re-authorize a proper lookup themselves.
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import QRCode from 'qrcode'
 import { Check, ArrowRight, Download } from '@lucide/vue'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import Empty from '../../components/ui/Empty.vue'
@@ -40,17 +46,38 @@ const checkoutStore = useCheckoutStore()
 const booking = ref<Booking | null>(null)
 const notFoundHere = ref(false)
 
-onMounted(() => {
+// Encodes the plain reference_code — see header comment #4. Generation only ever fails on a
+// malformed input, which reference_code never is, but it still falls back to the old placeholder
+// icon rather than an empty box (never assume the happy path).
+const qrSvg = ref('')
+
+onMounted(async () => {
   const candidate = checkoutStore.lastBooking
   if (candidate && candidate.reference_code === props.referenceCode) {
     booking.value = candidate
+    try {
+      qrSvg.value = await QRCode.toString(candidate.reference_code, {
+        type: 'svg',
+        margin: 1,
+        width: 64,
+        color: { dark: '#000000', light: '#ffffff' },
+      })
+    } catch {
+      qrSvg.value = ''
+    }
   } else {
     notFoundHere.value = true
   }
 })
 
+// booking.seat_count is null for reservable-class bookings (see types/booking.ts) — passenger
+// count works for both classes since it's always populated from the actual passengers list.
+const passengerCount = computed(() => booking.value?.passengers.length ?? 0)
+
 const unitFare = computed(() =>
-  booking.value ? Math.round(booking.value.total_amount / booking.value.seat_count) : 0,
+  booking.value && passengerCount.value > 0
+    ? Math.round(booking.value.total_amount / passengerCount.value)
+    : 0,
 )
 
 const duration = computed(() =>
@@ -61,6 +88,10 @@ const duration = computed(() =>
 
 function goToLookup() {
   router.push({ name: 'booking-lookup' })
+}
+
+function goToTripSearch() {
+  router.push({ name: 'trip-search' })
 }
 
 function onSaveTicket() {
@@ -79,8 +110,8 @@ function onSaveTicket() {
     </template>
   </Empty>
 
-  <div v-else-if="booking" id="e-ticket-print-area" class="max-w-sm mx-auto">
-    <div class="border border-border bg-background p-6">
+  <div v-else-if="booking" class="max-w-sm mx-auto">
+    <div id="e-ticket-print-area" class="border border-border bg-background p-6">
       <!-- status -->
       <div class="flex items-center gap-2 mb-5">
         <span class="w-6 h-6 rounded-full bg-success flex items-center justify-center shrink-0">
@@ -101,7 +132,11 @@ function onSaveTicket() {
         </div>
         <div class="shrink-0 text-center">
           <div class="w-20 h-20 border border-border bg-surface flex items-center justify-center">
+            <!-- v-html is the qrcode library's own SVG output, not user input — reference_code
+                 is our own value, restricted to reference-code-format.md's fixed alphabet. -->
+            <div v-if="qrSvg" class="w-16 h-16" aria-hidden="true" v-html="qrSvg" />
             <svg
+              v-else
               class="w-11 h-11 text-muted"
               viewBox="0 0 24 24"
               fill="none"
@@ -185,7 +220,7 @@ function onSaveTicket() {
       <!-- fare -->
       <div class="mb-6 pt-4 border-t border-border">
         <div class="flex items-center justify-between text-xs text-muted mb-1">
-          <span>{{ formatFare(unitFare) }} × {{ booking.seat_count }} passengers</span>
+          <span>{{ formatFare(unitFare) }} × {{ passengerCount }} passengers</span>
           <span class="font-mono tabular-nums">{{ formatFare(booking.total_amount) }}</span>
         </div>
         <div class="flex items-center justify-between pt-2 border-t border-border">
@@ -204,5 +239,9 @@ function onSaveTicket() {
         Save Ticket
       </BaseButton>
     </div>
+
+    <BaseButton variant="secondary" class="w-full mt-3" @click="goToTripSearch">
+      Book Another Trip
+    </BaseButton>
   </div>
 </template>

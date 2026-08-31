@@ -10,6 +10,7 @@ const navItems = [
   { to: { name: 'operator-trips' }, label: 'Trips' },
   { to: { name: 'operator-bus-units' }, label: 'Bus Units' },
   { to: { name: 'operator-fare-rules' }, label: 'Fare Rules' },
+  { to: { name: 'operator-staff' }, label: 'Staff' },
 ]
 
 async function logout() {

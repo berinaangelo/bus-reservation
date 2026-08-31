@@ -16,3 +16,12 @@ export function login(email: string, password: string) {
 export function logout() {
   return request<void>('/operator/session', { method: 'DELETE', auth: true })
 }
+
+interface RenewResponse {
+  expires_at: string
+}
+
+// PATCH /api/v1/operator/session
+export function renew() {
+  return request<RenewResponse>('/operator/session', { method: 'PATCH', auth: true })
+}

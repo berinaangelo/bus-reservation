@@ -9,7 +9,7 @@ export function installGuards(router: Router) {
       return { name: 'operator-login', query: { redirect: to.fullPath } }
     }
 
-    if (to.name === 'operator-login' && auth.isAuthenticated) {
+    if (to.meta.guestOnly && auth.isAuthenticated) {
       return { name: 'operator-routes' }
     }
   })

@@ -42,4 +42,10 @@ class OperatorSession < ApplicationRecord
   def expired?
     expires_at <= Time.current
   end
+
+  # Extends this session's expiry by the configured TTL, without issuing a new token -- the client
+  # keeps using the same bearer token, only expires_at moves forward.
+  def renew!
+    update!(expires_at: SystemSetting.operator_session_ttl_minutes.minutes.from_now)
+  end
 end

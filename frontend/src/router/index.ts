@@ -12,10 +12,13 @@ import BookingLookupView from '../views/rider/BookingLookupView.vue'
 import BookingDetailView from '../views/rider/BookingDetailView.vue'
 
 import OperatorLoginView from '../views/operator/OperatorLoginView.vue'
+import ForgotPasswordView from '../views/operator/ForgotPasswordView.vue'
+import ResetPasswordView from '../views/operator/ResetPasswordView.vue'
 import OperatorRoutesView from '../views/operator/OperatorRoutesView.vue'
 import OperatorTripsView from '../views/operator/OperatorTripsView.vue'
 import OperatorBusUnitsView from '../views/operator/OperatorBusUnitsView.vue'
 import OperatorFareRulesView from '../views/operator/OperatorFareRulesView.vue'
+import OperatorStaffView from '../views/operator/OperatorStaffView.vue'
 import TripManifestView from '../views/operator/TripManifestView.vue'
 
 import NotFoundView from '../views/NotFoundView.vue'
@@ -23,6 +26,8 @@ import NotFoundView from '../views/NotFoundView.vue'
 declare module 'vue-router' {
   interface RouteMeta {
     requiresOperatorAuth?: boolean
+    /** Redirects an already-authenticated operator away (e.g. login, forgot/reset password). */
+    guestOnly?: boolean
   }
 }
 
@@ -59,6 +64,19 @@ const routes: RouteRecordRaw[] = [
     path: '/operator/login',
     name: 'operator-login',
     component: OperatorLoginView,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/operator/forgot-password',
+    name: 'operator-forgot-password',
+    component: ForgotPasswordView,
+    meta: { guestOnly: true },
+  },
+  {
+    path: '/operator/reset-password',
+    name: 'operator-reset-password',
+    component: ResetPasswordView,
+    meta: { guestOnly: true },
   },
   {
     path: '/operator',
@@ -76,6 +94,7 @@ const routes: RouteRecordRaw[] = [
       },
       { path: 'bus-units', name: 'operator-bus-units', component: OperatorBusUnitsView },
       { path: 'fare-rules', name: 'operator-fare-rules', component: OperatorFareRulesView },
+      { path: 'staff', name: 'operator-staff', component: OperatorStaffView },
     ],
   },
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },

@@ -40,6 +40,10 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # Write outgoing mail to tmp/mails/ instead of actually sending it, so mailer-driven flows
+  # (e.g. password reset) are inspectable locally without configuring real SMTP.
+  config.action_mailer.delivery_method = :file
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 

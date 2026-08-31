@@ -9,6 +9,17 @@ export interface OperatorStaff {
   operator_id: number
 }
 
+// The operator-admin Staff screen's list shape — distinct from OperatorStaff (the logged-in
+// session's own staff record, which the login response doesn't include active/locked on).
+export interface OperatorStaffMember {
+  id: number
+  operator_id: number
+  name: string
+  email: string
+  active: boolean
+  locked: boolean
+}
+
 export interface OperatorRoute {
   id: number
   operator_id: number
