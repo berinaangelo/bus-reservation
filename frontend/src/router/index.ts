@@ -81,6 +81,14 @@ const routes: RouteRecordRaw[] = [
   { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundView },
 ]
 
+if (import.meta.env.DEV) {
+  routes.push({
+    path: '/dev/ui-kit',
+    name: 'dev-ui-kit',
+    component: () => import('../views/dev/UiKitPreviewView.vue'),
+  })
+}
+
 export const router = createRouter({
   history: createWebHistory(),
   routes,

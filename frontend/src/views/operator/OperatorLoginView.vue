@@ -2,11 +2,16 @@
 // Standalone screen, no OperatorLayout chrome — the chosen "Split Panel" mockup
 // (kos/decisions/ux/mockups/operator-login.html) has no sidebar for an unauthenticated user.
 // Functional (not just a placeholder) since it's the one screen this infra pass needs working
-// end-to-end to verify the auth store/guard/API client together.
+// end-to-end to verify the auth store/guard/API client together. Refactored to consume the base
+// UI kit (frontend/src/components/ui/) — this was its original reference markup.
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useOperatorAuthStore } from '../../stores/operatorAuth'
 import { ApiError } from '../../api/types'
+import BaseInput from '../../components/ui/BaseInput.vue'
+import PasswordInput from '../../components/ui/PasswordInput.vue'
+import BaseButton from '../../components/ui/BaseButton.vue'
+import BaseToast from '../../components/ui/BaseToast.vue'
 
 const email = ref('')
 const password = ref('')
@@ -38,33 +43,36 @@ async function onSubmit() {
     <form class="w-full max-w-sm border border-border bg-surface p-6" @submit.prevent="onSubmit">
       <h1 class="mb-4 font-display text-2xl font-bold text-primary">Operator Console</h1>
 
-      <label class="mb-1 block text-sm text-muted" for="email">Email</label>
-      <input
+      <BaseToast v-if="error" variant="danger" :message="error" :dismissible="false" class="mb-3" />
+
+      <BaseInput
         id="email"
         v-model="email"
         type="email"
+        label="Email"
         required
-        class="mb-3 w-full border border-border bg-background px-3 py-2 text-text"
+        autocomplete="username"
+        class="mb-3"
       />
 
-      <label class="mb-1 block text-sm text-muted" for="password">Password</label>
-      <input
+      <PasswordInput
         id="password"
         v-model="password"
-        type="password"
+        label="Password"
         required
-        class="mb-3 w-full border border-border bg-background px-3 py-2 text-text"
+        autocomplete="current-password"
+        class="mb-4"
       />
 
-      <p v-if="error" class="mb-3 text-sm text-danger">{{ error }}</p>
-
-      <button
+      <BaseButton
         type="submit"
-        :disabled="submitting"
-        class="w-full bg-accent px-3 py-2 font-medium text-accent-text disabled:opacity-60"
+        variant="primary"
+        class="w-full"
+        :loading="submitting"
+        loading-text="Logging in…"
       >
-        {{ submitting ? 'Logging in…' : 'Log in' }}
-      </button>
+        Log in
+      </BaseButton>
     </form>
   </div>
 </template>

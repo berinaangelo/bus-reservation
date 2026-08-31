@@ -8,4 +8,10 @@ export default defineConfigWithVueTs(
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.recommended,
   eslintConfigPrettier,
+  {
+    // Empty.vue is a deliberate single-word base-component name (see components/ui/).
+    name: 'app/single-word-component-names',
+    files: ['src/components/ui/Empty.vue'],
+    rules: { 'vue/multi-word-component-names': 'off' },
+  },
 )
