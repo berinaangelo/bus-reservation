@@ -27,6 +27,7 @@ import { createBooking } from '../../api/bookings'
 import { ApiError } from '../../api/types'
 import { useCheckoutStore } from '../../stores/checkout'
 import { groupSeatsIntoRows, hasUpperDeck } from '../../utils/seatMap'
+import { formatFare, formatDateTime } from '../../utils/format'
 import type { BusClass } from '../../types/trip'
 import type { Deck, SeatLayout, TripSeat } from '../../types/seatMap'
 
@@ -41,23 +42,6 @@ const BUS_CLASS_LABELS: Record<BusClass, string> = {
   double_deck: 'Double-Deck',
 }
 const PREMIUM_CLASSES: BusClass[] = ['deluxe', 'double_deck']
-
-function formatFare(centavos: number | null): string {
-  if (centavos === null) return '—'
-  return `₱${(centavos / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
-
-function formatDateTime(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Manila',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).format(new Date(iso))
-}
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()
@@ -251,6 +235,7 @@ async function onSubmit() {
       trip_seat_ids: isReservable.value ? checkoutStore.tripSeatIds : [],
       passengers: checkoutStore.passengers,
     })
+    checkoutStore.lastBooking = booking
     checkoutStore.reset()
     router.push({ name: 'e-ticket', params: { referenceCode: booking.reference_code } })
   } catch (e) {

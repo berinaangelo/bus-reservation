@@ -37,6 +37,7 @@ import { searchTrips } from '../../api/trips'
 import { useCheckoutStore } from '../../stores/checkout'
 import { ApiError } from '../../api/types'
 import { loadTerminals, todayLocalISODate } from '../../utils/tripSearchForm'
+import { formatFare } from '../../utils/format'
 import type { BusClass, Trip } from '../../types/trip'
 
 type Bucket = 'morning' | 'afternoon' | 'evening'
@@ -99,11 +100,6 @@ function formatDuration(departureIso: string, arrivalIso: string): string {
   const hours = Math.floor(minutes / 60)
   const mins = minutes % 60
   return `${hours}h ${String(mins).padStart(2, '0')}m`
-}
-
-function formatFare(centavos: number | null): string {
-  if (centavos === null) return '—'
-  return `₱${(centavos / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 function formatDate(isoDate: string): string {

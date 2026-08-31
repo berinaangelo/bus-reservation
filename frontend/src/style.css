@@ -51,3 +51,25 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
 }
+
+/* "Save Ticket" on E-Ticket Confirmation triggers window.print() — this shows only the ticket
+   card (#e-ticket-print-area, see ETicketConfirmationView.vue) in the printed/PDF output, not the
+   app header or page chrome around it. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #e-ticket-print-area,
+  #e-ticket-print-area * {
+    visibility: visible;
+  }
+  #e-ticket-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  #e-ticket-print-area button {
+    display: none;
+  }
+}
