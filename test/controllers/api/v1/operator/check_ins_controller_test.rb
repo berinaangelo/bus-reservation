@@ -1,6 +1,8 @@
 require "test_helper"
 
 class Api::V1::Operator::CheckInsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
+
   test "checks in a confirmed booking by reference_code" do
     route = create(:route)
     trip = create(:trip, route: route)
@@ -96,5 +98,35 @@ class Api::V1::Operator::CheckInsControllerTest < ActionDispatch::IntegrationTes
       headers: { "Authorization" => "Bearer #{raw_token}" }
 
     assert_response :forbidden
+  end
+
+  test "broadcasts to the manifest channel on a real check-in" do
+    route = create(:route)
+    trip = create(:trip, route: route)
+    staff = create(:operator_staff, operator: route.operator)
+    _session, raw_token = OperatorSession.issue_for(staff)
+    booking = create(:booking, trip: trip, status: :confirmed)
+    create(:passenger, booking: booking)
+
+    assert_broadcast_on(ManifestChannel.broadcasting_for(trip), type: "checked_in") do
+      post api_v1_operator_trip_check_ins_path(trip_id: trip.id),
+        params: { reference_code: booking.reference_code },
+        headers: { "Authorization" => "Bearer #{raw_token}" }
+    end
+  end
+
+  test "does not broadcast on a no-op re-check-in" do
+    route = create(:route)
+    trip = create(:trip, route: route)
+    staff = create(:operator_staff, operator: route.operator)
+    _session, raw_token = OperatorSession.issue_for(staff)
+    booking = create(:booking, trip: trip, status: :confirmed, checked_in_at: 1.hour.ago)
+    create(:passenger, booking: booking)
+
+    assert_no_broadcasts(ManifestChannel.broadcasting_for(trip)) do
+      post api_v1_operator_trip_check_ins_path(trip_id: trip.id),
+        params: { reference_code: booking.reference_code },
+        headers: { "Authorization" => "Bearer #{raw_token}" }
+    end
   end
 end

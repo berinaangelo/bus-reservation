@@ -16,6 +16,8 @@ module Api
           )
         end
 
+        ManifestChannel.broadcast_to(result.booking.trip, { type: "booking_created" })
+
         render json: BookingPresenter.new(result.booking), status: :created
       end
 

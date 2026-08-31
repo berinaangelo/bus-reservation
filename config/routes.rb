@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Top-level, not nested under /api/v1 -- Action Cable is conventionally its own mount, and
+  # nesting it here would prefix the cable URL with /api/v1/cable for no benefit.
+  mount ActionCable.server => "/cable"
+
   namespace :api do
     namespace :v1 do
       # Rider-facing resources go here directly.

@@ -10,8 +10,15 @@ module Api
           booking = find_booking(trip)
           return if booking.nil?
 
+          # Captured before the interactor runs -- Bookings::CheckIn itself no-ops if already
+          # checked in, so this is the only reliable way to know whether anything actually
+          # changed and a broadcast is warranted.
+          already_checked_in = booking.checked_in?
+
           result = nil
           ActiveRecord::Base.transaction { result = Bookings::CheckIn.call!(booking: booking) }
+
+          ManifestChannel.broadcast_to(trip, { type: "checked_in" }) unless already_checked_in
 
           render json: { rows: result.booking.passengers.map { |p| ManifestRowPresenter.new(p) } }
         end

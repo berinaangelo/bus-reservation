@@ -1,6 +1,8 @@
 require "test_helper"
 
 class BookingsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
+
   test "checkout on a reservable-class trip returns 201 with a valid reference_code" do
     trip = create(:trip, bus_unit: create(:aircon_bus_unit))
     create(:fare_rule, route: trip.route, bus_class: :aircon, base_fare: 95_000)
@@ -17,6 +19,22 @@ class BookingsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     body = JSON.parse(response.body)
     assert ReferenceCode.valid?(body["reference_code"].delete("-"))
+  end
+
+  test "broadcasts to the manifest channel on checkout" do
+    trip = create(:trip, bus_unit: create(:aircon_bus_unit))
+    create(:fare_rule, route: trip.route, bus_class: :aircon, base_fare: 95_000)
+    seat = create(:trip_seat, trip: trip, seat: create(:seat, bus_unit: trip.bus_unit))
+
+    assert_broadcast_on(ManifestChannel.broadcasting_for(trip), type: "booking_created") do
+      post api_v1_bookings_path, params: {
+        trip_id: trip.id,
+        trip_seat_ids: [ seat.id ],
+        passengers: [ { full_name: "Grace Lim" } ],
+        contact_number: "09171234567",
+        idempotency_key: SecureRandom.hex(8)
+      }
+    end
   end
 
   test "checkout on an ordinary-class trip returns 201" do

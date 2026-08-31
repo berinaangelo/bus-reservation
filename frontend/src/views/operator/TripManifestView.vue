@@ -3,9 +3,9 @@
 // kos/decisions/ux/mockups/trip-manifest.html. Same local-refs-no-store shape as
 // OperatorTripsView.vue, but read+mutate instead of full CRUD: the roster/summary come from
 // getManifest, check-in and paid-toggle are two small dedicated mutation endpoints
-// (checkIns.ts / payments.ts) rather than a drawer form. Not built here (see the mockup's own
-// footer note): a toast/highlight for a booking landing mid-check-in and any live push — neither
-// is a decision doc yet.
+// (checkIns.ts / payments.ts) rather than a drawer form. Live updates (a booking/check-in/payment
+// landing while this screen is open) push over ManifestChannel via useManifestChannel — see that
+// composable for the transport, this view just reacts to the signal by refetching.
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Check, Lock, Search, Users } from '@lucide/vue'
@@ -18,6 +18,7 @@ import type { PaginationMeta } from '../../api/types'
 import type { OperatorTrip, BusClass, TripStatus } from '../../types/trip'
 import { ApiError } from '../../api/types'
 import { formatDateTime } from '../../utils/format'
+import { useManifestChannel } from '../../composables/useManifestChannel'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import BaseInput from '../../components/ui/BaseInput.vue'
 import BaseToast from '../../components/ui/BaseToast.vue'
@@ -47,6 +48,13 @@ const loading = ref(true) // first paint only — trip header + page 1
 const manifestLoading = ref(false) // page-change reloads, header/summary stay put
 const loadError = ref<string | null>(null)
 const noopNotice = ref<string | null>(null)
+const liveUpdateNotice = ref<string | null>(null)
+
+const LIVE_UPDATE_MESSAGES = {
+  booking_created: 'A new booking just came in.',
+  checked_in: 'A passenger just checked in.',
+  payment_collected: 'A payment was just marked collected.',
+} as const
 
 const boardingClosed = computed(
   () => !!summary.value && CLOSED_STATUSES.includes(summary.value.trip_status),
@@ -79,6 +87,14 @@ async function load() {
 }
 
 onMounted(load)
+
+useManifestChannel(
+  () => tripIdNum.value,
+  (event) => {
+    liveUpdateNotice.value = LIVE_UPDATE_MESSAGES[event.type]
+    void loadManifest()
+  },
+)
 
 async function goToPage(page: number) {
   if (!meta.value || page < 1 || page > meta.value.pages) return
@@ -250,6 +266,13 @@ async function onTogglePaid(row: ManifestRow) {
         message="Boarding is closed for this trip. Check-in and payment collection are locked."
         :dismissible="false"
         class="mb-4"
+      />
+      <BaseToast
+        v-if="liveUpdateNotice"
+        variant="info"
+        :message="liveUpdateNotice"
+        class="mb-4"
+        @dismiss="liveUpdateNotice = null"
       />
 
       <Empty
