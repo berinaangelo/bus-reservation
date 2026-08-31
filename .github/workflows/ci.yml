@@ -1,9 +1,9 @@
 name: CI
 
+# Disabled from auto-running for now (pull_request/push triggers removed) — trigger manually from
+# the Actions tab if needed. Restore the pull_request/push block below to turn it back on.
 on:
-  pull_request:
-  push:
-    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   scan_ruby:
