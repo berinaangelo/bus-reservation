@@ -3,7 +3,7 @@
 // editable ids the rider presenter omits).
 
 export type BusClass = 'ordinary' | 'aircon' | 'deluxe' | 'double_deck'
-export type TripStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled'
+export type TripStatus = 'scheduled' | 'boarding' | 'departed' | 'completed' | 'cancelled'
 
 export interface Trip {
   id: number
