@@ -12,7 +12,8 @@ class ManifestSummary
       total_passengers: confirmed_passengers.count,
       paid: confirmed_passengers.joins(booking: :payment).merge(Payment.collected).count,
       seats_booked: seats_booked,
-      total_seats: @trip.bus_unit.total_seats
+      total_seats: @trip.bus_unit.total_seats,
+      trip_status: @trip.status
     }
   end
 

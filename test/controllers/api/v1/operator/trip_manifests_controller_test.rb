@@ -25,6 +25,7 @@ class Api::V1::Operator::TripManifestsControllerTest < ActionDispatch::Integrati
     assert_equal 1, body["summary"]["paid"]
     assert_equal 1, body["summary"]["seats_booked"]
     assert_equal 45, body["summary"]["total_seats"]
+    assert_equal "scheduled", body["summary"]["trip_status"]
 
     row = body["rows"].first
     assert_equal "Grace Lim", row["full_name"]

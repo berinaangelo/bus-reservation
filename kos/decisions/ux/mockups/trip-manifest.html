@@ -198,17 +198,17 @@
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-border">
-                  <tr class="bg-success/5 border-l-2 border-success">
+                  <tr class="bg-warning/5 border-l-2 border-warning">
                     <td class="px-3 py-2.5 font-mono tnum">14A</td>
                     <td class="px-3 py-2.5">
                       Grace Mendoza
-                      <span class="ml-1.5 inline-flex items-center border border-success text-success bg-success/10 px-1.5 py-0.5 text-[10px] font-display uppercase tracking-wide font-semibold">New</span>
+                      <span class="ml-1.5 inline-flex items-center border border-warning text-warning bg-warning/10 px-1.5 py-0.5 text-[10px] font-display uppercase tracking-wide font-semibold">New</span>
                     </td>
                     <td class="px-3 py-2.5 font-mono text-xs">7QT-4XM-2</td>
                     <td class="px-3 py-2.5 font-mono text-xs tnum">0917 234 5678</td>
                     <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked &middot; 12s ago</span></td>
                     <td class="px-3 py-2.5">
-                      <button type="button" role="switch" aria-checked="false" aria-label="Mark payment collected" class="inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                      <button type="button" role="switch" aria-checked="false" aria-label="Mark payment collected" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
                         <span class="relative w-9 h-5 border border-border bg-surface shrink-0">
                           <span class="absolute top-0.5 left-0.5 w-3.5 h-3.5 bg-muted"></span>
                         </span>
@@ -216,7 +216,7 @@
                       </button>
                     </td>
                     <td class="px-3 py-2.5 text-right">
-                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                      <button type="button" class="border border-primary text-primary px-3 py-2.5 min-h-[44px] inline-flex items-center justify-center text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
                     </td>
                   </tr>
                   <tr>
@@ -226,7 +226,7 @@
                     <td class="px-3 py-2.5 font-mono text-xs tnum">0918 555 1122</td>
                     <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
                     <td class="px-3 py-2.5">
-                      <button type="button" role="switch" aria-checked="true" aria-label="Payment collected for booking 4XK-7QM-9" class="inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                      <button type="button" role="switch" aria-checked="true" aria-label="Payment collected for booking 4XK-7QM-9" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
                         <span class="relative w-9 h-5 border border-primary bg-primary shrink-0">
                           <span class="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white"></span>
                         </span>
@@ -242,12 +242,10 @@
                     <td class="px-3 py-2.5 font-mono text-xs tnum">0918 555 1122</td>
                     <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
                     <td class="px-3 py-2.5">
-                      <button type="button" role="switch" aria-checked="true" aria-label="Payment collected for booking 4XK-7QM-9" disabled class="inline-flex items-center gap-2 cursor-default opacity-90">
-                        <span class="relative w-9 h-5 border border-primary bg-primary shrink-0">
-                          <span class="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white"></span>
-                        </span>
-                        <span class="text-xs text-primary font-medium">Paid</span>
-                      </button>
+                      <span role="status" aria-label="Payment collected for booking 4XK-7QM-9, recorded via seat 5A" class="inline-flex items-center gap-1.5 border border-primary/40 bg-primary/5 text-primary/70 px-2 py-1 text-[11px] font-medium">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                        Paid via 5A
+                      </span>
                     </td>
                     <td class="px-3 py-2.5 text-right text-muted text-xs">7:41 AM &middot; counter 2</td>
                   </tr>
@@ -258,7 +256,7 @@
                     <td class="px-3 py-2.5 font-mono text-xs tnum">0920 883 4410</td>
                     <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span></td>
                     <td class="px-3 py-2.5">
-                      <button type="button" role="switch" aria-checked="true" aria-label="Payment collected" class="inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                      <button type="button" role="switch" aria-checked="true" aria-label="Payment collected" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
                         <span class="relative w-9 h-5 border border-primary bg-primary shrink-0">
                           <span class="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white"></span>
                         </span>
@@ -266,7 +264,7 @@
                       </button>
                     </td>
                     <td class="px-3 py-2.5 text-right">
-                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                      <button type="button" class="border border-primary text-primary px-3 py-2.5 min-h-[44px] inline-flex items-center justify-center text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
                     </td>
                   </tr>
                   <tr>
@@ -276,7 +274,7 @@
                     <td class="px-3 py-2.5 font-mono text-xs tnum">0917 662 9903</td>
                     <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked</span></td>
                     <td class="px-3 py-2.5">
-                      <button type="button" role="switch" aria-checked="false" aria-label="Mark payment collected" class="inline-flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                      <button type="button" role="switch" aria-checked="false" aria-label="Mark payment collected" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
                         <span class="relative w-9 h-5 border border-border bg-surface shrink-0">
                           <span class="absolute top-0.5 left-0.5 w-3.5 h-3.5 bg-muted"></span>
                         </span>
@@ -284,7 +282,7 @@
                       </button>
                     </td>
                     <td class="px-3 py-2.5 text-right">
-                      <button type="button" class="border border-primary text-primary px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
+                      <button type="button" class="border border-primary text-primary px-3 py-2.5 min-h-[44px] inline-flex items-center justify-center text-[11px] font-display uppercase tracking-wide font-semibold">Check In</button>
                     </td>
                   </tr>
                 </tbody>
@@ -300,6 +298,14 @@
               twice under one reference_code. Toggling either paid or checked-in doesn't require the other first —
               Rosario (8C) shows paid-before-check-in on purpose, since a rider can settle cash at a separate
               counter before reaching the boarding line.
+            </p>
+            <p class="text-[11px] text-muted mt-1">
+              <span class="text-text font-medium">Two ways into the same action:</span> the reference_code
+              bar above is the primary path (staff type/scan what the rider hands them); each row's own
+              <span class="text-text font-medium">Check In</span> button is a shortcut for when staff already
+              found the right row via <span class="font-mono text-xs">Search roster&hellip;</span> or a visual
+              scan &mdash; it submits that row's own reference_code, nothing is typed twice. Same action, same
+              server call, two entry points into it.
             </p>
           </div>
         </div>
@@ -634,18 +640,358 @@
       </div>
     </section>
 
+    <!-- ============================================================ -->
+    <!-- STATES — OPTION A                                             -->
+    <!-- ============================================================ -->
+    <h2 class="font-display font-bold text-xl uppercase tracking-wide mt-16 mb-6 pb-2 border-b border-border">States — Option A</h2>
+
+    <div class="mb-16">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Checking in (loading)</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl">
+        Right after Check In is pressed. The lookup bar locks (dimmed, disabled) and the button
+        swaps to a spinner + label change &mdash; immediate feedback per the
+        <span class="text-text font-medium">Doherty Threshold</span>, doubling as a guard against a
+        double-tap firing the same check-in twice during a boarding rush. Scoped to the lookup bar
+        only &mdash; the roster table underneath stays fully visible/legible, nothing about reading
+        the list is blocked while one request is in flight.
+      </p>
+
+      <div class="border border-border bg-background p-4">
+        <!-- quick check-in bar, locked -->
+        <div class="flex items-end gap-2 mb-4 flex-wrap opacity-60 pointer-events-none" aria-busy="true">
+          <div class="flex-1 min-w-[220px]">
+            <label class="block text-[11px] font-display uppercase tracking-wide text-muted mb-1">Reference code</label>
+            <p class="w-full border border-border bg-surface px-3 py-2.5 font-mono text-sm uppercase tracking-wide">4XK-7QM-9</p>
+          </div>
+          <button type="button" disabled class="bg-accent/70 text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-5 py-2.5 flex items-center gap-1.5 shrink-0 cursor-not-allowed">
+            <svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            Checking in&hellip;
+          </button>
+          <div class="border border-border bg-surface px-3 py-2.5 flex items-center gap-2 text-xs text-muted w-48">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Search roster&hellip;
+          </div>
+        </div>
+
+        <!-- roster underneath, unaffected -->
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Seat</th>
+                <th class="px-3 py-2 font-semibold">Passenger</th>
+                <th class="px-3 py-2 font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr class="bg-warning/5 border-l-2 border-warning">
+                <td class="px-3 py-2.5 font-mono tnum">14A</td>
+                <td class="px-3 py-2.5">
+                  Grace Mendoza
+                  <span class="ml-1.5 inline-flex items-center border border-warning text-warning bg-warning/10 px-1.5 py-0.5 text-[10px] font-display uppercase tracking-wide font-semibold">New</span>
+                </td>
+                <td class="px-3 py-2.5"><span class="border border-accent text-accent bg-accent/10 px-2 py-0.5 text-[11px] font-medium">Booked &middot; 12s ago</span></td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-mono tnum">5A</td>
+                <td class="px-3 py-2.5">Maria Santos <span class="text-muted text-xs">(+1)</span></td>
+                <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-[11px] text-muted mt-2">
+        <span class="text-text font-medium">Open note:</span> the lookup bar is guarded here, but a
+        per-row "Check In" button hits the same endpoint (see the "two ways into the same action"
+        note on Option A above) &mdash; whether a row tap needs the same in-flight guard is flagged,
+        not solved, in this pass.
+      </p>
+    </div>
+
+    <div class="mb-16">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Already checked in</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl">
+        Both <span class="font-mono text-xs">Bookings::CheckIn</span> and
+        <span class="font-mono text-xs">Payments::SetCollected</span> are already idempotent
+        server-side &mdash; a no-op success, not an error, no data at risk. What's missing is telling
+        the two apart on screen: the API already returns
+        <span class="font-mono text-xs">checked_in_at</span>/<span class="font-mono text-xs">collected_at</span>
+        on every response (fresh or not), so the frontend can capture the moment it sent the request
+        and compare it against the returned timestamp &mdash; older than the request means this was a
+        no-op. Purely client-side, no new backend signal needed. A fresh check-in (not shown here)
+        stays a brief success-green row flash with no persistent message; this state is the
+        deliberately different treatment for the no-op case, so a double-tap doesn't read as "did
+        that do anything?"
+      </p>
+      <div class="border border-border bg-background p-4">
+        <div class="border border-border bg-warning/10 text-warning px-3 py-2.5 flex items-center gap-2 text-xs mb-4">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          Grace Mendoza was already checked in at 7:41 AM &mdash; no change made.
+        </div>
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Seat</th>
+                <th class="px-3 py-2 font-semibold">Passenger</th>
+                <th class="px-3 py-2 font-semibold">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr class="bg-warning/5 border-l-2 border-warning">
+                <td class="px-3 py-2.5 font-mono tnum">14A</td>
+                <td class="px-3 py-2.5">Grace Mendoza</td>
+                <td class="px-3 py-2.5">
+                  <span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Checked in
+                  </span>
+                  <span class="text-warning text-[11px] ml-1">&middot; already, 7:41 AM</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-16">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Already paid</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl">
+        Different trigger than check-in: the switch's own visible state already reads "Paid," so
+        staff have no reason to deliberately re-tap it. The real risk is a rapid double-click
+        <span class="text-text font-medium">race</span> &mdash; a second click firing before the
+        first click's response has repainted the switch. Same idempotent no-op, same
+        timestamp-comparison mechanism as check-in, applied to
+        <span class="font-mono text-xs">collected_at</span> instead.
+      </p>
+      <div class="border border-border bg-background p-4">
+        <div class="flex items-center justify-between max-w-xs">
+          <div>
+            <p class="text-sm font-medium">Jose Santos <span class="font-mono text-xs text-muted">&middot; 5B</span></p>
+            <p class="text-[11px] text-muted font-mono">4XK-7QM-9</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-2">
+              <span class="relative w-9 h-5 border border-primary bg-primary shrink-0">
+                <span class="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white"></span>
+              </span>
+              <span class="text-xs text-primary font-medium">Paid</span>
+            </span>
+          </div>
+        </div>
+        <p class="text-xs text-warning flex items-center gap-1.5 mt-2 max-w-xs">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          Already marked paid &mdash; no change made.
+        </p>
+      </div>
+    </div>
+
+    <div class="mb-16">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">All checked in</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl">
+        Backed by a new <span class="font-mono text-xs">trip_status</span> field added to
+        <span class="font-mono text-xs">ManifestSummary</span> alongside the counts it already
+        returned &mdash; once <span class="font-mono text-xs">checked_in === total_passengers</span>
+        the header counter flips to success color. That comparison is purely client-side against
+        counts the summary already returned; no new signal was needed for this piece specifically.
+        The check-in bar stays fully live here: a booking made seconds before departure raises
+        <span class="font-mono text-xs">total_passengers</span> again, so this is a momentary
+        snapshot, not a lock &mdash; that's what "Boarding closed" below is for.
+      </p>
+
+      <div class="border border-border bg-background p-4">
+        <!-- counter, flipped to success -->
+        <div class="flex items-center justify-end gap-2 mb-4">
+          <p class="font-mono text-sm font-semibold tnum text-success flex items-center gap-1.5">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            44 / 44 <span class="text-muted font-normal">checked in</span>
+          </p>
+        </div>
+
+        <div class="border border-success bg-success/10 text-success px-3 py-2.5 flex items-center gap-2 text-xs mb-4">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+          All 44 confirmed passengers are checked in. The check-in bar stays open &mdash; a booking made before departure can still arrive here.
+        </div>
+
+        <!-- quick check-in bar, fully interactive -->
+        <div class="flex items-end gap-2 mb-4 flex-wrap">
+          <div class="flex-1 min-w-[220px]">
+            <label class="block text-[11px] font-display uppercase tracking-wide text-muted mb-1">Reference code</label>
+            <input type="text" placeholder="4XK-7QM-9" class="w-full border border-border bg-surface px-3 py-2.5 font-mono text-sm uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+          <button type="button" class="bg-accent text-[#1E2925] font-display uppercase tracking-wide text-xs font-semibold px-5 py-2.5 flex items-center gap-1.5 shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Check In
+          </button>
+          <div class="border border-border bg-surface px-3 py-2.5 flex items-center gap-2 text-xs text-muted w-48">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Search roster&hellip;
+          </div>
+        </div>
+
+        <!-- roster, all checked in — nothing left to do -->
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Seat</th>
+                <th class="px-3 py-2 font-semibold">Passenger</th>
+                <th class="px-3 py-2 font-semibold">Status</th>
+                <th class="px-3 py-2 font-semibold">Payment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5 font-mono tnum">5A</td>
+                <td class="px-3 py-2.5">Maria Santos <span class="text-muted text-xs">(+1)</span></td>
+                <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                <td class="px-3 py-2.5">
+                  <button type="button" role="switch" aria-checked="true" aria-label="Payment collected for booking 4XK-7QM-9" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <span class="relative w-9 h-5 border border-primary bg-primary shrink-0">
+                      <span class="absolute top-0.5 right-0.5 w-3.5 h-3.5 bg-white"></span>
+                    </span>
+                    <span class="text-xs text-primary font-medium">Paid</span>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-mono tnum">14A</td>
+                <td class="px-3 py-2.5">Grace Mendoza</td>
+                <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                <td class="px-3 py-2.5">
+                  <button type="button" role="switch" aria-checked="false" aria-label="Mark payment collected" class="inline-flex items-center gap-2 min-h-[44px] px-1 -mx-1 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <span class="relative w-9 h-5 border border-border bg-surface shrink-0">
+                      <span class="absolute top-0.5 left-0.5 w-3.5 h-3.5 bg-muted"></span>
+                    </span>
+                    <span class="text-xs text-muted">Unpaid</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-[11px] text-muted mt-2">
+        <span class="text-text font-medium">Open note:</span> no Check In button appears on either
+        row here &mdash; there's nothing left to do, a deliberately different treatment from
+        "disabled" (which implies an action exists but is blocked). Payment stays fully independent
+        of check-in completion; Grace's row above is still an active, unpaid switch on purpose.
+      </p>
+    </div>
+
+    <div class="mb-16">
+      <h3 class="font-display font-bold text-base uppercase tracking-wide mb-2">Boarding closed</h3>
+      <p class="text-sm text-muted mb-3 max-w-2xl">
+        Driven by the same new <span class="font-mono text-xs">trip_status</span> field &mdash;
+        closed is <span class="font-mono text-xs">departed</span>, <span class="font-mono text-xs">completed</span>,
+        or <span class="font-mono text-xs">cancelled</span>, not simply "not boarding," so this
+        state can't be confused with a trip that hasn't started boarding yet (a different, not yet
+        designed state). Every interactive control below reuses a pattern already established
+        elsewhere on this screen &mdash; the loading bar's dim/disable treatment, and the read-only
+        <span class="font-mono text-xs">role="status"</span> span already used for a mirrored
+        multi-seat Paid toggle &mdash; rather than inventing new controls for a screen that's
+        fundamentally "the same UI, now inert."
+      </p>
+
+      <div class="border border-border bg-background p-4">
+        <!-- status badge, neutral (not danger/warning — this is an expected end state, not an error) -->
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <span class="inline-flex items-center gap-1.5 border border-border text-muted bg-surface px-2.5 py-1 text-[11px] font-display uppercase tracking-wide font-semibold">
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Boarding Closed
+          </span>
+          <p class="font-mono text-sm font-semibold tnum text-muted">44 / 44 <span class="font-normal">checked in</span></p>
+        </div>
+
+        <div class="border border-border bg-surface text-muted px-3 py-2.5 flex items-center gap-2 text-xs mb-4">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Boarding is closed for this trip. Check-in and payment collection are locked.
+        </div>
+
+        <!-- quick check-in bar, disabled -->
+        <div class="flex items-end gap-2 mb-4 flex-wrap opacity-60 pointer-events-none">
+          <div class="flex-1 min-w-[220px]">
+            <label class="block text-[11px] font-display uppercase tracking-wide text-muted mb-1">Reference code</label>
+            <input type="text" disabled placeholder="4XK-7QM-9" class="w-full border border-border bg-surface px-3 py-2.5 font-mono text-sm uppercase tracking-wide" />
+          </div>
+          <button type="button" disabled class="bg-muted/40 text-muted font-display uppercase tracking-wide text-xs font-semibold px-5 py-2.5 flex items-center gap-1.5 shrink-0 cursor-not-allowed">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Boarding closed
+          </button>
+          <div class="border border-border bg-surface px-3 py-2.5 flex items-center gap-2 text-xs text-muted w-48">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            Search roster&hellip;
+          </div>
+        </div>
+
+        <!-- roster, fully read-only -->
+        <div class="border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-surface font-display uppercase tracking-wide text-[11px] text-muted text-left">
+                <th class="px-3 py-2 font-semibold">Seat</th>
+                <th class="px-3 py-2 font-semibold">Passenger</th>
+                <th class="px-3 py-2 font-semibold">Status</th>
+                <th class="px-3 py-2 font-semibold">Payment</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="px-3 py-2.5 font-mono tnum">5A</td>
+                <td class="px-3 py-2.5">Maria Santos <span class="text-muted text-xs">(+1)</span></td>
+                <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                <td class="px-3 py-2.5">
+                  <span role="status" aria-label="Payment collected for booking 4XK-7QM-9" class="inline-flex items-center gap-1.5 border border-primary/40 bg-primary/5 text-primary/70 px-2 py-1 text-[11px] font-medium">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    Paid
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="px-3 py-2.5 font-mono tnum">14A</td>
+                <td class="px-3 py-2.5">Grace Mendoza</td>
+                <td class="px-3 py-2.5"><span class="inline-flex items-center gap-1 border border-primary text-primary bg-primary/10 px-2 py-0.5 text-[11px] font-medium"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Checked in</span></td>
+                <td class="px-3 py-2.5">
+                  <span role="status" aria-label="Payment not collected for booking 7QT-4XM-2" class="inline-flex items-center gap-1.5 border border-border bg-surface text-muted px-2 py-1 text-[11px] font-medium">
+                    Unpaid
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-[11px] text-muted mt-2">
+        <span class="text-text font-medium">Open note:</span> payment collection freezing here is a
+        presentation-layer decision made in this pass &mdash; <span class="font-mono text-xs">Payments::SetCollected</span>
+        doesn't currently gate on trip status server-side, so this is displayed as closed but not yet
+        enforced by the backend. No closed-at timestamp is claimed in the banner above; there's no
+        stored field backing one (the header's "Boarding closes 5:55 AM" text is already decorative,
+        not wired to real data).
+      </p>
+    </div>
+
     <footer class="max-w-2xl border-t border-border pt-6">
       <p class="text-xs text-muted leading-relaxed">
         <span class="text-text font-medium">Option A (Roster Table + Quick Check-in Bar) is chosen,</span> now
         including the <span class="text-text font-medium">Paid toggle</span> per <a
         href="../payment-method.md" class="text-primary underline underline-offset-2">payment-method</a>.
-        <span class="text-text font-medium">Not built yet:</span> states (loading
-        on lookup, a toast/highlight for a booking that lands while staff are mid-check-in, an
-        already-checked-in double-tap warning, an already-paid double-tap warning, all-checked-in/boarding-closed
-        end state, zero-bookings empty trip), the laws-of-ux review pass, and how "bookings land in real time" is
-        actually wired (Action Cable channel scoped to <span class="font-mono text-xs">trip_id</span> is the
-        likely mechanism, not yet a decision doc) &mdash; same "options first, states after the pick" practice
-        used for every prior screen in this file set.
+        The <span class="text-text font-medium">laws-of-ux review pass is done</span> (4 findings fixed
+        directly on Option A) and the <span class="text-text font-medium">loading-on-lookup,
+        already-checked-in, already-paid, all-checked-in, and boarding-closed states are built</span> above
+        &mdash; the latter two backed by a new <span class="font-mono text-xs">trip_status</span> field added
+        to <span class="font-mono text-xs">ManifestSummary</span> (raw <span class="font-mono text-xs">Trip#status</span>
+        enum string; boarding-closed is <span class="font-mono text-xs">departed</span>/<span class="font-mono text-xs">completed</span>/<span class="font-mono text-xs">cancelled</span>,
+        not simply "not boarding," to avoid conflating it with a trip that hasn't started boarding yet).
+        <span class="text-text font-medium">Not built yet:</span> a toast/highlight
+        for a booking that lands while staff are mid-check-in, zero-bookings empty trip, and how
+        "bookings land in real time" is actually wired
+        (Action Cable channel scoped to
+        <span class="font-mono text-xs">trip_id</span> is the likely mechanism, not yet a decision doc)
+        &mdash; same "options first, states after the pick" practice used for every prior screen in this
+        file set.
       </p>
     </footer>
 

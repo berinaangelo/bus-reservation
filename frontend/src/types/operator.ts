@@ -1,6 +1,6 @@
 // Matches app/presenters/operator_*_presenter.rb and app/models/operator_staff.rb.
 
-import type { BusClass } from './trip'
+import type { BusClass, TripStatus } from './trip'
 
 export interface OperatorStaff {
   id: number
@@ -71,5 +71,11 @@ export interface ManifestRow {
   payment: Payment | null
 }
 
-// Shape not finalized server-side yet (ManifestSummary) — kept loose until that screen is built.
-export type ManifestSummary = Record<string, unknown>
+export interface ManifestSummary {
+  checked_in: number
+  total_passengers: number
+  paid: number
+  seats_booked: number
+  total_seats: number
+  trip_status: TripStatus
+}
